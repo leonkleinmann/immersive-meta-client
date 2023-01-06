@@ -1,23 +1,41 @@
 <template>
   <div id="app">
-    <HeaderComponent />
-    <ModalComponent title="Modal-Test"/>
-    <FooterComponent />
+    <template v-if="isMobile">
+      <HeaderComponent />
+      <GameComponent />
+      <FooterComponent />
+      <LoadingComponent />
+    </template>
   </div>
 </template>
 
 <script>
+import Bowser from 'bowser';
+import {mapGetters} from "vuex";
+
 import HeaderComponent from "@/components/HeaderComponent";
+import GameComponent from "@/components/game/GameComponent";
 import FooterComponent from "@/components/FooterComponent";
-import ModalComponent from "@/components/ModalComponent";
+import LoadingComponent from "@/components/LoadingComponent";
 
 export default {
   name: 'App',
   components: {
-    ModalComponent,
     HeaderComponent,
+    GameComponent,
     FooterComponent,
-  }
+    LoadingComponent,
+  },
+  computed: {
+    ...mapGetters(['isMobile'])
+  },
+  mounted() {
+    // check if mobile
+    let isMobile = Bowser.getParser(window.navigator.userAgent)
+    if (isMobile.parsedResult.platform.type) {
+      this.$store.commit('setIsMobile', true)
+    }
+  },
 }
 </script>
 
@@ -35,8 +53,5 @@ html, body{
   position: relative;
   width: 100vw;
   height: 100vh;
-
-  //background-color: #4158D0;
-  //background-image: linear-gradient(43deg, #4158D0 0%, #C850C0 46%, #FFCC70 100%);
 }
 </style>

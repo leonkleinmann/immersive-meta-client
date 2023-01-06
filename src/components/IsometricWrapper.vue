@@ -27,6 +27,7 @@ export default {
   width: 100%;
   height: 100%;
   box-shadow: 10px 10px 2px 1px grey;
+  background: white;
 
   &.border {
     padding: 10px;

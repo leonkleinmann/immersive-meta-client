@@ -1,7 +1,7 @@
 <template>
   <div class="footer">
     <div class="wrapper">
-      <div class="links">
+      <div v-if="!isPlaying" class="links">
         <div class="link">
           <a alt="hsrm" href="https://hs-rm.de">
             <IsometricWrapper>
@@ -23,9 +23,13 @@
 
 <script>
 import IsometricWrapper from "@/components/IsometricWrapper";
+import {mapGetters} from "vuex";
 export default {
   name: "FooterComponent",
-  components: { IsometricWrapper }
+  components: { IsometricWrapper },
+  computed: {
+    ...mapGetters(['isPlaying'])
+  }
 }
 </script>
 
@@ -37,6 +41,7 @@ export default {
   width: 100%;
   height: 100px;
   padding-right: 20px;
+  z-index: 2;
 
   .wrapper {
     position: relative;

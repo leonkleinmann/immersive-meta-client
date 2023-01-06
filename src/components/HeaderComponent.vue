@@ -1,12 +1,12 @@
 <template>
   <div class="header">
     <div class="wrapper">
-        <div class="logo">
+      <div v-if="!isPlaying" class="logo">
           <IsometricWrapper>
             <img alt="logo" src="https://via.placeholder.com/100" />
           </IsometricWrapper>
-        </div>
-      <div class="links">
+      </div>
+      <div v-if="!isPlaying" class="links">
         <IsometricWrapper :border="true" :clickable="true">
           <div class="link">
               <router-link to="/tutorial">Tutorial</router-link>
@@ -24,10 +24,14 @@
 
 <script>
 import IsometricWrapper from "@/components/IsometricWrapper";
+import {mapGetters} from "vuex";
 export default {
   name: "HeaderComponent",
   components: {
     IsometricWrapper
+  },
+  computed: {
+    ...mapGetters(['isPlaying'])
   }
 }
 </script>
@@ -39,6 +43,7 @@ export default {
   left: 0;
   width: 100%;
   height: 150px;
+  z-index: 2;
 
   .wrapper {
     height: 100%;

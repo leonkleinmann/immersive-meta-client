@@ -1,5 +1,6 @@
 <template>
-  <div class="modal">
+  <div v-if="modalOpen" class="modal">
+    <div class="background" />
     <div class="wrapper">
       <div class="title">
        {{ title }}
@@ -9,7 +10,7 @@
           Lorem Ipsum
         </slot>
       </div>
-      <div class="close">
+      <div class="close" @click="modalOpen = !modalOpen">
         <IsometricWrapper :clickable="true" :border="true">
           lorem
         </IsometricWrapper>
@@ -29,7 +30,12 @@ export default {
       type: String,
       required: true
     }
-  }
+  },
+  data() {
+    return {
+      modalOpen: true
+    }
+  },
 }
 </script>
 
@@ -38,37 +44,50 @@ export default {
   position: relative;
   width: 100vw;
   height: 100vh;
-  background: lightgray;
-  opacity: 0.5;
-  z-index: 100;
+  background: transparent;
+
+  .background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: gray;
+    opacity: 0.5;
+    z-index: 999;
+  }
 
   .wrapper {
     position: absolute;
-    left: 50%;
     top: 50%;
+    left: 50%;
     transform: translate(-50%, -50%);
     display: flex;
     flex-direction: column;
-    width: 80vw;
-    height: 80vh;
+    width: 80%;
+    height: 80%;
     background: white;
     z-index: 1000;
-    opacity: 1;
+    padding: 10px;
 
     .title {
       font-size: 32px;
+      text-align: center;
     }
 
     .content {
-
+      font-size: 20px;
+      margin-top: 50px;
+      margin-left: 20%;
+      margin-right: 20%;
     }
 
     .close {
-      width: 20px;
-      height: 20px;
       position: absolute;
-      top: 0;
-      right: 0;
+      top: 10px;
+      right: 40px;
+      width: 40px;
+      height: 40px;
     }
   }
 }

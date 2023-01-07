@@ -1,12 +1,10 @@
 <template>
-  <div class="tutorial">
-    TUTORIAL
-  </div>
+
 </template>
 
 <script>
 export default {
-  name: "TutorialComponent"
+  name: "UserComponent"
 }
 </script>
 

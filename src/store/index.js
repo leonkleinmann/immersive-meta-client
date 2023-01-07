@@ -22,12 +22,16 @@ export default new Vuex.Store({
             }
         },
         isMobile: false,
+        setupCompleted: false,
         isLoading: false,
         isPlaying: false,
     },
     getters:{
         isMobile: (state) => {
             return state.isMobile
+        },
+        setupCompleted: (state) => {
+          return state.setupCompleted
         },
         isLoading: (state) =>  {
             return state.isLoading
@@ -52,6 +56,9 @@ export default new Vuex.Store({
     mutations: {
         setIsMobile(state, isMobile) {
             state.isMobile = isMobile
+        },
+        setSetupCompleted(state, setupCompleted) {
+            state.setupCompleted = setupCompleted
         },
         setIsLoading(state, isLoading) {
             state.isLoading = isLoading

@@ -1,5 +1,10 @@
 <template>
-  <div :class="[border ? 'border' : '', clickable ? 'clickable' : '']" ref="iso-wrapper" class="iso-wrapper">
+  <div
+      :class="[border ? 'border' : '', clickable ? 'clickable' : '', error ? 'error' : '']"
+      ref="iso-wrapper"
+      class="iso-wrapper"
+      @click="clickable ? $emit('clicked', true) : ''"
+  >
     <slot>
       Slot content goes here
     </slot>
@@ -17,6 +22,10 @@ export default {
     clickable: {
       type: Boolean,
       default: false,
+    },
+    error: {
+      type: Boolean,
+      default: false,
     }
   },
 }
@@ -32,6 +41,9 @@ export default {
   &.border {
     padding: 10px;
     border: 1px solid black;
+  }
+  &.error {
+    background: red !important;
   }
   &.clickable {
     &:active {

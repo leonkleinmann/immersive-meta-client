@@ -36,8 +36,6 @@ export default {
       tileMap: undefined,
       avatar: undefined,
       avatarSheet: undefined,
-      avatarX: 0,
-      avatarY: 0,
     }
   },
   computed: {

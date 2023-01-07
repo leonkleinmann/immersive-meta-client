@@ -1,20 +1,15 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-import TutorialComponent from "@/components/views/TutorialComponent";
-import AboutComponent from "@/components/views/AboutComponent";
+import HomeComponent from "@/components/views/HomeComponent";
 
 Vue.use(VueRouter)
 export default new VueRouter({
+    mode: 'history',
     routes: [
         {
-            path: '/tutorial',
-            name: 'Tutorial',
-            component: TutorialComponent
+            path: '/',
+            name: 'home',
+            component: HomeComponent
         },
-        {
-            path: '/about',
-            name: 'About',
-            component: AboutComponent
-        }
     ]
 })

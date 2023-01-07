@@ -1,9 +1,22 @@
 <template>
   <div id="app">
     <template v-if="!isMobile">
-      <HeaderComponent />
-      <GameComponent />
-      <FooterComponent />
+      <template v-if="!isPlaying">
+        <HeaderComponent />
+      </template>
+
+      <template v-if="setupCompleted">
+        <GameComponent />
+      </template>
+
+      <template v-if="!setupCompleted">
+        <SetupComponent />
+      </template>
+
+      <template v-if="!isPlaying">
+        <FooterComponent />
+      </template>
+
       <LoadingComponent />
     </template>
     <template v-if="isMobile">
@@ -22,17 +35,19 @@ import HeaderComponent from "@/components/HeaderComponent";
 import GameComponent from "@/components/game/GameComponent";
 import FooterComponent from "@/components/FooterComponent";
 import LoadingComponent from "@/components/LoadingComponent";
+import SetupComponent from "@/components/views/SetupComponent";
 
 export default {
   name: 'App',
   components: {
+    SetupComponent,
     HeaderComponent,
     GameComponent,
     FooterComponent,
     LoadingComponent,
   },
   computed: {
-    ...mapGetters(['isMobile'])
+    ...mapGetters(['isMobile', 'setupCompleted', 'isPlaying'])
   },
   mounted() {
     // check if mobile
@@ -40,6 +55,7 @@ export default {
     if (isMobile.parsedResult.platform.type !== 'desktop') {
       this.$store.commit('setIsMobile', true)
     }
+    this.$store.commit('setSetupCompleted', false)
   },
 }
 </script>
@@ -65,7 +81,5 @@ html, body{
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  position: center;
-  text-align: center;
 }
 </style>

@@ -23,7 +23,7 @@ export function createAvatarSheet(pixiLoader, sheetWidth, sheetHeight) {
         new PIXI.Texture(avatarSheet, new PIXI.Rectangle(2*sheetWidth, 3*sheetHeight, sheetWidth, sheetHeight))
     ]
     avatarSheet['walkNorth'] = [
-        new PIXI.Texture(avatarSheet, new PIXI.Rectangle(3*sheetWidth, 3*sheetHeight, sheetWidth, sheetHeight)),
+        new PIXI.Texture(avatarSheet, new PIXI.Rectangle(1*sheetWidth, 3*sheetHeight, sheetWidth, sheetHeight)),
         new PIXI.Texture(avatarSheet, new PIXI.Rectangle(2*sheetWidth, 3*sheetHeight, sheetWidth, sheetHeight)),
         new PIXI.Texture(avatarSheet, new PIXI.Rectangle(3*sheetWidth, 3*sheetHeight, sheetWidth, sheetHeight)),
         new PIXI.Texture(avatarSheet, new PIXI.Rectangle(0, 3*sheetHeight, sheetWidth, sheetHeight))

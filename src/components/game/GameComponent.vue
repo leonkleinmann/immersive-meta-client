@@ -5,24 +5,34 @@
 
 <script>
 import * as PIXI from 'pixi.js';
-import { buildTileMap } from "@/components/game/map";
+import {generateMaptileSheet, buildTileMap, setTileBackground} from "@/components/game/map";
 import { preloadAssets } from "@/components/game/assets/";
 import {moveUp, moveDown, moveLeft, moveRight, createAvatarSheet, createAnimatedAvatar} from "@/components/game/avatar";
+import {mapGetters} from "vuex";
 
 export default {
   name: "GameComponent",
   mounted() {
     this.$store.commit('setIsLoading', true)
-    this.pixiApp = new PIXI.Application({ resizeTo: window, backgroundColor: 'black' })
+    this.pixiApp = new PIXI.Application({
+      resizeTo: window,
+      backgroundColor: 'black',
+      autoDensity: true,
+      resolution: window.devicePixelRatio || 1
+    })
     this.pixiLoader = this.pixiApp.loader
     document.querySelectorAll('.game')[0].appendChild(this.pixiApp.view)
     this.preloadAssets()
     this.registerKeyEvents()
+    window.addEventListener('resize', () => {
+      console.log('resize')
+    })
   },
   data() {
     return {
       pixiApp: undefined,
       pixiLoader: undefined,
+      mapSheet: undefined,
       tileMap: undefined,
       avatar: undefined,
       avatarSheet: undefined,
@@ -30,25 +40,31 @@ export default {
       avatarY: 0,
     }
   },
+  computed: {
+    ...mapGetters(['mapSettings', 'gameSettings'])
+  },
   methods: {
     preloadAssets() {
       preloadAssets(this.pixiLoader)
       this.pixiLoader.onComplete.add(() => {
-        this.tileMap = buildTileMap(this.pixiApp, this.pixiLoader)
+        this.mapSheet = generateMaptileSheet(this.pixiLoader)
+        setTileBackground(this.pixiApp, this.mapSheet.grass)
+        this.tileMap = buildTileMap(this.mapSheet)
         this.pixiApp.stage.addChild(this.tileMap)
 
         this.avatarSheet = createAvatarSheet(this.pixiLoader, 64, 64)
         this.avatar = createAnimatedAvatar(this.avatarSheet)
         this.avatar.anchor.set(0.5)
-        this.avatar.animationSpeed = .125
+        this.avatar.animationSpeed = 1/4
         this.avatar.loop = false
         this.avatar.x = this.pixiApp.view.width / 2
         this.avatar.y = this.pixiApp.view.height / 2
-        this.avatar.play()
+        //this.avatar.play()
 
         this.pixiApp.stage.addChild(this.avatar)
 
         this.$store.commit('setIsLoading', false)
+        this.$store.commit('setIsPlaying', true)
       })
       this.pixiLoader.onError.add((e) => {
         console.log('ERROR LOADING ASSETS', e.message)
@@ -58,16 +74,16 @@ export default {
     registerKeyEvents() {
       document.addEventListener('keydown', (event) => {
         if (event.code === 'ArrowUp' || event.code === 'KeyW') {
-          moveUp(this.avatar, this.avatarSheet,15)
+          moveUp(this.avatar, this.avatarSheet,this.gameSettings.moveSpeed)
         }
         if (event.code === 'ArrowDown' || event.code === 'KeyS') {
-          moveDown(this.avatar, this.avatarSheet,15)
+          moveDown(this.avatar, this.avatarSheet,this.gameSettings.moveSpeed)
         }
         if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
-          moveLeft(this.avatar, this.avatarSheet, 15)
+          moveLeft(this.avatar, this.avatarSheet, this.gameSettings.moveSpeed)
         }
         if (event.code === 'ArrowRight' || event.code === 'KeyD') {
-          moveRight(this.avatar, this.avatarSheet,15)
+          moveRight(this.avatar, this.avatarSheet,this.gameSettings.moveSpeed)
         }
       }, false);
     }

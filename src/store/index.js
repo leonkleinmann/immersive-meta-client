@@ -5,13 +5,20 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
+        mapData: {
+
+        },
         settings: {
+            map: {
+                tileWidth: 32,
+                tileHeight: 32,
+            },
             graphics: {
                 width: 64,
                 height: 64,
             },
             game: {
-                moveSpeed: 15,
+                moveSpeed: 32,
             }
         },
         isMobile: false,
@@ -31,6 +38,9 @@ export default new Vuex.Store({
         // settings
         settings: (state) => {
             return state.settings
+        },
+        mapSettings: (state) => {
+            return state.settings.map
         },
         graphicSettings: (state) => {
             return state.settings.graphics

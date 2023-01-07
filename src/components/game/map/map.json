@@ -2,19 +2,27 @@
   "mapData": {
     "tiles": {
       "0": {
-        "type": "tiles",
+        "type": "grass",
         "x": 0,
         "y": 0
       },
       "1": {
-        "type": "tiles",
-        "x": 128,
-        "y": 128
+        "type": "grass",
+        "x": 32,
+        "y": 32
       },
       "2": {
-        "type": "tiles",
+        "type": "grass",
         "x": 0,
-        "y": 128
+        "y": 32
+      }
+    },
+    "objects": {
+      "0": {
+        "type": "house",
+        "x": 0,
+        "y": 0,
+        "interactive": true
       }
     }
   }

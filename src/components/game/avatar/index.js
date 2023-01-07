@@ -1,4 +1,5 @@
 import * as PIXI from 'pixi.js'
+import gsap from "gsap";
 
 /**
  *
@@ -70,37 +71,46 @@ export function createAnimatedAvatar(avatarSheet) {
 
 // controls
 export function moveUp(avatar, avatarSheet, moveSpeed) {
-    //console.log('UP pressed')
     if (!avatar.playing) {
         avatar.textures = avatarSheet.walkNorth
         avatar.play()
+
+        gsap.to(avatar, {
+            y: avatar.y - moveSpeed,
+            duration: 1
+        })
     }
-    avatar.y = avatar.y - moveSpeed
 }
 
 export function moveDown(avatar, avatarSheet, moveSpeed) {
-    //console.log('DOWN pressed')
     if (!avatar.playing) {
         avatar.textures = avatarSheet.walkSouth
         avatar.play()
+        gsap.to(avatar, {
+            y: avatar.y + moveSpeed,
+            duration: 1
+        })
     }
-    avatar.y = avatar.y + moveSpeed
 }
 
 export function moveLeft(avatar, avatarSheet, moveSpeed) {
-    //console.log('LEFT pressed')
     if (!avatar.playing) {
         avatar.textures = avatarSheet.walkWest
         avatar.play()
+        gsap.to(avatar, {
+            x: avatar.x - moveSpeed,
+            duration: 1
+        })
     }
-    avatar.x = avatar.x - moveSpeed
 }
 
 export function moveRight(avatar, avatarSheet, moveSpeed) {
-    //console.log('RIGHT pressed')
     if (!avatar.playing) {
         avatar.textures = avatarSheet.walkEast
         avatar.play()
+        gsap.to(avatar, {
+            x: avatar.x + moveSpeed,
+            duration: 1
+        })
     }
-    avatar.x = avatar.x + moveSpeed
 }

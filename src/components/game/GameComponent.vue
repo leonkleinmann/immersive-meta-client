@@ -47,10 +47,11 @@ export default {
     preloadAssets() {
       preloadAssets(this.pixiLoader)
       this.pixiLoader.onComplete.add(() => {
+
+        // preloading fertig -> baue Mape und andere Objekte
         this.mapSheet = generateMaptileSheet(this.pixiLoader)
         setTileBackground(this.pixiApp, this.mapSheet.grass)
         this.tileMap = buildTileMap(this.mapSheet)
-        this.pixiApp.stage.addChild(this.tileMap)
 
         this.avatarSheet = createAvatarSheet(this.pixiLoader, 64, 64)
         this.avatar = createAnimatedAvatar(this.avatarSheet)
@@ -59,8 +60,8 @@ export default {
         this.avatar.loop = false
         this.avatar.x = this.pixiApp.view.width / 2
         this.avatar.y = this.pixiApp.view.height / 2
-        //this.avatar.play()
 
+        this.pixiApp.stage.addChild(this.tileMap)
         this.pixiApp.stage.addChild(this.avatar)
 
         this.$store.commit('setIsLoading', false)
@@ -89,7 +90,7 @@ export default {
     }
   },
   destroyed() {
-    document.removeEventListener('keydown')
+    document.removeEventListener('keydown', () => {})
   }
 }
 </script>

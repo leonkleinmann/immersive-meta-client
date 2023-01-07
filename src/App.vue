@@ -1,10 +1,15 @@
 <template>
   <div id="app">
-    <template v-if="isMobile">
+    <template v-if="!isMobile">
       <HeaderComponent />
       <GameComponent />
       <FooterComponent />
       <LoadingComponent />
+    </template>
+    <template v-if="isMobile">
+      <div class="mobile-support">
+        Sorry, mobile devices are not supported yet!
+      </div>
     </template>
   </div>
 </template>
@@ -32,7 +37,7 @@ export default {
   mounted() {
     // check if mobile
     let isMobile = Bowser.getParser(window.navigator.userAgent)
-    if (isMobile.parsedResult.platform.type) {
+    if (isMobile.parsedResult.platform.type !== 'desktop') {
       this.$store.commit('setIsMobile', true)
     }
   },
@@ -53,5 +58,14 @@ html, body{
   position: relative;
   width: 100vw;
   height: 100vh;
+}
+
+.mobile-support {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: center;
+  text-align: center;
 }
 </style>

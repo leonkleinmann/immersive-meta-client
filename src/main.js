@@ -5,7 +5,6 @@ import router from './router'
 import pixi from './pixi'
 
 Vue.config.productionTip = false
-Vue.use(pixi)
 
 new Vue({
   router,

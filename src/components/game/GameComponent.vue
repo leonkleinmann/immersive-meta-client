@@ -4,7 +4,6 @@
 </template>
 
 <script>
-import * as PIXI from 'pixi.js';
 import {generateMaptileSheet, buildTileMap, setTileBackground} from "@/components/game/map";
 import { preloadAssets } from "@/components/game/assets/";
 import {moveUp, moveDown, moveLeft, moveRight, createAvatarSheet, createAnimatedAvatar} from "@/components/game/avatar";
@@ -14,14 +13,7 @@ export default {
   name: "GameComponent",
   mounted() {
     this.$store.commit('setIsLoading', true)
-    this.pixiApp = new PIXI.Application({
-      resizeTo: window,
-      backgroundColor: 'black',
-      autoDensity: true,
-      resolution: window.devicePixelRatio || 1
-    })
-    this.pixiLoader = this.pixiApp.loader
-    document.querySelectorAll('.game')[0].appendChild(this.pixiApp.view)
+    document.querySelectorAll('.game')[0].appendChild(this.$pixiApp.view)
     this.preloadAssets()
     this.registerKeyEvents()
     window.addEventListener('resize', () => {
@@ -30,8 +22,6 @@ export default {
   },
   data() {
     return {
-      pixiApp: undefined,
-      pixiLoader: undefined,
       mapSheet: undefined,
       tileMap: undefined,
       avatar: undefined,
@@ -43,32 +33,32 @@ export default {
   },
   methods: {
     preloadAssets() {
-      preloadAssets(this.pixiLoader)
-      this.pixiLoader.onComplete.add(() => {
+      preloadAssets(this.$pixiLoader)
+      this.$pixiLoader.onComplete.add(() => {
 
         // preloading fertig -> baue Mape und andere Objekte
-        this.mapSheet = generateMaptileSheet(this.pixiLoader)
-        setTileBackground(this.pixiApp, this.mapSheet.grass)
+        this.mapSheet = generateMaptileSheet(this.$pixiLoader)
+        setTileBackground(this.$pixiApp, this.mapSheet.grass)
         this.tileMap = buildTileMap(this.mapSheet)
 
-        this.avatarSheet = createAvatarSheet(this.pixiLoader, 64, 64)
+        this.avatarSheet = createAvatarSheet(this.$pixiLoader, 64, 64)
         this.avatar = createAnimatedAvatar(this.avatarSheet)
         this.avatar.anchor.set(0.5)
         this.avatar.animationSpeed = 1/4
         this.avatar.loop = false
-        this.avatar.x = this.pixiApp.view.width / 2
-        this.avatar.y = this.pixiApp.view.height / 2
+        this.avatar.x = this.$pixiApp.view.width / 2
+        this.avatar.y = this.$pixiApp.view.height / 2
 
-        this.pixiApp.stage.addChild(this.tileMap)
-        this.pixiApp.stage.addChild(this.avatar)
+        this.$pixiApp.stage.addChild(this.tileMap)
+        this.$pixiApp.stage.addChild(this.avatar)
 
         this.$store.commit('setIsLoading', false)
         this.$store.commit('setIsPlaying', true)
       })
-      this.pixiLoader.onError.add((e) => {
+      this.$pixiLoader.onError.add((e) => {
         console.log('ERROR LOADING ASSETS', e.message)
       })
-      this.pixiLoader.load()
+      this.$pixiLoader.load()
     },
     registerKeyEvents() {
       document.addEventListener('keydown', (event) => {

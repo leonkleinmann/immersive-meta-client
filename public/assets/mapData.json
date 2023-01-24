@@ -1,0 +1,151 @@
+{
+  "settings": {
+    "tileSize": 32
+  },
+  "assets": {
+    "avatars": [
+      {
+        "id": "male",
+        "src": "avatars/male.png",
+        "animated": true,
+        "items": [
+          {
+            "id": "north0",
+            "x": 0,
+            "y": 3
+          },
+          {
+            "id": "north1",
+            "x": 1,
+            "y": 3
+          },
+          {
+            "id": "north2",
+            "x": 2,
+            "y": 3
+          },
+          {
+            "id": "north3",
+            "x": 3,
+            "y": 3
+          },
+          {
+            "id": "east0",
+            "x": 0,
+            "y": 2
+          },
+          {
+            "id": "east1",
+            "x": 1,
+            "y": 2
+          },
+          {
+            "id": "east2",
+            "x": 2,
+            "y": 2
+          },
+          {
+            "id": "east3",
+            "x": 3,
+            "y": 2
+          },
+          {
+            "id": "south0",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id": "south1",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id": "south2",
+            "x": 2,
+            "y": 0
+          },
+          {
+            "id": "south3",
+            "x": 3,
+            "y": 0
+          },
+          {
+            "id": "west0",
+            "x": 0,
+            "y": 1
+          },
+          {
+            "id": "west1",
+            "x": 1,
+            "y": 1
+          },
+          {
+            "id": "west2",
+            "x": 2,
+            "y": 1
+          },
+          {
+            "id": "west3",
+            "x": 3,
+            "y": 1
+          }
+        ]
+      }
+    ],
+    "tiles": [
+      {
+        "id": "base",
+        "src": "tiles/tiles.png",
+        "animated": false,
+        "items": [
+          {
+            "id": "grass",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id": "stone",
+            "x": 0,
+            "y": 0
+          }
+        ]
+      },
+      {
+        "id": "objects",
+        "src": "tiles/tiles.png",
+        "animated": false,
+        "items": [
+          {
+            "id": "treasure",
+            "x": 0,
+            "y": 2
+          }
+        ]
+      }
+    ]
+  },
+  "map": {
+    "dimensions": {
+      "width": 100,
+      "height": 100
+    },
+    "background": "stone",
+    "tiles": [
+      {
+        "type": "grass",
+        "x": 0,
+        "y": 0
+      },
+      {
+        "type": "grass",
+        "x": 1,
+        "y": 0
+      },
+      {
+        "type": "treasure",
+        "x": 2,
+        "y": 0
+      }
+    ]
+  }
+}

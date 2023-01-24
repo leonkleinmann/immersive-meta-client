@@ -5,69 +5,40 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
-        mapData: {
-
-        },
-        settings: {
-            map: {
-                tileWidth: 32,
-                tileHeight: 32,
-            },
-            graphics: {
-                width: 64,
-                height: 64,
-            },
-            game: {
-                moveSpeed: 32,
-            }
-        },
         isMobile: false,
-        setupCompleted: false,
         isLoading: false,
-        isPlaying: false,
+        settings: {},
+        assets: {},
+        map: {}
     },
     getters:{
         isMobile: (state) => {
             return state.isMobile
         },
-        setupCompleted: (state) => {
-          return state.setupCompleted
-        },
-        isLoading: (state) =>  {
+        isLoading: (state) => {
             return state.isLoading
         },
-        isPlaying: (state) => {
-            return state.isPlaying
-        },
-        // settings
         settings: (state) => {
             return state.settings
         },
-        mapSettings: (state) => {
-            return state.settings.map
+        assets: (state) => {
+            return state.assets
         },
-        graphicSettings: (state) => {
-            return state.settings.graphics
-        },
-        gameSettings: (state) => {
-            return state.settings.game
+        mapData: (state) => {
+            return state.map
         }
     },
     mutations: {
         setIsMobile(state, isMobile) {
             state.isMobile = isMobile
         },
-        setSetupCompleted(state, setupCompleted) {
-            state.setupCompleted = setupCompleted
-        },
         setIsLoading(state, isLoading) {
             state.isLoading = isLoading
         },
-        setIsPlaying(state, isPlaying) {
-            state.isPlaying = isPlaying
-        },
-        setSettings(state, settings) {
-            state.settings = settings
+        setData(state, data) {
+            state.settings = data.settings
+            state.assets = data.assets
+            state.map = data.map
         }
     },
     actions:{}

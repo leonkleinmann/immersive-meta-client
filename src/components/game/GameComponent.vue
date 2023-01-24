@@ -4,61 +4,46 @@
 </template>
 
 <script>
-import {generateMaptileSheet, buildTileMap, setTileBackground} from "@/components/game/map";
-import { preloadAssets } from "@/components/game/assets/";
-import {moveUp, moveDown, moveLeft, moveRight, createAvatarSheet, createAnimatedAvatar} from "@/components/game/avatar";
-import {mapGetters} from "vuex";
+import AssetManager from '@/components/game/assets/index'
+import TileMap from "@/components/game/map";
+import axios from 'axios'
+import {moveUp, moveDown, moveLeft, moveRight} from "@/components/game/avatar";
+
 
 export default {
   name: "GameComponent",
   mounted() {
     this.$store.commit('setIsLoading', true)
     document.querySelectorAll('.game')[0].appendChild(this.$pixiApp.view)
-    this.preloadAssets()
-    this.registerKeyEvents()
-    window.addEventListener('resize', () => {
-      console.log('resize')
+    this.assetManager = new AssetManager(this.$pixiLoader)
+
+    this.loadData().then(() => {
+      this.assetManager.preloadAssets()
+    })
+    this.$pixiLoader.onComplete.add(() => {
+      console.log('PRELOADING ASSETS DONE')
+      this.assetManager.generatePixiAssets()
+
+      this.tileMap = new TileMap(this.assetManager)
+      this.tileMap.render(this.$pixiApp)
+      this.$store.commit('setIsLoading', false)
     })
   },
   data() {
     return {
-      mapSheet: undefined,
+      assetManager: undefined,
       tileMap: undefined,
-      avatar: undefined,
-      avatarSheet: undefined,
     }
   },
-  computed: {
-    ...mapGetters(['mapSettings', 'gameSettings'])
-  },
+  computed: {},
   methods: {
-    preloadAssets() {
-      preloadAssets(this.$pixiLoader)
-      this.$pixiLoader.onComplete.add(() => {
-
-        // preloading fertig -> baue Mape und andere Objekte
-        this.mapSheet = generateMaptileSheet(this.$pixiLoader)
-        setTileBackground(this.$pixiApp, this.mapSheet.grass)
-        this.tileMap = buildTileMap(this.mapSheet)
-
-        this.avatarSheet = createAvatarSheet(this.$pixiLoader, 64, 64)
-        this.avatar = createAnimatedAvatar(this.avatarSheet)
-        this.avatar.anchor.set(0.5)
-        this.avatar.animationSpeed = 1/4
-        this.avatar.loop = false
-        this.avatar.x = this.$pixiApp.view.width / 2
-        this.avatar.y = this.$pixiApp.view.height / 2
-
-        this.$pixiApp.stage.addChild(this.tileMap)
-        this.$pixiApp.stage.addChild(this.avatar)
-
-        this.$store.commit('setIsLoading', false)
-        this.$store.commit('setIsPlaying', true)
-      })
-      this.$pixiLoader.onError.add((e) => {
-        console.log('ERROR LOADING ASSETS', e.message)
-      })
-      this.$pixiLoader.load()
+    async loadData() {
+      try {
+        let response = await axios.get('/assets/mapData.json')
+        this.$store.commit('setData', response.data)
+      } catch (error) {
+        console.log('error occured', error)
+      }
     },
     registerKeyEvents() {
       document.addEventListener('keydown', (event) => {
@@ -76,9 +61,6 @@ export default {
         }
       }, false);
     }
-  },
-  destroyed() {
-    document.removeEventListener('keydown', () => {})
   }
 }
 </script>

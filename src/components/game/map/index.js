@@ -1,31 +1,49 @@
-import * as PIXI from 'pixi.js'
-import { Tilemap } from '@pixi/tilemap'
-import * as metamap from './map.json'
+import store from '@/store'
+import Tile from "@/components/game/tile";
+import * as PIXI from "pixi.js";
+import {Tilemap} from "@pixi/tilemap";
 
-export function setTileBackground(pixiApp, texture) {
-    //var renderer = PIXI.autoDetectRenderer(window.innerWidth, window.innerHeight)
-    let backgroundTile = PIXI.TilingSprite.from(texture, {
-        width: window.innerWidth,
-        height: window.innerHeight,
-    })
-    pixiApp.stage.addChild(backgroundTile)
-}
+export default class TileMap {
+    tiles = []
 
-export function generateMaptileSheet(pixiLoader) {
-    let tileSheet = new PIXI.BaseTexture.from(pixiLoader.resources['tiles'].url)
-    let tileWidth = 32
-    let tileHeight = 32
-    tileSheet['grass'] = new PIXI.Texture(tileSheet, new PIXI.Rectangle(tileWidth, 0, tileWidth, tileHeight))
-    tileSheet['stone'] = new PIXI.Texture(tileSheet, new PIXI.Rectangle(0, 0, tileWidth, tileHeight))
+    constructor(assetManager) {
+        this.assetManager = assetManager
+        this.buildMap()
+    }
 
-    return tileSheet
-}
+    buildMap() {
+        let mapData = store.getters.mapData
 
-export function buildTileMap(tileSheet) {
-    let tilemap = new Tilemap(tileSheet)
-    Object.values(metamap.mapData.tiles).forEach((tile) => {
-        tilemap.tile(tileSheet[tile.type], tile.x, tile.y)
-    })
+        this.background = PIXI.TilingSprite.from(this.assetManager.getTexture(mapData.background), {
+            width: window.innerWidth,
+            height: window.innerHeight,
+        })
 
-    return tilemap
+        mapData.tiles.forEach((tile) => {
+            this.tiles.push(new Tile(
+                tile.x,
+                tile.y,
+                this.assetManager.getTexture(tile.type)
+            ))
+        })
+    }
+
+    getTile(x, y) {
+        console.log(x, y)
+    }
+
+    render(pixiApp) {
+        this.tileMap = new Tilemap(this.assetManager.getSpriteGroup('tiles'))
+
+        this.tiles.forEach((tile) => {
+            this.tileMap.tile(
+                tile.getTexture(),
+                tile.getX() * store.getters.settings.tileSize,
+                tile.getY() * store.getters.settings.tileSize
+            )
+        })
+
+        pixiApp.stage.addChild(this.background)
+        pixiApp.stage.addChild(this.tileMap)
+    }
 }

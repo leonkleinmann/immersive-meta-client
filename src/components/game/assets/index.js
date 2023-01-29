@@ -46,8 +46,6 @@ export default class AssetManager {
         });
       });
     }
-    console.log("SPRITES", this.sprites);
-    console.log("TEXTURES", this.textures);
   }
 
   getSprite(type, id) {

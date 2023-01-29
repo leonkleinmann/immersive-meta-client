@@ -32,7 +32,6 @@ export default class VirtualWorld {
     });
     mapData.objects.forEach((obj) => {
       if (obj.animated) {
-        console.log("OBJ", obj);
         let animatedSprite = new AnimatedSprite(
           this.assetManager.getCorrespondingTextures(obj.type)
         );
@@ -42,7 +41,6 @@ export default class VirtualWorld {
         animatedSprite.height = store.getters.settings.tileSize;
         animatedSprite.animationSpeed = 1 / 15;
         animatedSprite.play();
-        console.log("ANIM", animatedSprite);
         this.objects.push(animatedSprite);
       }
     });

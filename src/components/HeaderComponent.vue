@@ -2,9 +2,9 @@
   <div class="header">
     <div class="wrapper">
       <div class="logo">
-          <IsometricWrapper>
-            <img alt="logo" src="https://via.placeholder.com/100" />
-          </IsometricWrapper>
+        <IsometricWrapper>
+          <img alt="logo" src="https://via.placeholder.com/100" />
+        </IsometricWrapper>
       </div>
       <div class="links">
         <!--
@@ -30,9 +30,9 @@ import IsometricWrapper from "@/components/IsometricWrapper";
 export default {
   name: "HeaderComponent",
   components: {
-    IsometricWrapper
+    IsometricWrapper,
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -54,7 +54,7 @@ export default {
       height: 100px;
       position: absolute;
       left: 50%;
-      top:50%;
+      top: 50%;
       transform: translate(-50%, -50%);
     }
 

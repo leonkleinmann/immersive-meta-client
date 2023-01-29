@@ -1,70 +1,71 @@
-import store from '@/store'
+import store from "@/store";
 import * as PIXI from "pixi.js";
 
 export default class AssetManager {
-    sprites = {}
-    textures = {}
+  sprites = {};
+  textures = {};
 
-    constructor(pixiLoader, baseUrl='/assets/') {
-        this.pixiLoader = pixiLoader
-        this.pixiLoader.baseUrl = baseUrl
-        this.pixiLoader.reset()
+  constructor(pixiLoader, baseUrl = "/assets/") {
+    this.pixiLoader = pixiLoader;
+    this.pixiLoader.baseUrl = baseUrl;
+    this.pixiLoader.reset();
+  }
+
+  preloadAssets() {
+    this.assetData = store.getters.assetData;
+
+    for (const [key, value] of Object.entries(this.assetData)) {
+      value.forEach((item) => {
+        this.pixiLoader.add(key + "_" + item.id, item.src);
+      });
     }
+    this.pixiLoader.load();
+  }
 
-    preloadAssets() {
-        this.assetData = store.getters.assetData
+  generatePixiAssets() {
+    let tileSize = store.getters.settings.tileSize;
 
-        for (const [key, value] of Object.entries(this.assetData)) {
-            value.forEach((item) => {
-                this.pixiLoader.add(key + '_' + item.id, item.src)
-            })
-        }
-        this.pixiLoader.load()
+    for (const [key, sprites] of Object.entries(this.assetData)) {
+      sprites.forEach((sprite) => {
+        this.sprites[key + "_" + sprite.id] = new PIXI.BaseTexture.from(
+          this.pixiLoader.resources[key + "_" + sprite.id].url
+        );
+
+        sprite.items.forEach((texture) => {
+          let pixiTexture = new PIXI.Texture(
+            this.sprites[key + "_" + sprite.id],
+            new PIXI.Rectangle(
+              texture.x * tileSize,
+              texture.y * tileSize,
+              tileSize,
+              tileSize
+            )
+          );
+          this.textures[texture.id] = pixiTexture;
+          this.sprites[key + "_" + sprite.id][texture.id] = pixiTexture;
+        });
+      });
     }
+    console.log("SPRITES", this.sprites);
+    console.log("TEXTURES", this.textures);
+  }
 
-    generatePixiAssets() {
-        let  tileSize = store.getters.settings.tileSize
+  getSprite(type, id) {
+    return this.sprites[`${type}_${id}`];
+  }
 
-        for (const [key, sprites] of Object.entries(this.assetData)) {
-            sprites.forEach((sprite) => {
-                this.sprites[key + '_' + sprite.id] =
-                    new PIXI.BaseTexture.from(this.pixiLoader.resources[key + '_' + sprite.id].url)
+  getTexture(type) {
+    return this.textures[type];
+  }
 
-                sprite.items.forEach((texture) => {
-                    let pixiTexture = new PIXI.Texture(
-                        this.sprites[key + '_' + sprite.id],
-                        new PIXI.Rectangle(
-                            texture.x * tileSize,
-                            texture.y * tileSize,
-                            tileSize,
-                            tileSize
-                        )
-                    )
-                    this.textures[texture.id] = pixiTexture
-                    this.sprites[key + '_' + sprite.id][texture.id] = pixiTexture
-                })
-            })
-        }
-        console.log('SPRITES', this.sprites)
-        console.log('TEXTURES', this.textures)
+  getCorrespondingTextures(type) {
+    let result = [];
+
+    for (const [key, texture] of Object.entries(this.textures)) {
+      if (key.includes(type)) {
+        result.push(texture);
+      }
     }
-
-    getSprite(type, id) {
-        return this.sprites[`${type}_${id}`]
-    }
-
-    getTexture(type) {
-        return this.textures[type]
-    }
-
-    getCorrespondingTextures(type) {
-        let result = []
-
-        for (const [key, texture] of Object.entries(this.textures)) {
-            if (key.includes(type)) {
-                result.push(texture)
-            }
-        }
-        return result
-    }
+    return result;
+  }
 }

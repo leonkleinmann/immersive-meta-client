@@ -23,14 +23,14 @@
 
 <script>
 import IsometricWrapper from "@/components/IsometricWrapper";
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "FooterComponent",
   components: { IsometricWrapper },
   computed: {
-    ...mapGetters(['isPlaying'])
-  }
-}
+    ...mapGetters(["isPlaying"]),
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -59,7 +59,6 @@ export default {
       height: 50px;
       gap: 20px;
       padding-right: 10px;
-
 
       .link {
         width: 50px;

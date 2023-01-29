@@ -1,13 +1,15 @@
 <template>
   <div
-      :class="[border ? 'border' : '', clickable ? 'clickable' : '', error ? 'error' : '']"
-      ref="iso-wrapper"
-      class="iso-wrapper"
-      @click="clickable ? $emit('clicked', true) : ''"
+    :class="[
+      border ? 'border' : '',
+      clickable ? 'clickable' : '',
+      error ? 'error' : '',
+    ]"
+    ref="iso-wrapper"
+    class="iso-wrapper"
+    @click="clickable ? $emit('clicked', true) : ''"
   >
-    <slot>
-      Slot content goes here
-    </slot>
+    <slot> Slot content goes here </slot>
   </div>
 </template>
 
@@ -26,9 +28,9 @@ export default {
     error: {
       type: Boolean,
       default: false,
-    }
+    },
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

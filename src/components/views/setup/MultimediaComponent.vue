@@ -1,19 +1,15 @@
 <template>
   <div class="setup">
-    <div class="title">
-      Setup
-    </div>
+    <div class="title">Setup</div>
     <div class="cam">
-      <video autoplay="true" id="cam">
-
-      </video>
+      <video autoplay="true" id="cam"></video>
     </div>
     <div class="complete">
       <IsometricWrapper
-          :clickable="permissionsGranted"
-          :border="true"
-          :error="!permissionsGranted"
-          @clicked="completeSetup()"
+        :clickable="permissionsGranted"
+        :border="true"
+        :error="!permissionsGranted"
+        @clicked="completeSetup()"
       >
         Weiter
       </IsometricWrapper>
@@ -25,22 +21,22 @@
 import IsometricWrapper from "@/components/IsometricWrapper";
 export default {
   name: "MultimediaComponent",
-  components: {IsometricWrapper},
+  components: { IsometricWrapper },
   data() {
     return {
       audioPermissionGranted: false,
       videoPermissionGranted: false,
       audioStream: undefined,
-      videoStream: undefined
-    }
+      videoStream: undefined,
+    };
   },
   computed: {
     permissionsGranted() {
-      return this.audioPermissionGranted && this.videoPermissionGranted
-    }
+      return this.audioPermissionGranted && this.videoPermissionGranted;
+    },
   },
   mounted() {
-    this.init()
+    this.init();
   },
   methods: {
     init() {
@@ -58,37 +54,43 @@ export default {
       })
       */
 
-      navigator.mediaDevices.getUserMedia({
-        video: false,
-        audio: true
-      }).then((stream) => {
-        let aCtx = new AudioContext();
-        let microphone = aCtx.createMediaStreamSource(stream);
-        let destination= aCtx.destination;
-        microphone.connect(destination);
-        this.audioPermissionGranted = true
-      }).catch(() => {
-        console.log('Audio: Something went wrong!')
-      })
+      navigator.mediaDevices
+        .getUserMedia({
+          video: false,
+          audio: true,
+        })
+        .then((stream) => {
+          let aCtx = new AudioContext();
+          let microphone = aCtx.createMediaStreamSource(stream);
+          let destination = aCtx.destination;
+          microphone.connect(destination);
+          this.audioPermissionGranted = true;
+        })
+        .catch(() => {
+          console.log("Audio: Something went wrong!");
+        });
 
-      navigator.mediaDevices.getUserMedia({
-        video: { width: 1280, height: 720 },
-        audio: false,
-      }).then((stream) => {
-        let videoContainer = document.querySelector('#cam')
-        videoContainer.srcObject = stream
-        this.videoPermissionGranted = true
-      }).catch(() => {
-        console.log('Video: Something went wrong')
-      })
+      navigator.mediaDevices
+        .getUserMedia({
+          video: { width: 1280, height: 720 },
+          audio: false,
+        })
+        .then((stream) => {
+          let videoContainer = document.querySelector("#cam");
+          videoContainer.srcObject = stream;
+          this.videoPermissionGranted = true;
+        })
+        .catch(() => {
+          console.log("Video: Something went wrong");
+        });
     },
     completeSetup() {
       if (this.permissionsGranted) {
-        this.$emit('mediaSetupComplete', true)
+        this.$emit("mediaSetupComplete", true);
       }
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>

@@ -1,15 +1,11 @@
 <template>
-  <div class="game-menu">
-
-  </div>
+  <div class="game-menu"></div>
 </template>
 
 <script>
 export default {
-  name: "GameMenu"
-}
+  name: "GameMenu",
+};
 </script>
 
-<style scoped>
-
-</style>
+<style scoped></style>

@@ -3,12 +3,10 @@
     <div class="background" />
     <div class="wrapper">
       <div class="title">
-       {{ title }}
+        {{ title }}
       </div>
       <div class="content">
-        <slot>
-          Lorem Ipsum
-        </slot>
+        <slot> Lorem Ipsum </slot>
       </div>
       <div class="close" @click="modalOpen = !modalOpen">
         <IsometricWrapper :clickable="true" :border="true">
@@ -28,15 +26,15 @@ export default {
   props: {
     title: {
       type: String,
-      required: true
-    }
+      required: true,
+    },
   },
   data() {
     return {
-      modalOpen: true
-    }
+      modalOpen: true,
+    };
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>

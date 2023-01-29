@@ -6,14 +6,14 @@
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "LoadingComponent",
   computed: {
-    ...mapGetters(['isLoading'])
+    ...mapGetters(["isLoading"]),
   },
-}
+};
 </script>
 
 <style lang="scss" scoped>
@@ -46,7 +46,7 @@ export default {
     border-radius: 50%;
 
     &::before {
-      content: '';
+      content: "";
       box-sizing: border-box;
       width: 50px;
       height: 50px;
@@ -57,7 +57,7 @@ export default {
     }
 
     &::after {
-      content: '';
+      content: "";
       box-sizing: border-box;
       position: absolute;
       left: 0;
@@ -71,31 +71,43 @@ export default {
     /* https://cssloaders.github.io/ */
     @keyframes animloader {
       0% {
-        box-shadow: 0 50px rgba(255, 255, 255, 0), 50px 50px rgba(255, 255, 255, 0), 50px 100px rgba(255, 255, 255, 0), 0 100px rgba(255, 255, 255, 0);
+        box-shadow: 0 50px rgba(255, 255, 255, 0),
+          50px 50px rgba(255, 255, 255, 0), 50px 100px rgba(255, 255, 255, 0),
+          0 100px rgba(255, 255, 255, 0);
       }
       12% {
-        box-shadow: 0 50px white, 50px 50px rgba(255, 255, 255, 0), 50px 100px rgba(255, 255, 255, 0), 0 100px rgba(255, 255, 255, 0);
+        box-shadow: 0 50px white, 50px 50px rgba(255, 255, 255, 0),
+          50px 100px rgba(255, 255, 255, 0), 0 100px rgba(255, 255, 255, 0);
       }
       25% {
-        box-shadow: 0 50px white, 50px 50px white, 50px 100px rgba(255, 255, 255, 0), 0 100px rgba(255, 255, 255, 0);
+        box-shadow: 0 50px white, 50px 50px white,
+          50px 100px rgba(255, 255, 255, 0), 0 100px rgba(255, 255, 255, 0);
       }
       37% {
-        box-shadow: 0 50px white, 50px 50px white, 50px 100px white, 0 100px rgba(255, 255, 255, 0);
+        box-shadow: 0 50px white, 50px 50px white, 50px 100px white,
+          0 100px rgba(255, 255, 255, 0);
       }
       50% {
-        box-shadow: 0 50px white, 50px 50px white, 50px 100px white, 0px 100px white;
+        box-shadow: 0 50px white, 50px 50px white, 50px 100px white,
+          0px 100px white;
       }
       62% {
-        box-shadow: 0 50px rgba(255, 255, 255, 0), 50px 50px white, 50px 100px white, 0px 100px white;
+        box-shadow: 0 50px rgba(255, 255, 255, 0), 50px 50px white,
+          50px 100px white, 0px 100px white;
       }
       75% {
-        box-shadow: 0 50px rgba(255, 255, 255, 0), 50px 50px rgba(255, 255, 255, 0), 50px 100px white, 0px 100px white;
+        box-shadow: 0 50px rgba(255, 255, 255, 0),
+          50px 50px rgba(255, 255, 255, 0), 50px 100px white, 0px 100px white;
       }
       87% {
-        box-shadow: 0 50px rgba(255, 255, 255, 0), 50px 50px rgba(255, 255, 255, 0), 50px 100px rgba(255, 255, 255, 0), 0px 100px white;
+        box-shadow: 0 50px rgba(255, 255, 255, 0),
+          50px 50px rgba(255, 255, 255, 0), 50px 100px rgba(255, 255, 255, 0),
+          0px 100px white;
       }
       100% {
-        box-shadow: 0 50px rgba(255, 255, 255, 0), 50px 50px rgba(255, 255, 255, 0), 50px 100px rgba(255, 255, 255, 0), 0px 100px rgba(255, 255, 255, 0);
+        box-shadow: 0 50px rgba(255, 255, 255, 0),
+          50px 50px rgba(255, 255, 255, 0), 50px 100px rgba(255, 255, 255, 0),
+          0px 100px rgba(255, 255, 255, 0);
       }
     }
     @keyframes animloader2 {

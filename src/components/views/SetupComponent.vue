@@ -9,20 +9,22 @@
 import MultimediaComponent from "@/components/views/setup/MultimediaComponent";
 export default {
   name: "SetupComponent",
-  components: {MultimediaComponent},
+  components: { MultimediaComponent },
   data() {
-    return {}
+    return {};
   },
   methods: {
     mediaSetupComplete() {
-      console.log('Multimedia Setup was completed successfully! Starting User Setup..')
-      this.$store.commit('setSetupCompleted', true)
+      console.log(
+        "Multimedia Setup was completed successfully! Starting User Setup.."
+      );
+      this.$store.commit("setSetupCompleted", true);
     },
     skipSetup() {
-      this.$store.commit('setSetupCompleted', true)
+      this.$store.commit("setSetupCompleted", true);
     },
-  }
-}
+  },
+};
 </script>
 
 <style lang="scss" scoped>

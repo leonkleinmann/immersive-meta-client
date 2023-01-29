@@ -23,35 +23,36 @@
 </template>
 
 <script>
-import Bowser from 'bowser';
-import {mapGetters} from "vuex";
+import Bowser from "bowser";
+import { mapGetters } from "vuex";
 import GameComponent from "@/components/game/GameComponent";
 import LoadingComponent from "@/components/LoadingComponent";
 
 export default {
-  name: 'App',
+  name: "App",
   components: {
     GameComponent,
     LoadingComponent,
   },
   computed: {
-    ...mapGetters(['isMobile'])
+    ...mapGetters(["isMobile"]),
   },
   mounted() {
     // check if mobile
-    let isMobile = Bowser.getParser(window.navigator.userAgent)
-    if (isMobile.parsedResult.platform.type !== 'desktop') {
-      this.$store.commit('setIsMobile', true)
+    let isMobile = Bowser.getParser(window.navigator.userAgent);
+    if (isMobile.parsedResult.platform.type !== "desktop") {
+      this.$store.commit("setIsMobile", true);
     }
   },
-}
+};
 </script>
 
 <style>
-@import url('https://fonts.googleapis.com/css?family=VT323');
+@import url("https://fonts.googleapis.com/css?family=VT323");
 
-html, body{
-  font-family: 'VT323',serif;
+html,
+body {
+  font-family: "VT323", serif;
   margin: 0 !important;
   padding: 0 !important;
   overflow: hidden;

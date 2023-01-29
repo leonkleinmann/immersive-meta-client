@@ -30,7 +30,6 @@ export default {
       this.$pixiApp.stage.addChild(this.avatar.getDrawable());
       this.registerKeyEvents();
 
-      console.log("LOADER", this.$pixiLoader);
       this.$store.commit("setIsLoading", false);
     });
   },

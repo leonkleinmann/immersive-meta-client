@@ -1,5 +1,3 @@
-import * as PIXI from "@pixi/animate";
-
 export default class Tile {
     constructor(x, y, texture) {
         this.x = x
@@ -15,14 +13,5 @@ export default class Tile {
     }
     getTexture() {
         return this.texture
-    }
-    getSprite() {
-        let tileSprite = new PIXI.Sprite(this.getTexture())
-        tileSprite.x = this.getX()
-        tileSprite.y = this.getY()
-        tileSprite.width = 32
-        tileSprite.height = 32
-
-        return tileSprite
     }
 }

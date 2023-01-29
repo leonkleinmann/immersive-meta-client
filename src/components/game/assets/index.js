@@ -12,7 +12,7 @@ export default class AssetManager {
     }
 
     preloadAssets() {
-        this.assetData = store.getters.assets
+        this.assetData = store.getters.assetData
 
         for (const [key, value] of Object.entries(this.assetData)) {
             value.forEach((item) => {
@@ -50,23 +50,21 @@ export default class AssetManager {
     }
 
     getSprite(type, id) {
-        return this.sprites[type + '_' + id]
-    }
-    getSpriteGroup(group) {
-        let result = []
-
-        for (const [key, sprite] of Object.entries(this.sprites)) {
-            if (key.includes(group)) {
-                result.push(sprite)
-            }
-        }
-        return result
+        return this.sprites[`${type}_${id}`]
     }
 
     getTexture(type) {
         return this.textures[type]
     }
-    getTextures() {
-        return this.textures
+
+    getCorrespondingTextures(type) {
+        let result = []
+
+        for (const [key, texture] of Object.entries(this.textures)) {
+            if (key.includes(type)) {
+                result.push(texture)
+            }
+        }
+        return result
     }
 }

@@ -5,6 +5,9 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
     state: {
+        setupData: {
+            gender: 'male'
+        },
         isMobile: false,
         isLoading: false,
         settings: {},
@@ -21,11 +24,14 @@ export default new Vuex.Store({
         settings: (state) => {
             return state.settings
         },
-        assets: (state) => {
+        assetData: (state) => {
             return state.assets
         },
         mapData: (state) => {
             return state.map
+        },
+        setupData: (state) => {
+            return state.setupData
         }
     },
     mutations: {
@@ -39,6 +45,9 @@ export default new Vuex.Store({
             state.settings = data.settings
             state.assets = data.assets
             state.map = data.map
+        },
+        setSetupGender(state, gender) {
+            state.setupData.gender = gender
         }
     },
     actions:{}

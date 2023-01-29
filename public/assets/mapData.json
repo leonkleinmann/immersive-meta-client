@@ -122,6 +122,90 @@
           }
         ]
       }
+    ],
+    "objects": [
+      {
+        "id": "cat",
+        "animated": true,
+        "src": "/objects/cat.png",
+        "items": [
+          {
+            "id":"cat0",
+            "x": 0,
+            "y": 0
+          },
+          {
+            "id":"cat1",
+            "x": 1,
+            "y": 0
+          },
+          {
+            "id":"cat2",
+            "x": 2,
+            "y": 0
+          },
+          {
+            "id":"cat3",
+            "x": 3,
+            "y": 0
+          },
+          {
+            "id":"cat4",
+            "x": 4,
+            "y": 0
+          },
+          {
+            "id":"cat5",
+            "x": 5,
+            "y": 0
+          },
+          {
+            "id":"cat6",
+            "x": 6,
+            "y": 0
+          },
+          {
+            "id":"cat7",
+            "x": 7,
+            "y": 0
+          },
+          {
+            "id":"cat8",
+            "x": 8,
+            "y": 0
+          },
+          {
+            "id":"cat9",
+            "x": 9,
+            "y": 0
+          },
+          {
+            "id":"cat10",
+            "x": 10,
+            "y": 0
+          },
+          {
+            "id":"cat11",
+            "x": 11,
+            "y": 0
+          },
+          {
+            "id":"cat12",
+            "x": 12,
+            "y": 0
+          },
+          {
+            "id":"cat13",
+            "x": 13,
+            "y": 0
+          },
+          {
+            "id":"cat14",
+            "x": 14,
+            "y": 0
+          }
+        ]
+      }
     ]
   },
   "map": {
@@ -130,6 +214,11 @@
       "height": 100
     },
     "background": "stone",
+    "avatar": {
+      "x": 0,
+      "y": 0,
+      "direction": "south"
+    },
     "tiles": [
       {
         "type": "grass",
@@ -145,6 +234,14 @@
         "type": "treasure",
         "x": 2,
         "y": 0
+      }
+    ],
+    "objects": [
+      {
+        "type": "cat",
+        "animated": true,
+        "x": 3,
+        "y": 2
       }
     ]
   }

@@ -5,9 +5,10 @@
 
 <script>
 import AssetManager from '@/components/game/assets/index'
-import TileMap from "@/components/game/map";
+import VirtualWorld from "@/components/game/world";
+import Avatar from '@/components/game/avatar';
 import axios from 'axios'
-import {moveUp, moveDown, moveLeft, moveRight} from "@/components/game/avatar";
+import {mapGetters} from "vuex";
 
 
 export default {
@@ -24,18 +25,26 @@ export default {
       console.log('PRELOADING ASSETS DONE')
       this.assetManager.generatePixiAssets()
 
-      this.tileMap = new TileMap(this.assetManager)
-      this.tileMap.render(this.$pixiApp)
+      this.world = new VirtualWorld(this.assetManager)
+      this.world.renderMap(this.$pixiApp)
+
+      this.avatar = new Avatar(this.setupData.gender, this.assetManager)
+      this.$pixiApp.stage.addChild(this.avatar.getDrawable())
+      this.registerKeyEvents()
+
       this.$store.commit('setIsLoading', false)
     })
   },
   data() {
     return {
       assetManager: undefined,
-      tileMap: undefined,
+      world: undefined,
+      avatar: undefined,
     }
   },
-  computed: {},
+  computed: {
+    ...mapGetters(['setupData'])
+  },
   methods: {
     async loadData() {
       try {
@@ -48,16 +57,16 @@ export default {
     registerKeyEvents() {
       document.addEventListener('keydown', (event) => {
         if (event.code === 'ArrowUp' || event.code === 'KeyW') {
-          moveUp(this.avatar, this.avatarSheet,this.gameSettings.moveSpeed)
+          this.avatar.moveNorth()
         }
         if (event.code === 'ArrowDown' || event.code === 'KeyS') {
-          moveDown(this.avatar, this.avatarSheet,this.gameSettings.moveSpeed)
+          this.avatar.moveSouth()
         }
         if (event.code === 'ArrowLeft' || event.code === 'KeyA') {
-          moveLeft(this.avatar, this.avatarSheet, this.gameSettings.moveSpeed)
+          this.avatar.moveWest()
         }
         if (event.code === 'ArrowRight' || event.code === 'KeyD') {
-          moveRight(this.avatar, this.avatarSheet,this.gameSettings.moveSpeed)
+          this.avatar.moveEast()
         }
       }, false);
     }

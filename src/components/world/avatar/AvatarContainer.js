@@ -1,21 +1,34 @@
-import * as PIXI from "@pixi/animate";
+import * as PIXI from "pixi.js";
+import store from "@/store";
 
 export default class AvatarContainer extends PIXI.Container {
-  constructor(avatar, username, link) {
+  constructor() {
     super();
-    this.avatar = avatar;
-    this.username = username;
-    this.link = link;
-
-    this.build()
+    this.build();
   }
 
   build() {
-      var bg = new PIXI.Sprite(PIXI.Texture.WHITE);
-      bg.width = 100;
-      bg.height = 50;
-      bg.tint = 0xff0000;
-      bg.x = 0
-      bg.y = 0
+    let background = new PIXI.Sprite(PIXI.Texture.WHITE);
+    background.width = 120;
+    background.height = 40;
+    background.x = 0;
+    background.y = 0;
+    this.addChild(background);
+
+    const gr = new PIXI.Graphics();
+    gr.beginFill(0x228b22);
+    gr.drawCircle(20, 20, 10);
+    gr.endFill();
+    this.addChild(gr);
+
+    const username = new PIXI.Text(store.getters.setupData.username, {
+      fontFamily: "Helvetica",
+      fontSize: 12,
+      fill: "black",
+      align: "center",
+    });
+    username.x = gr.x + 40;
+    username.y = gr.y + 12;
+    this.addChild(username);
   }
 }

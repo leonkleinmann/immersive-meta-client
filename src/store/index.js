@@ -26,6 +26,8 @@ export default new Vuex.Store({
       maxPlayers: undefined,
       initialRoom: undefined,
       avatarAnimationSize: 5,
+      avatarInformationWidth: 120,
+      avatarInformationHeight: 120,
     },
     textures: {},
     currentRoom: {},
@@ -66,11 +68,17 @@ export default new Vuex.Store({
       return state.mapData;
     },
     textures: (state) => {
-      return state.textures
+      return state.textures;
     },
     currentRoom: (state) => {
-      return state.currentRoom
-    }
+      return state.currentRoom;
+    },
+    avatarInformationWidth: (state) => {
+      return state.settingsData.avatarInformationWidth;
+    },
+    avatarInformationHeight: (state) => {
+      return state.settingsData.avatarInformationHeight;
+    },
   },
   mutations: {
     setClientId(state, clientId) {
@@ -105,11 +113,11 @@ export default new Vuex.Store({
       state.map = data.map;
     },
     addTexture(state, type, texture) {
-      state.textures[type] = texture
+      state.textures[type] = texture;
     },
     setCurrentRoom(state, currentRoom) {
-      state.currentRoom = currentRoom
-    }
+      state.currentRoom = currentRoom;
+    },
   },
   actions: {},
 });

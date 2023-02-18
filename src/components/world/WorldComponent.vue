@@ -13,6 +13,7 @@ import ChatComponent from "@/components/chat/ChatComponent";
 import VirtualRoom from "@/components/world/room";
 import Avatar from "@/components/world/avatar";
 import store from "@/store";
+import AvatarContainer from "@/components/world/avatar/AvatarContainer";
 
 export default {
   name: "WorldComponent",
@@ -29,7 +30,6 @@ export default {
 
     this.$pixiApp.loader.onComplete.add((loader, resources) => {
       loader.generateTextures(resources);
-      this.avatar = new Avatar(0, 0);
       this.changeRoom();
       this.registerKeyEvents();
       this.$store.commit("setIsLoading", false);
@@ -39,6 +39,8 @@ export default {
     return {
       room: undefined,
       avatar: undefined,
+      avatarContainer: undefined,
+      mustScroll: false,
     };
   },
   computed: {
@@ -48,6 +50,8 @@ export default {
       "settingsData",
       "textures",
       "currentRoom",
+      "avatarInformationWidth",
+      "avatarInformationHeight",
     ]),
   },
   methods: {
@@ -62,7 +66,7 @@ export default {
         await axios
           .get(this.server.host + ":" + this.server.api_port + "/assets")
           .then((assets) => {
-            console.log('ASSET_DATA', assets.data)
+            console.log("ASSET_DATA", assets.data);
             this.$store.commit("setAssetData", assets.data);
           });
 
@@ -92,9 +96,23 @@ export default {
         roomData.initial_position.y * this.settingsData.tileSize
       );
 
+      this.mustScroll =
+        this.room.roomWidth > window.innerWidth ||
+        this.room.roomHeight > window.innerHeight;
+
+      this.avatarContainer = new AvatarContainer();
+      this.avatarContainer.x =
+        this.avatar.x -
+        this.avatarInformationWidth / 2 +
+        this.settingsData.tileSize / 2;
+      this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
+      this.room.addChild(this.avatarContainer);
+
       this.room.addChild(this.avatar);
-      this.scrollRoom();
       this.$pixiApp.stage.addChild(this.room);
+
+      this.$pixiApp.ticker.add(this.animationUpdate);
+      this.$pixiApp.ticker.add(this.scrollRoom)
     },
     registerKeyEvents() {
       document.addEventListener(
@@ -108,7 +126,6 @@ export default {
               )
             ) {
               this.avatar.moveNorth();
-              this.scrollRoom();
             }
           }
           if (event.code === "ArrowDown" || event.code === "KeyS") {
@@ -119,7 +136,6 @@ export default {
               )
             ) {
               this.avatar.moveSouth();
-              this.scrollRoom();
             }
           }
           if (event.code === "ArrowLeft" || event.code === "KeyA") {
@@ -140,7 +156,6 @@ export default {
               )
             ) {
               this.avatar.moveEast();
-              this.scrollRoom();
             }
           }
         },
@@ -160,13 +175,18 @@ export default {
       return intersection;
     },
     scrollRoom() {
-      if (
-        this.room.roomWidth > window.innerWidth ||
-        this.room.roomHeight > window.innerHeight
-      ) {
+      if (this.mustScroll) {
         this.room.x = window.innerWidth / 2 - this.avatar.x;
         this.room.y = window.innerHeight / 2 - this.avatar.y;
       }
+    },
+    animationUpdate() {
+      this.scrollRoom();
+      this.avatarContainer.x =
+        this.avatar.x -
+        this.avatarInformationWidth / 2 +
+        this.settingsData.tileSize / 2;
+      this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
     },
   },
 };

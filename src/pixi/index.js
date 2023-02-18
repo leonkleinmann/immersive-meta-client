@@ -12,7 +12,6 @@ const PixiPlugin = {
     });
 
     Vue.prototype.$pixiApp = pixiApp;
-    Vue.prototype.$pixiLoader = pixiApp.loader;
   },
 };
 export default PixiPlugin;

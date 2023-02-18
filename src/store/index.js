@@ -5,50 +5,111 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    setupData: {
-      gender: "male",
-    },
+    devMode: true,
     isMobile: false,
     isLoading: false,
-    settings: {},
-    assets: {},
-    map: {},
+    isPlaying: false,
+    server: {
+      host: "http://localhost",
+      api_port: 9003,
+      state_machine_port: 8888,
+      clientId: undefined,
+    },
+    setupData: {
+      gender: "male",
+      username: "DevUser",
+      link: "",
+    },
+    settingsData: {
+      moveSpeed: 10,
+      tileSize: undefined,
+      maxPlayers: undefined,
+      initialRoom: undefined,
+      avatarAnimationSize: 5,
+    },
+    textures: {},
+    currentRoom: {},
+    chatMessages: [],
   },
   getters: {
+    server: (state) => {
+      return state.server;
+    },
+    clientId: (state) => {
+      return state.server.clientId;
+    },
+    devMode: (state) => {
+      return state.devMode;
+    },
     isMobile: (state) => {
       return state.isMobile;
     },
     isLoading: (state) => {
       return state.isLoading;
     },
-    settings: (state) => {
-      return state.settings;
-    },
-    assetData: (state) => {
-      return state.assets;
-    },
-    mapData: (state) => {
-      return state.map;
+    isPlaying: (state) => {
+      return state.isPlaying;
     },
     setupData: (state) => {
       return state.setupData;
     },
+    chatMessages: (state) => {
+      return state.chatMessages;
+    },
+    settingsData: (state) => {
+      return state.settingsData;
+    },
+    assetData: (state) => {
+      return state.assetData;
+    },
+    mapData: (state) => {
+      return state.mapData;
+    },
+    textures: (state) => {
+      return state.textures
+    },
+    currentRoom: (state) => {
+      return state.currentRoom
+    }
   },
   mutations: {
+    setClientId(state, clientId) {
+      state.server.clientId = clientId;
+    },
     setIsMobile(state, isMobile) {
       state.isMobile = isMobile;
     },
     setIsLoading(state, isLoading) {
       state.isLoading = isLoading;
     },
-    setData(state, data) {
-      state.settings = data.settings;
-      state.assets = data.assets;
+    setIsPlaying(state, isPlaying) {
+      state.isPlaying = isPlaying;
+    },
+    setSetupConfig(state, config) {
+      state.setupData.username = config.username;
+      state.setupData.link = config.link;
+      state.setupData.gender = config.gender;
+    },
+    addChatMessage(state, message) {
+      state.chatMessages.push(message);
+    },
+    setSettingsData(state, data) {
+      state.settingsData.tileSize = data.tile_size;
+      state.settingsData.maxPlayers = data.max_players;
+      state.settingsData.initialRoom = data.initial_room;
+    },
+    setAssetData(state, data) {
+      state.assetData = data;
+    },
+    setMapData(state, data) {
       state.map = data.map;
     },
-    setSetupGender(state, gender) {
-      state.setupData.gender = gender;
+    addTexture(state, type, texture) {
+      state.textures[type] = texture
     },
+    setCurrentRoom(state, currentRoom) {
+      state.currentRoom = currentRoom
+    }
   },
   actions: {},
 });

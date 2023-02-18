@@ -1,0 +1,27 @@
+{
+  "sprites": [
+    {
+      "identifier": "atlas",
+      "width": 128,
+      "height": 128,
+      "src": "/tiles/tiles.png",
+      "textures": [
+        {
+          "type": "stone",
+          "x": 0,
+          "y": 0
+        },
+        {
+          "type": "grass",
+          "x": 1,
+          "y": 0
+        },
+        {
+          "type": "wall",
+          "x": 2,
+          "y": 0
+        }
+      ]
+    }
+  ]
+}

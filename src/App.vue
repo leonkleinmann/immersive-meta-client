@@ -1,17 +1,12 @@
 <template>
   <div id="app">
     <template v-if="!isMobile">
-      <!--
       <template v-if="!isPlaying">
-        <HeaderComponent />
+        <SetupComponent />
       </template>
-      -->
-      <GameComponent />
-      <!--
-      <template v-if="!isPlaying">
-        <FooterComponent />
+      <template v-if="isPlaying">
+        <WorldComponent />
       </template>
-      -->
       <LoadingComponent />
     </template>
     <template v-if="isMobile">
@@ -25,17 +20,19 @@
 <script>
 import Bowser from "bowser";
 import { mapGetters } from "vuex";
-import GameComponent from "@/components/game/GameComponent";
+import WorldComponent from "@/components/world/WorldComponent";
 import LoadingComponent from "@/components/LoadingComponent";
+import SetupComponent from "@/components/setup/SetupComponent";
 
 export default {
   name: "App",
   components: {
-    GameComponent,
+    SetupComponent,
+    WorldComponent,
     LoadingComponent,
   },
   computed: {
-    ...mapGetters(["isMobile"]),
+    ...mapGetters(["isMobile", "isPlaying"]),
   },
   mounted() {
     // check if mobile

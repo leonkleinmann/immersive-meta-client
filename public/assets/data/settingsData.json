@@ -1,0 +1,20 @@
+{
+  "tileSize": 32,
+  "maxPlayers": 10,
+  "setup": {
+    "stages": [
+      {
+        "level": 0,
+        "identifier": "introduction"
+      },
+      {
+        "level": 1,
+        "identifier": "multimedia"
+      },
+      {
+        "level": 2,
+        "identifier": "avatar"
+      }
+    ]
+  }
+}

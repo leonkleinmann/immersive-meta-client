@@ -2,7 +2,7 @@
   <div id="app">
     <template v-if="!isMobile">
       <template v-if="!isPlaying">
-        <SetupComponent />
+        <SingleSetupComponent />
       </template>
       <template v-if="isPlaying">
         <WorldComponent />
@@ -22,12 +22,14 @@ import Bowser from "bowser";
 import { mapGetters } from "vuex";
 import WorldComponent from "@/components/world/WorldComponent";
 import LoadingComponent from "@/components/LoadingComponent";
-import SetupComponent from "@/components/setup/SetupComponent";
+//import SetupComponent from "@/components/setup/SetupComponent";
+import SingleSetupComponent from "@/components/setup/SingleSetupComponent";
 
 export default {
   name: "App",
   components: {
-    SetupComponent,
+    SingleSetupComponent,
+    //SetupComponent,
     WorldComponent,
     LoadingComponent,
   },

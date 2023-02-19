@@ -4,14 +4,13 @@ import Vue from "vue";
 const PixiPlugin = {
   // eslint-disable-next-line no-unused-vars
   install(Vue) {
-    const pixiApp = new PIXI.Application({
+    Vue.prototype.$pixiApp = new PIXI.Application({
       resizeTo: window,
       backgroundColor: "black",
       autoDensity: true,
       resolution: window.devicePixelRatio || 1,
+      antialias: true
     });
-
-    Vue.prototype.$pixiApp = pixiApp;
   },
 };
 export default PixiPlugin;

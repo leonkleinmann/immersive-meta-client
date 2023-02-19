@@ -4,7 +4,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    devMode: true,
+    devMode: false,
     isMobile: false,
     isLoading: false,
     isPlaying: false,

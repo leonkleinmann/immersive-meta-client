@@ -1,6 +1,5 @@
 import Vue from "vue";
 import Vuex from "vuex";
-
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -30,6 +29,7 @@ export default new Vuex.Store({
       avatarInformationHeight: 120,
     },
     textures: {},
+    animations: {},
     currentRoom: {},
     chatMessages: [],
   },
@@ -69,6 +69,9 @@ export default new Vuex.Store({
     },
     textures: (state) => {
       return state.textures;
+    },
+    animations: (state) => {
+      return state.animations;
     },
     currentRoom: (state) => {
       return state.currentRoom;
@@ -114,6 +117,9 @@ export default new Vuex.Store({
     },
     addTexture(state, type, texture) {
       state.textures[type] = texture;
+    },
+    addAnimations(state, type, animation) {
+      state.animations[type] = animation;
     },
     setCurrentRoom(state, currentRoom) {
       state.currentRoom = currentRoom;

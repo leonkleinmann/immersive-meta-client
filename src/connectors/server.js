@@ -1,18 +1,26 @@
 import store from "@/store";
 
+export const SEND_COMMAND_TYPES = {
+
+}
+export const RECEIVE_COMMAND_TYPES = {
+  REGISTER_COMPLETE: 'REGISTER_COMPLETE',
+  CHAT_MSG: 'CHAT_MSG'
+}
+
 export default class ServerConnector {
   constructor(host) {
     this.host = host;
-    this.init()
+    this.init();
   }
 
-  static instance
+  static instance;
 
   static getInstance(host) {
     if (!this.instance) {
-      this.instance = new ServerConnector(host)
+      this.instance = new ServerConnector(host);
     }
-    return this.instance
+    return this.instance;
   }
 
   init() {
@@ -39,9 +47,9 @@ export default class ServerConnector {
   sendMessage(command_type, parameters) {
     let command = {
       command: command_type,
-      message: parameters
-    }
+      message: parameters,
+    };
 
-    this.serverSocket.send(JSON.stringify(command))
+    this.serverSocket.send(JSON.stringify(command));
   }
 }

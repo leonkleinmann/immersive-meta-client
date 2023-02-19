@@ -3,16 +3,15 @@ import store from "@/store";
 import BaseTile from "@/components/world/tile/BaseTile";
 
 export default class VirtualRoom extends PIXI.Container {
-  constructor(roomData, tileSize) {
+  constructor(roomData) {
     super();
-    console.log('ROOM_DATA', roomData);
     this.roomData = roomData;
-    this.tileSize = tileSize;
-    this.x = window.innerWidth / 2 - (roomData.width * tileSize) / 2;
-    this.y = window.innerHeight / 2 - (roomData.height * tileSize) / 2;
+    this.tileSize = store.getters.settingsData.tileSize;
+    this.x = window.innerWidth / 2 - (roomData.width * this.tileSize) / 2;
+    this.y = window.innerHeight / 2 - (roomData.height * this.tileSize) / 2;
 
-    this.roomWidth = roomData.width * tileSize;
-    this.roomHeight = roomData.height * tileSize;
+    this.roomWidth = roomData.width * this.tileSize;
+    this.roomHeight = roomData.height * this.tileSize;
 
     this.buildBackground();
   }

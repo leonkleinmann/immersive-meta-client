@@ -9,14 +9,14 @@ export default class Avatar extends PIXI.AnimatedSprite {
     this.avatarIdleSheet = {};
     this.x = x;
     this.y = y;
+    this.gender = store.getters.setupData.gender;
     this.texture = store.getters.textures["male_idle_north"];
     this.textures = [this.texture];
     this.animationSpeed = 1 / store.getters.settingsData.avatarAnimationSize;
     this.loop = false;
 
     this.buildAvatarIdleSheet();
-    this.buildAvatarWalkSheet();
-    this.init();
+    this.textures = store.getters.animations["male_walk_south"];
   }
 
   buildAvatarIdleSheet() {
@@ -29,73 +29,64 @@ export default class Avatar extends PIXI.AnimatedSprite {
     this.avatarIdleSheet["west"] = [textures[gender + "_idle_west"]];
   }
 
-  buildAvatarWalkSheet() {
-    this.avatarWalkSheet["north"] = [];
-    this.avatarWalkSheet["east"] = [];
-    this.avatarWalkSheet["south"] = [];
-    this.avatarWalkSheet["west"] = [];
-
-    const gender = store.getters.setupData.gender;
-    const animationSize = store.getters.settingsData.avatarAnimationSize;
-    const textures = store.getters.textures;
-
-    for (let i = 0; i < animationSize; i++) {
-      this.avatarWalkSheet["north"].push(textures[gender + "_walk_south_" + i]);
-      this.avatarWalkSheet["east"].push(textures[gender + "_walk_south_" + i]);
-      this.avatarWalkSheet["south"].push(textures[gender + "_walk_south_" + i]);
-      this.avatarWalkSheet["west"].push(textures[gender + "_walk_south_" + i]);
-    }
-  }
-
-  init() {
-    this.textures = this.avatarWalkSheet["north"];
-  }
-
   moveNorth() {
     if (!this.playing) {
-      this.textures = this.avatarWalkSheet["north"];
-      this.animationSpeed = 1 / this.avatarWalkSheet["north"].length;
+      this.textures = store.getters.animations[this.gender + "_walk_north"];
+      this.animationSpeed =
+        1 / store.getters.animations[this.gender + "_walk_north"].length;
       this.play();
       gsap.to(this, {
         y: this.y - store.getters.settingsData.tileSize,
-        duration: .5,
+        duration: 0.5,
+        onComplete: () => {
+          this.textures = this.avatarIdleSheet["north"];
+        },
       });
     }
-    //this.textures = this.avatarIdleSheet["north"]
   }
   moveEast() {
     if (!this.playing) {
-      this.textures = this.avatarWalkSheet["east"];
-      this.animationSpeed = 1 / this.avatarWalkSheet["east"].length;
+      this.textures = store.getters.animations[this.gender + "_walk_east"];
+      this.animationSpeed =
+        1 / store.getters.animations[this.gender + "_walk_east"].length;
       this.play();
       gsap.to(this, {
         x: this.x + store.getters.settingsData.tileSize,
-        duration: .5,
+        duration: 0.5,
+        onComplete: () => {
+          this.textures = this.avatarIdleSheet["east"];
+        },
       });
     }
-    //this.textures = this.avatarIdleSheet["east"]
   }
   moveSouth() {
     if (!this.playing) {
-      this.textures = this.avatarWalkSheet["south"];
-      this.animationSpeed = 1 / this.avatarWalkSheet["south"].length;
+      this.textures = store.getters.animations[this.gender + "_walk_south"];
+      this.animationSpeed =
+        1 / store.getters.animations[this.gender + "_walk_south"].length;
       this.play();
       gsap.to(this, {
         y: this.y + store.getters.settingsData.tileSize,
-        duration: .5,
+        duration: 0.5,
+        onComplete: () => {
+          this.textures = this.avatarIdleSheet["south"];
+        },
       });
     }
   }
   moveWest() {
     if (!this.playing) {
-      this.textures = this.avatarWalkSheet["west"];
-      this.animationSpeed = 1 / this.avatarWalkSheet["west"].length;
+      this.textures = store.getters.animations[this.gender + "_walk_west"];
+      this.animationSpeed =
+        1 / store.getters.animations[this.gender + "_walk_west"].length;
       this.play();
       gsap.to(this, {
         x: this.x - store.getters.settingsData.tileSize,
-        duration: .5,
+        duration: 0.5,
+        onComplete: () => {
+          this.textures = this.avatarIdleSheet["west"];
+        },
       });
     }
-    //this.textures = this.avatarIdleSheet["west"]
   }
 }

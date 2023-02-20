@@ -12,8 +12,8 @@ import { mapGetters } from "vuex";
 import ChatComponent from "@/components/chat/ChatComponent";
 import VirtualRoom from "@/components/world/room";
 import Avatar from "@/components/world/avatar";
-import store from "@/store";
 import AvatarContainer from "@/components/world/avatar/AvatarContainer";
+import gsap from "gsap";
 
 export default {
   name: "WorldComponent",
@@ -24,23 +24,28 @@ export default {
     window.addEventListener("resize", this.scrollRoom);
     this.$pixiApp.loader = new AssetManager();
 
-    this.loadData().then(() => {
+    this.loadSettings();
+    this.loadAssets().then(() => {
       this.$pixiApp.loader.loadAssets();
     });
 
     this.$pixiApp.loader.onComplete.add((loader, resources) => {
       loader.generateTextures(resources);
-      loader.generateAnimations(resources);
-      this.changeRoom();
+      loader.generateAnimations();
       this.registerKeyEvents();
+      this.loadWorld().then(() => {
+        this.loadRoom(this.worldData.initial_room);
+        this.$pixiApp.ticker.add(this.animationUpdate);
+      });
+
       this.$store.commit("setIsLoading", false);
     });
   },
   data() {
     return {
+      worldId: undefined,
       room: undefined,
       avatar: undefined,
-      avatarMoved: false,
       avatarContainer: undefined,
       mustScrollX: false,
       mustScrollY: false,
@@ -55,42 +60,74 @@ export default {
       "currentRoom",
       "avatarInformationWidth",
       "avatarInformationHeight",
+      "exitObjects",
+      "worldData",
+      "avatarMoved",
     ]),
   },
+  watch: {
+    "$store.state.currentRoom"() {
+      this.$store.commit("setIsLoading", true);
+      this.changeRoom();
+      this.$store.commit("setIsLoading", false);
+    },
+  },
   methods: {
-    async loadData() {
+    async loadSettings() {
       try {
         await axios
           .get(this.server.host + ":" + this.server.api_port + "/settings")
           .then((settings) => {
             this.$store.commit("setSettingsData", settings.data);
           });
-
+      } catch {
+        console.log("ERROR LOADING SETTINGS");
+      }
+    },
+    async loadAssets() {
+      try {
         await axios
           .get(this.server.host + ":" + this.server.api_port + "/assets")
           .then((assets) => {
             this.$store.commit("setAssetData", assets.data);
           });
-
-        let world = await axios.get(
-          this.server.host + ":" + this.server.api_port + "/map/world"
-        );
+      } catch {
+        console.log("ERROR LOADING ASSETS");
+      }
+    },
+    async loadWorld() {
+      try {
+        await axios
+          .get(this.server.host + ":" + this.server.api_port + "/map/world")
+          .then((world) => {
+            this.$store.commit("setWorldData", world.data);
+          });
+      } catch {
+        console.log("ERROR LOADING WORLD");
+      }
+    },
+    async loadRoom(roomId) {
+      try {
         await axios
           .get(
             this.server.host +
               ":" +
               this.server.api_port +
               "/map/room/" +
-              world.data.initial_room
+              roomId
           )
           .then((room) => {
             this.$store.commit("setCurrentRoom", room.data);
           });
       } catch {
-        console.log("ERROR LOADING DATA");
+        console.log("ERROR LOADING ROOM");
       }
     },
     changeRoom() {
+      if (this.room !== undefined) {
+        this.$pixiApp.stage.removeChild(this.room);
+      }
+
       this.room = new VirtualRoom(this.currentRoom);
 
       this.avatar = new Avatar(
@@ -112,63 +149,40 @@ export default {
       this.room.addChild(this.avatarContainer);
       this.$pixiApp.stage.addChild(this.room);
 
-      this.scrollRoom()
-      this.$pixiApp.ticker.add(this.animationUpdate);
+      this.scrollRoom();
     },
     registerKeyEvents() {
       document.addEventListener(
         "keydown",
         (event) => {
-          const tileSize = store.getters.settingsData.tileSize;
-          const avatarX = this.avatar.x;
-          const avatarY = this.avatar.y;
-
           if (event.code === "ArrowUp" || event.code === "KeyW") {
-            if (this.willIntersect(avatarX, avatarY - tileSize)) {
-              this.avatarMoved = true;
-              this.avatar.moveNorth();
-            }
-          }
-          if (event.code === "ArrowDown" || event.code === "KeyS") {
-            if (this.willIntersect(avatarX, avatarY + tileSize)) {
-              this.avatarMoved = true;
-              this.avatar.moveSouth();
-            }
-          }
-          if (event.code === "ArrowLeft" || event.code === "KeyA") {
-            if (this.willIntersect(avatarX - tileSize, avatarY)) {
-              this.avatarMoved = true;
-              this.avatar.moveWest();
-            }
+            this.avatar.moveNorth();
           }
           if (event.code === "ArrowRight" || event.code === "KeyD") {
-            if (this.willIntersect(avatarX + tileSize, avatarY)) {
-              this.avatarMoved = true;
-              this.avatar.moveEast();
-            }
+            this.avatar.moveEast();
+          }
+          if (event.code === "ArrowDown" || event.code === "KeyS") {
+            this.avatar.moveSouth();
+          }
+          if (event.code === "ArrowLeft" || event.code === "KeyA") {
+            this.avatar.moveWest();
           }
         },
         false
       );
     },
-    willIntersect(x, y) {
-      let intersection = false;
-      if (
-        x >= 0 &&
-        x < this.room.roomWidth &&
-        y >= 0 &&
-        y < this.room.roomHeight
-      ) {
-        intersection = true;
-      }
-      return intersection;
-    },
     scrollRoom() {
       if (this.mustScrollX) {
-        this.room.x = window.innerWidth / 2 - this.avatar.x;
+        gsap.to(this.room, {
+          x: window.innerWidth / 2 - this.avatar.x,
+          duration: 0.5,
+        });
       }
       if (this.mustScrollY) {
-        this.room.y = window.innerHeight / 2 - this.avatar.y;
+        gsap.to(this.room, {
+          y: window.innerHeight / 2 - this.avatar.y,
+          duration: 0.5,
+        });
       }
     },
     animationUpdate() {
@@ -178,8 +192,18 @@ export default {
           this.avatarInformationWidth / 2 +
           this.settingsData.tileSize / 2;
         this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
-        this.scrollRoom();
-        this.avatarMoved = true;
+
+        this.$store.commit("setAvatarMoved", false);
+        //COLLISION
+        this.exitObjects.forEach((exitObject) => {
+          if (
+            exitObject.x === this.avatar.x &&
+            exitObject.y === this.avatar.y
+          ) {
+            this.loadRoom(exitObject.nextRoom);
+          }
+        });
+        this.scrollRoom()
       }
     },
   },

@@ -53,9 +53,8 @@ export default class AssetManager extends PIXI.Loader {
    *
    * @param resources
    */
-  generateAnimations(resources) {
+  generateAnimations() {
     const animationData = store.getters.assetData.animations;
-    console.log(animationData, resources);
 
     animationData.forEach((animation) => {
       store.state.animations[animation.identifier] = [];

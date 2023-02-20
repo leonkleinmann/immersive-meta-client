@@ -5,7 +5,6 @@ import gsap from "gsap";
 export default class Avatar extends PIXI.AnimatedSprite {
   constructor(x, y) {
     super([PIXI.Texture.WHITE]);
-    this.avatarWalkSheet = {};
     this.avatarIdleSheet = {};
     this.x = x;
     this.y = y;
@@ -14,6 +13,7 @@ export default class Avatar extends PIXI.AnimatedSprite {
     this.textures = [this.texture];
     this.animationSpeed = 1 / store.getters.settingsData.avatarAnimationSize;
     this.loop = false;
+    this.tileSize = store.getters.settingsData.tileSize;
 
     this.buildAvatarIdleSheet();
     this.textures = store.getters.animations["male_walk_south"];
@@ -30,22 +30,29 @@ export default class Avatar extends PIXI.AnimatedSprite {
   }
 
   moveNorth() {
-    if (!this.playing) {
+    if (!this.playing && this.willIntersect(this.x, this.y - this.tileSize)) {
       this.textures = store.getters.animations[this.gender + "_walk_north"];
-      this.animationSpeed =
-        1 / store.getters.animations[this.gender + "_walk_north"].length;
-      this.play();
+      this.animationSpeed = 1 / store.getters.animations[this.gender + "_walk_north"].length;
+      this.stop();
+
+      this.y = this.y - store.getters.settingsData.tileSize
+
       gsap.to(this, {
+        onStart: () => {
+          this.play();
+        },
         y: this.y - store.getters.settingsData.tileSize,
         duration: 0.5,
         onComplete: () => {
+          this.stop();
           this.textures = this.avatarIdleSheet["north"];
+          store.commit("setAvatarMoved", true);
         },
       });
     }
   }
   moveEast() {
-    if (!this.playing) {
+    if (!this.playing && this.willIntersect(this.x + this.tileSize, this.x)) {
       this.textures = store.getters.animations[this.gender + "_walk_east"];
       this.animationSpeed =
         1 / store.getters.animations[this.gender + "_walk_east"].length;
@@ -54,13 +61,16 @@ export default class Avatar extends PIXI.AnimatedSprite {
         x: this.x + store.getters.settingsData.tileSize,
         duration: 0.5,
         onComplete: () => {
+          this.stop();
           this.textures = this.avatarIdleSheet["east"];
+          store.commit("setAvatarMoved", true);
         },
       });
     }
   }
+
   moveSouth() {
-    if (!this.playing) {
+    if (!this.playing && this.willIntersect(this.x, this.y + this.tileSize)) {
       this.textures = store.getters.animations[this.gender + "_walk_south"];
       this.animationSpeed =
         1 / store.getters.animations[this.gender + "_walk_south"].length;
@@ -69,13 +79,15 @@ export default class Avatar extends PIXI.AnimatedSprite {
         y: this.y + store.getters.settingsData.tileSize,
         duration: 0.5,
         onComplete: () => {
+          this.stop();
           this.textures = this.avatarIdleSheet["south"];
+          store.commit("setAvatarMoved", true);
         },
       });
     }
   }
   moveWest() {
-    if (!this.playing) {
+    if (!this.playing && this.willIntersect(this.x - this.tileSize, this.y)) {
       this.textures = store.getters.animations[this.gender + "_walk_west"];
       this.animationSpeed =
         1 / store.getters.animations[this.gender + "_walk_west"].length;
@@ -84,9 +96,26 @@ export default class Avatar extends PIXI.AnimatedSprite {
         x: this.x - store.getters.settingsData.tileSize,
         duration: 0.5,
         onComplete: () => {
+          this.stop();
           this.textures = this.avatarIdleSheet["west"];
+          store.commit("setAvatarMoved", true);
         },
       });
     }
+  }
+
+  willIntersect(x, y) {
+    console.log(x,y)
+    return  true/*
+    let intersection = false;
+    if (
+      x >= 0 &&
+      x < this.parent.roomWidth &&
+      y >= 0 &&
+      y < this.parent.roomHeight
+    ) {
+      intersection = true;
+    }
+    return intersection;*/
   }
 }

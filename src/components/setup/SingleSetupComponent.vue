@@ -85,6 +85,8 @@ export default {
     };
   },
   mounted() {
+    this.$store.commit("setIsPlaying", true);
+
     this.initAudio();
     this.initVideo();
   },

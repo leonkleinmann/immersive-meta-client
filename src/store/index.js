@@ -28,9 +28,12 @@ export default new Vuex.Store({
       avatarInformationWidth: 120,
       avatarInformationHeight: 120,
     },
+    worldData: undefined,
+    avatarMoved: false,
     textures: {},
     animations: {},
     currentRoom: {},
+    exitObjects: [],
     chatMessages: [],
   },
   getters: {
@@ -67,6 +70,12 @@ export default new Vuex.Store({
     mapData: (state) => {
       return state.mapData;
     },
+    worldData: (state) => {
+      return state.worldData;
+    },
+    avatarMoved: (state) => {
+      return state.avatarMoved;
+    },
     textures: (state) => {
       return state.textures;
     },
@@ -75,6 +84,9 @@ export default new Vuex.Store({
     },
     currentRoom: (state) => {
       return state.currentRoom;
+    },
+    exitObjects: (state) => {
+      return state.exitObjects;
     },
     avatarInformationWidth: (state) => {
       return state.settingsData.avatarInformationWidth;
@@ -115,6 +127,12 @@ export default new Vuex.Store({
     setMapData(state, data) {
       state.map = data.map;
     },
+    setWorldData(state, worldData) {
+      state.worldData = worldData;
+    },
+    setAvatarMoved(state, avatarMoved) {
+      state.avatarMoved = avatarMoved;
+    },
     addTexture(state, type, texture) {
       state.textures[type] = texture;
     },
@@ -123,6 +141,9 @@ export default new Vuex.Store({
     },
     setCurrentRoom(state, currentRoom) {
       state.currentRoom = currentRoom;
+    },
+    addExitObject(state, exitObject) {
+      state.exitObjects.push(exitObject);
     },
   },
   actions: {},

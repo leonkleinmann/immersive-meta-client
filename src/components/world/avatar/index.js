@@ -105,8 +105,6 @@ export default class Avatar extends PIXI.AnimatedSprite {
   }
 
   willIntersect(x, y) {
-    console.log(x,y)
-    return  true/*
     let intersection = false;
     if (
       x >= 0 &&
@@ -116,6 +114,6 @@ export default class Avatar extends PIXI.AnimatedSprite {
     ) {
       intersection = true;
     }
-    return intersection;*/
+    return intersection;
   }
 }

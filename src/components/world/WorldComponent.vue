@@ -192,7 +192,7 @@ export default {
           this.avatarInformationWidth / 2 +
           this.settingsData.tileSize / 2;
         this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
-
+        this.scrollRoom()
         this.$store.commit("setAvatarMoved", false);
         //COLLISION
         this.exitObjects.forEach((exitObject) => {
@@ -203,7 +203,6 @@ export default {
             this.loadRoom(exitObject.nextRoom);
           }
         });
-        this.scrollRoom()
       }
     },
   },

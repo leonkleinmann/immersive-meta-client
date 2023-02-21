@@ -45,10 +45,11 @@ export default {
     return {
       room: undefined,
       avatar: undefined,
+      clientAvatars: {},
       avatarContainer: undefined,
       mustScrollX: false,
       mustScrollY: false,
-      clientAvatars: [],
+      clientAvatarsInstances: {},
     };
   },
   computed: {
@@ -68,11 +69,22 @@ export default {
     "$store.state.clientAvatars"(updatedAvatars) {
       updatedAvatars.forEach((clientAvatar) => {
         let clientId = clientAvatar.clientId;
+        let clientX = clientAvatar.x
+        let clientY = clientAvatar.y
+
         if (this.clientAvatars[clientId] === undefined) {
-          // new avatar
-          console.log("Neuen Avatar hinzufügen..");
+          let ava = new Avatar(
+            clientX,
+            clientY,
+            clientAvatar.gender
+          );
+          this.clientAvatars[clientId] = ava
+          this.room.addChild(this.clientAvatars[clientId])
         } else {
-          console.log("Avatar gibt es bereits, haben sich Werte geändert?");
+          let cpy = this.clientAvatars[clientId]
+          if (cpy.x !== clientX || cpy.y !== clientY) {
+            this.clientAvatars[clientId].move(clientAvatar.x, clientAvatar.y, clientAvatar.direction)
+          }
         }
       });
     },
@@ -140,16 +152,16 @@ export default {
 
       this.room = new VirtualRoom(this.currentRoom);
 
+      this.mustScrollX = this.room.roomWidth > window.innerWidth;
+      this.mustScrollY = this.room.roomHeight > window.innerHeight;
+
       this.avatar = new Avatar(
         this.currentRoom.initial_position.x * this.settingsData.tileSize,
         this.currentRoom.initial_position.y * this.settingsData.tileSize,
         this.setupData.gender
       );
 
-      this.mustScrollX = this.room.roomWidth > window.innerWidth;
-      this.mustScrollY = this.room.roomHeight > window.innerHeight;
-
-      this.avatarContainer = new AvatarContainer();
+      this.avatarContainer = new AvatarContainer(this.setupData.username, this.setupData.link);
       this.avatarContainer.x =
         this.avatar.x -
         this.avatarInformationWidth / 2 +

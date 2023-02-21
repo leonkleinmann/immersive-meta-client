@@ -1,9 +1,10 @@
 import * as PIXI from "pixi.js";
-import store from "@/store";
 
 export default class AvatarContainer extends PIXI.Container {
-  constructor() {
+  constructor(username, link) {
     super();
+    this.username = username;
+    this.link = link;
     this.build();
   }
 
@@ -21,7 +22,7 @@ export default class AvatarContainer extends PIXI.Container {
     gr.endFill();
     this.addChild(gr);
 
-    const username = new PIXI.Text(store.getters.setupData.username, {
+    const username = new PIXI.Text(this.username, {
       fontFamily: "Helvetica",
       fontSize: 12,
       fill: "black",

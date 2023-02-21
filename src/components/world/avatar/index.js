@@ -11,7 +11,7 @@ export default class Avatar extends Movable {
 
       const toX = this.x;
       const toY = this.y - this.tileSize;
-      this.notifyServer(toX, toY);
+      this.notifyServer(toX, toY, "north");
       this.move(toX, toY, "north")
     }
   }
@@ -20,7 +20,7 @@ export default class Avatar extends Movable {
 
       const toX = this.x + this.tileSize;
       const toY = this.y;
-      this.notifyServer(toX, toY);
+      this.notifyServer(toX, toY, "east");
       this.move(toX, toY, "east")
 
     }
@@ -31,7 +31,7 @@ export default class Avatar extends Movable {
 
       const toX = this.x;
       const toY = this.y + this.tileSize;
-      this.notifyServer(toX, toY);
+      this.notifyServer(toX, toY, "south");
       this.move(toX, toY, "south")
     }
   }
@@ -40,15 +40,16 @@ export default class Avatar extends Movable {
 
       const toX = this.x - this.tileSize;
       const toY = this.y;
-      this.notifyServer(toX, toY);
+      this.notifyServer(toX, toY, "west");
       this.move(toX, toY, "west")
     }
   }
 
-  notifyServer(x, y) {
+  notifyServer(x, y, direction) {
     ServerConnector.getInstance().sendMessage("AVATAR_STATE_UPDATE", {
       x: x,
       y: y,
+      direction: direction
     });
   }
 }

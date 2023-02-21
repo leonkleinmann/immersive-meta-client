@@ -74,6 +74,7 @@ export default class ServerConnector {
     let avatarToChange = store.getters.clientAvatars[parsed.clientId];
     avatarToChange.x = parsed.x;
     avatarToChange.y = parsed.y;
+    avatarToChange.direction = parsed.direction
 
     store.commit("setClientAvatar", avatarToChange);
   }

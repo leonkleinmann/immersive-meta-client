@@ -234,22 +234,17 @@ export default {
     animationUpdate() {
       this.scrollRoom();
 
-      /* USER AVATAR */
+      /* UPDATE USER AVATAR */
       this.avatarContainer.x =
         this.avatar.x -
         this.avatarInformationWidth / 2 +
         this.settingsData.tileSize / 2;
       this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
 
-      /* CLIENT AVATARS */
-
+      /* UPDATE CLIENT AVATARS */
       for (const client in this.clientAvatars) {
         let clientAvatar = this.clientAvatars[client];
         let clientContainer = this.clientAvatarContainers[client];
-
-        console.log("CLIENT AVATAR", clientAvatar);
-        console.log("CLIENT CONTAINER", clientContainer)
-
         if (
           clientAvatar &&
           clientAvatar.x !== undefined &&

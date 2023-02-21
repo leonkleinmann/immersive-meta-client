@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import store from "@/store";
 import gsap from "gsap";
+import ServerConnector from "@/connectors/server";
 
 export default class Avatar extends PIXI.AnimatedSprite {
   constructor(x, y) {
@@ -11,7 +12,6 @@ export default class Avatar extends PIXI.AnimatedSprite {
     this.gender = store.getters.setupData.gender;
     this.texture = store.getters.textures["male_idle_north"];
     this.textures = [this.texture];
-    this.animationSpeed = 1 / store.getters.settingsData.avatarAnimationSize;
     this.loop = false;
     this.tileSize = store.getters.settingsData.tileSize;
 
@@ -32,10 +32,12 @@ export default class Avatar extends PIXI.AnimatedSprite {
   moveNorth() {
     if (!this.playing && this.willIntersect(this.x, this.y - this.tileSize)) {
       this.textures = store.getters.animations[this.gender + "_walk_north"];
-      this.animationSpeed = 1 / store.getters.animations[this.gender + "_walk_north"].length;
-      this.stop();
+      this.animationSpeed =
+        1 / store.getters.animations[this.gender + "_walk_north"].length;
 
-      this.y = this.y - store.getters.settingsData.tileSize
+      const toX = this.x;
+      const toY = this.y - store.getters.settingsData.tileSize;
+      this.notifyServer(toX, toY);
 
       gsap.to(this, {
         onStart: () => {
@@ -46,7 +48,6 @@ export default class Avatar extends PIXI.AnimatedSprite {
         onComplete: () => {
           this.stop();
           this.textures = this.avatarIdleSheet["north"];
-          store.commit("setAvatarMoved", true);
         },
       });
     }
@@ -56,14 +57,20 @@ export default class Avatar extends PIXI.AnimatedSprite {
       this.textures = store.getters.animations[this.gender + "_walk_east"];
       this.animationSpeed =
         1 / store.getters.animations[this.gender + "_walk_east"].length;
-      this.play();
+
+      const toX = this.x + store.getters.settingsData.tileSize;
+      const toY = this.y;
+      this.notifyServer(toX, toY);
+
       gsap.to(this, {
-        x: this.x + store.getters.settingsData.tileSize,
+        onStart: () => {
+          this.play();
+        },
+        x: toX,
         duration: 0.5,
         onComplete: () => {
           this.stop();
           this.textures = this.avatarIdleSheet["east"];
-          store.commit("setAvatarMoved", true);
         },
       });
     }
@@ -74,14 +81,20 @@ export default class Avatar extends PIXI.AnimatedSprite {
       this.textures = store.getters.animations[this.gender + "_walk_south"];
       this.animationSpeed =
         1 / store.getters.animations[this.gender + "_walk_south"].length;
-      this.play();
+
+      const toX = this.x;
+      const toY = this.y + store.getters.settingsData.tileSize;
+      this.notifyServer(toX, toY);
+
       gsap.to(this, {
-        y: this.y + store.getters.settingsData.tileSize,
+        onStart: () => {
+          this.play();
+        },
+        y: toY,
         duration: 0.5,
         onComplete: () => {
           this.stop();
           this.textures = this.avatarIdleSheet["south"];
-          store.commit("setAvatarMoved", true);
         },
       });
     }
@@ -91,14 +104,20 @@ export default class Avatar extends PIXI.AnimatedSprite {
       this.textures = store.getters.animations[this.gender + "_walk_west"];
       this.animationSpeed =
         1 / store.getters.animations[this.gender + "_walk_west"].length;
-      this.play();
+
+      const toX = this.x - store.getters.settingsData.tileSize;
+      const toY = this.y;
+      this.notifyServer(toX, toY);
+
       gsap.to(this, {
-        x: this.x - store.getters.settingsData.tileSize,
+        onStart: () => {
+          this.play();
+        },
+        x: toX,
         duration: 0.5,
         onComplete: () => {
           this.stop();
           this.textures = this.avatarIdleSheet["west"];
-          store.commit("setAvatarMoved", true);
         },
       });
     }
@@ -115,5 +134,12 @@ export default class Avatar extends PIXI.AnimatedSprite {
       intersection = true;
     }
     return intersection;
+  }
+
+  notifyServer(x, y) {
+    ServerConnector.getInstance().sendMessage("AVATAR_STATE_UPDATE", {
+      x: x,
+      y: y,
+    });
   }
 }

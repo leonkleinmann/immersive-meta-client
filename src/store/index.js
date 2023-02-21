@@ -4,7 +4,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    devMode: false,
+    devMode: true,
     isMobile: false,
     isLoading: false,
     isPlaying: false,
@@ -20,19 +20,17 @@ export default new Vuex.Store({
       link: "",
     },
     settingsData: {
-      moveSpeed: 10,
       tileSize: undefined,
       maxPlayers: undefined,
       initialRoom: undefined,
-      avatarAnimationSize: 5,
       avatarInformationWidth: 120,
       avatarInformationHeight: 120,
     },
     worldData: undefined,
-    avatarMoved: false,
     textures: {},
     animations: {},
     currentRoom: {},
+    clientAvatars: [],
     exitObjects: [],
     chatMessages: [],
   },
@@ -73,9 +71,6 @@ export default new Vuex.Store({
     worldData: (state) => {
       return state.worldData;
     },
-    avatarMoved: (state) => {
-      return state.avatarMoved;
-    },
     textures: (state) => {
       return state.textures;
     },
@@ -84,6 +79,9 @@ export default new Vuex.Store({
     },
     currentRoom: (state) => {
       return state.currentRoom;
+    },
+    clientAvatars: (state) => {
+      return state.clientAvatars
     },
     exitObjects: (state) => {
       return state.exitObjects;
@@ -130,9 +128,6 @@ export default new Vuex.Store({
     setWorldData(state, worldData) {
       state.worldData = worldData;
     },
-    setAvatarMoved(state, avatarMoved) {
-      state.avatarMoved = avatarMoved;
-    },
     addTexture(state, type, texture) {
       state.textures[type] = texture;
     },
@@ -145,6 +140,12 @@ export default new Vuex.Store({
     addExitObject(state, exitObject) {
       state.exitObjects.push(exitObject);
     },
+    setClientAvatars(state, clientAvatars) {
+      state.clientAvatars = clientAvatars
+    },
+    addClientAvatar(state, clientAvatar) {
+      state.clientAvatars.push(clientAvatar)
+    }
   },
   actions: {},
 });

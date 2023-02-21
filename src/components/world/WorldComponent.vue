@@ -14,6 +14,7 @@ import VirtualRoom from "@/components/world/room";
 import Avatar from "@/components/world/avatar";
 import AvatarContainer from "@/components/world/avatar/AvatarContainer";
 import gsap from "gsap";
+import ServerConnector from "@/connectors/server";
 
 export default {
   name: "WorldComponent",
@@ -35,7 +36,6 @@ export default {
       this.registerKeyEvents();
       this.loadWorld().then(() => {
         this.loadRoom(this.worldData.initial_room);
-        this.$pixiApp.ticker.add(this.animationUpdate);
       });
 
       this.$store.commit("setIsLoading", false);
@@ -43,12 +43,12 @@ export default {
   },
   data() {
     return {
-      worldId: undefined,
       room: undefined,
       avatar: undefined,
       avatarContainer: undefined,
       mustScrollX: false,
       mustScrollY: false,
+      clientAvatars: [],
     };
   },
   computed: {
@@ -62,14 +62,23 @@ export default {
       "avatarInformationHeight",
       "exitObjects",
       "worldData",
-      "avatarMoved",
     ]),
   },
   watch: {
     "$store.state.currentRoom"() {
-      this.$store.commit("setIsLoading", true);
       this.changeRoom();
-      this.$store.commit("setIsLoading", false);
+    },
+    "$store.state.clientAvatars"(avatars) {
+      this.clientAvatars.forEach((clientAvatar) => {
+        this.room.removeChild(clientAvatar);
+      });
+      this.clientAvatars = []
+
+      avatars.forEach((avatar) => {
+        let clientAvatar = new Avatar(avatar.x, avatar.y);
+        this.clientAvatars.push(clientAvatar);
+        this.room.addChild(clientAvatar);
+      });
     },
   },
   methods: {
@@ -124,6 +133,8 @@ export default {
       }
     },
     changeRoom() {
+      this.$store.commit("setIsLoading", true);
+
       if (this.room !== undefined) {
         this.$pixiApp.stage.removeChild(this.room);
       }
@@ -148,8 +159,14 @@ export default {
       this.room.addChild(this.avatar);
       this.room.addChild(this.avatarContainer);
       this.$pixiApp.stage.addChild(this.room);
+      this.$pixiApp.ticker.add(this.animationUpdate);
 
-      this.scrollRoom();
+      this.$store.commit("setIsLoading", false);
+      ServerConnector.getInstance().sendMessage("ROOM_ENTRY", {
+        x: this.avatar.x,
+        y: this.avatar.y,
+        room_id: this.currentRoom._id,
+      });
     },
     registerKeyEvents() {
       document.addEventListener(
@@ -186,24 +203,19 @@ export default {
       }
     },
     animationUpdate() {
-      if (this.avatarMoved) {
-        this.avatarContainer.x =
-          this.avatar.x -
-          this.avatarInformationWidth / 2 +
-          this.settingsData.tileSize / 2;
-        this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
-        this.scrollRoom()
-        this.$store.commit("setAvatarMoved", false);
-        //COLLISION
-        this.exitObjects.forEach((exitObject) => {
-          if (
-            exitObject.x === this.avatar.x &&
-            exitObject.y === this.avatar.y
-          ) {
-            this.loadRoom(exitObject.nextRoom);
-          }
-        });
-      }
+      this.scrollRoom();
+
+      this.avatarContainer.x =
+        this.avatar.x -
+        this.avatarInformationWidth / 2 +
+        this.settingsData.tileSize / 2;
+      this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
+      //COLLISION
+      this.exitObjects.forEach((exitObject) => {
+        if (exitObject.x === this.avatar.x && exitObject.y === this.avatar.y) {
+          this.loadRoom(exitObject.nextRoom);
+        }
+      });
     },
   },
 };

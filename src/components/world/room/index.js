@@ -6,6 +6,8 @@ import ExitObject from "@/components/world/object/ExitObject";
 export default class VirtualRoom extends PIXI.Container {
   constructor(roomData) {
     super();
+    store.commit("setIsLoading", true);
+
     this.roomData = roomData;
     this.tileSize = store.getters.settingsData.tileSize;
     this.x = window.innerWidth / 2 - (roomData.width * this.tileSize) / 2;
@@ -16,8 +18,17 @@ export default class VirtualRoom extends PIXI.Container {
 
     this.sortableChildren = true;
 
+    let backgroundContainer = new PIXI.Container();
+    backgroundContainer.x = 0;
+    backgroundContainer.y = 0;
+    backgroundContainer.cacheAsBitmap = true;
+    this.backgroundContainer = backgroundContainer;
+
     this.buildBackground();
+    this.addChild(this.backgroundContainer);
+
     this.addExits();
+    store.commit("setIsLoading", false);
   }
 
   buildBackground() {
@@ -26,7 +37,7 @@ export default class VirtualRoom extends PIXI.Container {
 
     for (let x = 0; x < this.roomWidth; x = x + this.tileSize) {
       for (let y = 0; y < this.roomHeight; y = y + this.tileSize) {
-        this.addChild(
+        this.backgroundContainer.addChild(
           new BaseTile(
             x,
             y,

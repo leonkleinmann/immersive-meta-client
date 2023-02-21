@@ -1,13 +1,5 @@
 import store from "@/store";
 
-export const SEND_COMMAND_TYPES = {
-
-}
-export const RECEIVE_COMMAND_TYPES = {
-  REGISTER_COMPLETE: 'REGISTER_COMPLETE',
-  CHAT_MSG: 'CHAT_MSG'
-}
-
 export default class ServerConnector {
   constructor(host) {
     this.host = host;
@@ -26,28 +18,77 @@ export default class ServerConnector {
   init() {
     this.serverSocket = new WebSocket(this.host);
     this.serverSocket.onopen = this.handleOpen;
-    this.serverSocket.onmessage = this.handleMessage;
+    this.serverSocket.onmessage = this.handleMessage.bind(this);
   }
 
   handleOpen() {
     console.log("Connection to Server was established!");
+
+    const setupData = store.getters.setupData;
+    ServerConnector.getInstance().sendMessage("REGISTER", {
+      gender: setupData.gender,
+      username: setupData.username,
+      link: setupData.link,
+    });
   }
 
-  handleMessage(message) {
-    const parsedMessage = JSON.parse(message.data);
-    switch (parsedMessage.command) {
+  handleMessage(command) {
+    const parsedCommand = JSON.parse(command.data);
+    console.log("COMMAND RECEIVED", parsedCommand);
+    switch (parsedCommand.command) {
       case "REGISTER_COMPLETE":
-        store.commit("setClientId", parsedMessage.clientId);
+        this.handleRegisterComplete(parsedCommand);
         break;
       case "CHAT_MSG":
-        store.commit("addChatMessage", parsedMessage.message);
+        this.handleChatMessage(parsedCommand);
+        break;
+      case "ROOM_ENTERED":
+        this.handleRoomEntered(parsedCommand);
+        break;
+      case "ROOM_ENTRY":
+        this.handleRoomEntry(parsedCommand);
+        break;
+      case "AVATAR_STATE_UPDATED":
+        this.handleAvatarStateUpdated(parsedCommand);
+        break;
     }
   }
 
+  handleRegisterComplete(parsed) {
+    store.commit("setClientId", parsed.clientId);
+  }
+  handleChatMessage(parsed) {
+    store.commit("addChatMessage", parsed.message);
+  }
+  handleRoomEntered(parsed) {
+    store.commit("setClientAvatars", parsed.data);
+  }
+  handleRoomEntry(parsed) {
+    store.commit("addClientAvatar", parsed.data);
+  }
+  handleAvatarStateUpdated(parsed) {
+    let updatedAvatars = [];
+    store.getters.clientAvatars.forEach((avatar) => {
+      if (avatar.clientId === parsed.clientId) {
+        avatar.x = parsed.x;
+        avatar.y = parsed.y;
+        updatedAvatars.push(avatar);
+      }
+    });
+    store.commit("setClientAvatars", updatedAvatars);
+  }
+
   sendMessage(command_type, parameters) {
+    console.log(
+      "SENDING COMMAND",
+      store.getters.clientId,
+      command_type,
+      parameters
+    );
     let command = {
       command: command_type,
       message: parameters,
+      clientId: store.getters.clientId,
     };
 
     this.serverSocket.send(JSON.stringify(command));

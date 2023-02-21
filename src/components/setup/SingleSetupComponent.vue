@@ -71,6 +71,7 @@
 
 <script>
 import AdvanceButton from "@/components/ui/AdvanceButton";
+import { mapGetters } from "vuex";
 
 export default {
   name: "SingleSetupComponent",
@@ -82,13 +83,24 @@ export default {
       link: "https://google.com",
       audioPermissionGranted: false,
       videoPermissionGranted: false,
+      micStream: undefined,
+      camStream: undefined,
     };
   },
+  computed: {
+    ...mapGetters(["devMode"]),
+  },
   mounted() {
-    this.$store.commit("setIsPlaying", true);
-
-    this.initAudio();
-    this.initVideo();
+    if (this.devMode) {
+      this.$store.commit("setIsPlaying", true);
+    } else {
+      this.initAudio();
+      this.initVideo();
+    }
+  },
+  destroyed() {
+    //this.micStream.getTracks().forEach((track) => track.stop())
+    //this.camStream.getTracks().forEach((track) => track.stop());
   },
   methods: {
     initAudio() {
@@ -102,6 +114,7 @@ export default {
           let microphone = aCtx.createMediaStreamSource(stream);
           let destination = aCtx.destination;
           microphone.connect(destination);
+          this.micStream = microphone.mediaStream;
           this.audioPermissionGranted = true;
         })
         .catch(() => {
@@ -117,6 +130,7 @@ export default {
         .then((stream) => {
           let videoContainer = document.querySelector("#cam");
           videoContainer.srcObject = stream;
+          this.camStream = stream;
           this.videoPermissionGranted = true;
         })
         .catch(() => {

@@ -61,21 +61,21 @@ export default class ServerConnector {
     store.commit("addChatMessage", parsed.message);
   }
   handleRoomEntered(parsed) {
-    store.commit("setClientAvatars", parsed.data);
+    let arr = []
+    arr.push('leon')
+    parsed.data.forEach((clientAvatar) => {
+      store.commit("setClientAvatar", clientAvatar);
+    });
   }
   handleRoomEntry(parsed) {
-    store.commit("addClientAvatar", parsed.data);
+    store.commit("setClientAvatar", parsed.data);
   }
   handleAvatarStateUpdated(parsed) {
-    let updatedAvatars = [];
-    store.getters.clientAvatars.forEach((avatar) => {
-      if (avatar.clientId === parsed.clientId) {
-        avatar.x = parsed.x;
-        avatar.y = parsed.y;
-        updatedAvatars.push(avatar);
-      }
-    });
-    store.commit("setClientAvatars", updatedAvatars);
+    let avatarToChange = store.getters.clientAvatars[parsed.clientId];
+    avatarToChange.x = parsed.x;
+    avatarToChange.y = parsed.y;
+
+    store.commit("setClientAvatar", avatarToChange);
   }
 
   sendMessage(command_type, parameters) {

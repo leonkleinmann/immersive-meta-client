@@ -48,7 +48,7 @@ export default {
       avatarContainer: undefined,
       mustScrollX: false,
       mustScrollY: false,
-      clientAvatars: [],
+      clientAvatars: []
     };
   },
   computed: {
@@ -65,20 +65,19 @@ export default {
     ]),
   },
   watch: {
+    "$store.state.clientAvatars"(updatedAvatars) {
+      updatedAvatars.forEach((clientAvatar) => {
+        let clientId = clientAvatar.clientId
+        if (this.clientAvatars[clientId] === undefined) {
+          // new avatar
+          console.log('Neuen Avatar hinzufügen..')
+        } else {
+          console.log('Avatar gibt es bereits, haben sich Werte geändert?')
+        }
+      })
+    },
     "$store.state.currentRoom"() {
       this.changeRoom();
-    },
-    "$store.state.clientAvatars"(avatars) {
-      this.clientAvatars.forEach((clientAvatar) => {
-        this.room.removeChild(clientAvatar);
-      });
-      this.clientAvatars = []
-
-      avatars.forEach((avatar) => {
-        let clientAvatar = new Avatar(avatar.x, avatar.y);
-        this.clientAvatars.push(clientAvatar);
-        this.room.addChild(clientAvatar);
-      });
     },
   },
   methods: {

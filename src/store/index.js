@@ -140,12 +140,10 @@ export default new Vuex.Store({
     addExitObject(state, exitObject) {
       state.exitObjects.push(exitObject);
     },
-    setClientAvatars(state, clientAvatars) {
-      state.clientAvatars = clientAvatars
+    setClientAvatar(state, data) {
+      Vue.set(state.clientAvatars, data.clientId, data)
+      //state.clientAvatars[data.clientId] = data
     },
-    addClientAvatar(state, clientAvatar) {
-      state.clientAvatars.push(clientAvatar)
-    }
   },
   actions: {},
 });

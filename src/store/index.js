@@ -142,8 +142,10 @@ export default new Vuex.Store({
     },
     setClientAvatar(state, data) {
       Vue.set(state.clientAvatars, data.clientId, data)
-      //state.clientAvatars[data.clientId] = data
     },
+    removeClientAvatar(state, clientId) {
+      Vue.delete(state.clientAvatars, clientId.toString())
+    }
   },
   actions: {},
 });

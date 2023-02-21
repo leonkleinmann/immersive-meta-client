@@ -67,40 +67,7 @@ export default {
   },
   watch: {
     "$store.state.clientAvatars"(updatedAvatars) {
-      updatedAvatars.forEach((clientAvatar) => {
-        let clientId = clientAvatar.clientId;
-        let clientX = clientAvatar.x;
-        let clientY = clientAvatar.y;
-
-        if (this.clientAvatars[clientId] === undefined) {
-          console.log("CLIENT AVATAR", clientAvatar);
-
-          let ava = new Avatar(clientX, clientY, clientAvatar.gender);
-          let avaContainer = new AvatarContainer(
-            clientAvatar.username,
-            clientAvatar.link
-          );
-          avaContainer.x =
-            ava.x -
-            this.avatarInformationWidth / 2 +
-            this.settingsData.tileSize / 2;
-          avaContainer.y = ava.y - this.settingsData.tileSize;
-
-          this.clientAvatars[clientId] = ava;
-          this.clientAvatarContainers[clientId] = avaContainer;
-          this.room.addChild(this.clientAvatars[clientId]);
-          this.room.addChild(this.clientAvatarContainers[clientId]);
-        } else {
-          let cpy = this.clientAvatars[clientId];
-          if (cpy.x !== clientX || cpy.y !== clientY) {
-            this.clientAvatars[clientId].move(
-              clientAvatar.x,
-              clientAvatar.y,
-              clientAvatar.direction
-            );
-          }
-        }
-      });
+      this.modifyClientAvatars(updatedAvatars);
     },
     "$store.state.currentRoom"() {
       this.changeRoom();
@@ -162,6 +129,9 @@ export default {
 
       if (this.room !== undefined) {
         this.$pixiApp.stage.removeChild(this.room);
+        ServerConnector.getInstance().sendMessage("ROOM_LEAVE");
+        this.clientAvatars = {};
+        this.clientAvatarContainers = {};
       }
 
       this.room = new VirtualRoom(this.currentRoom);
@@ -189,6 +159,8 @@ export default {
       this.room.addChild(this.avatarContainer);
       this.$pixiApp.stage.addChild(this.room);
       this.$pixiApp.ticker.add(this.animationUpdate);
+      this.$pixiApp.ticker.add(this.scrollRoom)
+      this.$pixiApp.ticker.add(this.collisionUpdate);
 
       this.$store.commit("setIsLoading", false);
       ServerConnector.getInstance().sendMessage("ROOM_ENTRY", {
@@ -231,9 +203,57 @@ export default {
         });
       }
     },
-    animationUpdate() {
-      this.scrollRoom();
+    modifyClientAvatars(updatedAvatars) {
+      if (
+        Object.keys(this.clientAvatars).length >
+        Object.keys(updatedAvatars).length
+      ) {
+        const keys1 = Object.keys(this.clientAvatars);
+        const keys2 = Object.keys(updatedAvatars);
 
+        const diff = keys1.filter((key) => !keys2.includes(key))[0];
+        let avatar = this.clientAvatars[diff];
+        let avatarInfo = this.clientAvatarContainers[diff];
+        this.room.removeChild(avatar);
+        this.room.removeChild(avatarInfo);
+      }
+
+      updatedAvatars.forEach((clientAvatar) => {
+        let clientId = clientAvatar.clientId;
+        let clientX = clientAvatar.x;
+        let clientY = clientAvatar.y;
+
+        if (this.clientAvatars[clientId] === undefined) {
+          console.log("CLIENT AVATAR", clientAvatar);
+
+          let ava = new Avatar(clientX, clientY, clientAvatar.gender);
+          let avaContainer = new AvatarContainer(
+            clientAvatar.username,
+            clientAvatar.link
+          );
+          avaContainer.x =
+            ava.x -
+            this.avatarInformationWidth / 2 +
+            this.settingsData.tileSize / 2;
+          avaContainer.y = ava.y - this.settingsData.tileSize;
+
+          this.clientAvatars[clientId] = ava;
+          this.clientAvatarContainers[clientId] = avaContainer;
+          this.room.addChild(this.clientAvatars[clientId]);
+          this.room.addChild(this.clientAvatarContainers[clientId]);
+        } else {
+          let cpy = this.clientAvatars[clientId];
+          if (cpy.x !== clientX || cpy.y !== clientY) {
+            this.clientAvatars[clientId].move(
+              clientAvatar.x,
+              clientAvatar.y,
+              clientAvatar.direction
+            );
+          }
+        }
+      });
+    },
+    animationUpdate() {
       /* UPDATE USER AVATAR */
       this.avatarContainer.x =
         this.avatar.x -
@@ -257,7 +277,8 @@ export default {
           clientContainer.y = clientAvatar.y - this.settingsData.tileSize;
         }
       }
-
+    },
+    collisionUpdate() {
       //COLLISION
       this.exitObjects.forEach((exitObject) => {
         if (exitObject.x === this.avatar.x && exitObject.y === this.avatar.y) {

@@ -48,6 +48,9 @@ export default class ServerConnector {
       case "ROOM_ENTRY":
         this.handleRoomEntry(parsedCommand);
         break;
+      case "ROOM_LEFT":
+        this.handleRoomLeave(parsedCommand);
+        break;
       case "AVATAR_STATE_UPDATED":
         this.handleAvatarStateUpdated(parsedCommand);
         break;
@@ -61,14 +64,16 @@ export default class ServerConnector {
     store.commit("addChatMessage", parsed.message);
   }
   handleRoomEntered(parsed) {
-    let arr = []
-    arr.push('leon')
     parsed.data.forEach((clientAvatar) => {
+      console.log('CLIENT AVATAR', clientAvatar)
       store.commit("setClientAvatar", clientAvatar);
     });
   }
   handleRoomEntry(parsed) {
     store.commit("setClientAvatar", parsed.data);
+  }
+  handleRoomLeave(parsed) {
+    store.commit('removeClientAvatar', parsed.data.clientId)
   }
   handleAvatarStateUpdated(parsed) {
     let avatarToChange = store.getters.clientAvatars[parsed.clientId];

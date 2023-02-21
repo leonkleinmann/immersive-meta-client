@@ -45,11 +45,11 @@ export default {
     return {
       room: undefined,
       avatar: undefined,
-      clientAvatars: {},
       avatarContainer: undefined,
+      clientAvatars: {},
+      clientAvatarContainers: {},
       mustScrollX: false,
       mustScrollY: false,
-      clientAvatarsInstances: {},
     };
   },
   computed: {
@@ -69,21 +69,35 @@ export default {
     "$store.state.clientAvatars"(updatedAvatars) {
       updatedAvatars.forEach((clientAvatar) => {
         let clientId = clientAvatar.clientId;
-        let clientX = clientAvatar.x
-        let clientY = clientAvatar.y
+        let clientX = clientAvatar.x;
+        let clientY = clientAvatar.y;
 
         if (this.clientAvatars[clientId] === undefined) {
-          let ava = new Avatar(
-            clientX,
-            clientY,
-            clientAvatar.gender
+          console.log("CLIENT AVATAR", clientAvatar);
+
+          let ava = new Avatar(clientX, clientY, clientAvatar.gender);
+          let avaContainer = new AvatarContainer(
+            clientAvatar.username,
+            clientAvatar.link
           );
-          this.clientAvatars[clientId] = ava
-          this.room.addChild(this.clientAvatars[clientId])
+          avaContainer.x =
+            ava.x -
+            this.avatarInformationWidth / 2 +
+            this.settingsData.tileSize / 2;
+          avaContainer.y = ava.y - this.settingsData.tileSize;
+
+          this.clientAvatars[clientId] = ava;
+          this.clientAvatarContainers[clientId] = avaContainer;
+          this.room.addChild(this.clientAvatars[clientId]);
+          this.room.addChild(this.clientAvatarContainers[clientId]);
         } else {
-          let cpy = this.clientAvatars[clientId]
+          let cpy = this.clientAvatars[clientId];
           if (cpy.x !== clientX || cpy.y !== clientY) {
-            this.clientAvatars[clientId].move(clientAvatar.x, clientAvatar.y, clientAvatar.direction)
+            this.clientAvatars[clientId].move(
+              clientAvatar.x,
+              clientAvatar.y,
+              clientAvatar.direction
+            );
           }
         }
       });
@@ -161,7 +175,10 @@ export default {
         this.setupData.gender
       );
 
-      this.avatarContainer = new AvatarContainer(this.setupData.username, this.setupData.link);
+      this.avatarContainer = new AvatarContainer(
+        this.setupData.username,
+        this.setupData.link
+      );
       this.avatarContainer.x =
         this.avatar.x -
         this.avatarInformationWidth / 2 +
@@ -217,11 +234,35 @@ export default {
     animationUpdate() {
       this.scrollRoom();
 
+      /* USER AVATAR */
       this.avatarContainer.x =
         this.avatar.x -
         this.avatarInformationWidth / 2 +
         this.settingsData.tileSize / 2;
       this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
+
+      /* CLIENT AVATARS */
+
+      for (const client in this.clientAvatars) {
+        let clientAvatar = this.clientAvatars[client];
+        let clientContainer = this.clientAvatarContainers[client];
+
+        console.log("CLIENT AVATAR", clientAvatar);
+        console.log("CLIENT CONTAINER", clientContainer)
+
+        if (
+          clientAvatar &&
+          clientAvatar.x !== undefined &&
+          clientAvatar.y !== undefined
+        ) {
+          clientContainer.x =
+            clientAvatar.x -
+            this.avatarInformationWidth / 2 +
+            this.settingsData.tileSize / 2;
+          clientContainer.y = clientAvatar.y - this.settingsData.tileSize;
+        }
+      }
+
       //COLLISION
       this.exitObjects.forEach((exitObject) => {
         if (exitObject.x === this.avatar.x && exitObject.y === this.avatar.y) {

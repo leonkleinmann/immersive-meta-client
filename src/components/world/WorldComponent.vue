@@ -158,6 +158,7 @@ export default {
       this.room.addChild(this.avatar);
       this.room.addChild(this.avatarContainer);
       this.$pixiApp.stage.addChild(this.room);
+      this.room.addObjects()
       this.$pixiApp.ticker.add(this.animationUpdate);
       this.$pixiApp.ticker.add(this.scrollRoom)
       this.$pixiApp.ticker.add(this.collisionUpdate);

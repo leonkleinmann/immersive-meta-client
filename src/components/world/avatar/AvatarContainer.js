@@ -14,6 +14,8 @@ export default class AvatarContainer extends PIXI.Container {
     background.height = 40;
     background.x = 0;
     background.y = 0;
+    background.zIndex = 2
+    background.alpha = 0.5
     this.addChild(background);
 
     const gr = new PIXI.Graphics();

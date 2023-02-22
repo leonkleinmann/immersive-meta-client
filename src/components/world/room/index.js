@@ -2,6 +2,8 @@ import * as PIXI from "pixi.js";
 import store from "@/store";
 import BaseTile from "@/components/world/tile/BaseTile";
 import ExitObject from "@/components/world/object/ExitObject";
+import CommonObject from "@/components/world/object/CommonObject";
+import AnimatedObject from "@/components/world/object/AnimatedObject";
 
 export default class VirtualRoom extends PIXI.Container {
   constructor(roomData) {
@@ -49,6 +51,34 @@ export default class VirtualRoom extends PIXI.Container {
         );
       }
     }
+  }
+
+  addObjects() {
+    const objectData = this.roomData.objects;
+    objectData.forEach((object) => {
+      if (object.__t === "common_object") {
+        const objectTexture = store.getters.textures[object.texture.type];
+        let commonObject = new CommonObject(
+          object.x * this.tileSize,
+          object.y * this.tileSize,
+          object.texture.width,
+          object.texture.height,
+          objectTexture
+        );
+        this.addChild(commonObject);
+      }
+      if (object.__t === "animated_object") {
+        console.log("Animated OBJECT", object);
+        let animatedObject = new AnimatedObject(
+          object.x * this.tileSize,
+          object.y * this.tileSize,
+          32,
+          72,
+          object.animation.identifier
+        );
+        this.addChild(animatedObject);
+      }
+    });
   }
 
   addExits() {

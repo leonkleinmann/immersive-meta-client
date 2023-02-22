@@ -5,7 +5,7 @@ export default class AvatarContainer extends PIXI.Container {
     super();
     this.username = username;
     this.link = link;
-    this.zIndex = 10
+    this.zIndex = 11
     this.build();
   }
 

@@ -1,5 +1,8 @@
 <template>
   <div class="metaspace">
+    <ModalComponent title="Content">
+      <div v-html="modalData"></div>
+    </ModalComponent>
     <div class="world"></div>
     <ChatComponent />
   </div>
@@ -15,10 +18,11 @@ import Avatar from "@/components/world/avatar/Avatar";
 import AvatarContainer from "@/components/world/avatar/AvatarContainer";
 import gsap from "gsap";
 import ServerConnector from "@/connectors/server";
+import ModalComponent from "@/components/ui/ModalComponent";
 
 export default {
   name: "WorldComponent",
-  components: { ChatComponent },
+  components: { ModalComponent, ChatComponent },
   mounted() {
     this.$store.commit("setIsLoading", true);
     document.querySelectorAll(".world")[0].appendChild(this.$pixiApp.view);
@@ -50,6 +54,7 @@ export default {
       clientAvatarContainers: {},
       mustScrollX: false,
       mustScrollY: false,
+      modalData: "",
     };
   },
   computed: {
@@ -158,9 +163,9 @@ export default {
       this.room.addChild(this.avatar);
       this.room.addChild(this.avatarContainer);
       this.$pixiApp.stage.addChild(this.room);
-      this.room.addObjects()
+      this.room.addObjects();
       this.$pixiApp.ticker.add(this.animationUpdate);
-      this.$pixiApp.ticker.add(this.scrollRoom)
+      this.$pixiApp.ticker.add(this.scrollRoom);
       this.$pixiApp.ticker.add(this.collisionUpdate);
 
       this.$store.commit("setIsLoading", false);
@@ -185,6 +190,16 @@ export default {
           }
           if (event.code === "ArrowLeft" || event.code === "KeyA") {
             this.avatar.moveWest();
+          }
+          if (event.code === "KeyX") {
+            const objects = this.room.getInteractiveObjects();
+            objects.forEach((object) => {
+              if (object.canInteract(this.avatar)) {
+                this.modalData = object.content;
+                console.log(this.modalData)
+                this.$store.commit("setModalOpen", true)
+              }
+            });
           }
         },
         false
@@ -225,8 +240,6 @@ export default {
         let clientY = clientAvatar.y;
 
         if (this.clientAvatars[clientId] === undefined) {
-          console.log("CLIENT AVATAR", clientAvatar);
-
           let ava = new Avatar(clientX, clientY, clientAvatar.gender);
           let avaContainer = new AvatarContainer(
             clientAvatar.username,

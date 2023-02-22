@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import store from "@/store";
 
 export default class AnimatedObject extends PIXI.AnimatedSprite {
-  constructor(x, y, width, height, animation_type) {
+  constructor(x, y, animation_type) {
     super([PIXI.Texture.WHITE]);
 
     this.x = x;

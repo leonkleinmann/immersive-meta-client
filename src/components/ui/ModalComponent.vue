@@ -8,32 +8,32 @@
       <div class="content">
         <slot> Lorem Ipsum </slot>
       </div>
-      <div class="close" @click="modalOpen = !modalOpen">
-        <IsometricWrapper :clickable="true" :border="true">
-          lorem
-        </IsometricWrapper>
+      <div class="close" @click="closeModal()">
+        x
       </div>
     </div>
   </div>
 </template>
 
 <script>
-import IsometricWrapper from "@/components/IsometricWrapper";
+import {mapGetters} from "vuex";
 
 export default {
   name: "ModalComponent",
-  components: { IsometricWrapper },
   props: {
     title: {
       type: String,
       required: true,
     },
   },
-  data() {
-    return {
-      modalOpen: true,
-    };
+  computed: {
+    ...mapGetters(["modalOpen"])
   },
+  methods: {
+    closeModal() {
+      this.$store.commit('setModalOpen', false)
+    }
+  }
 };
 </script>
 

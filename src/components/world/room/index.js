@@ -4,8 +4,12 @@ import BaseTile from "@/components/world/tile/BaseTile";
 import ExitObject from "@/components/world/object/ExitObject";
 import CommonObject from "@/components/world/object/CommonObject";
 import AnimatedObject from "@/components/world/object/AnimatedObject";
+import InteractiveObject from "@/components/world/object/InteractiveObject";
+import InteractiveContainer from "@/components/world/object/InteractiveContainer";
 
 export default class VirtualRoom extends PIXI.Container {
+  interactiveObjects = [];
+
   constructor(roomData) {
     super();
     store.commit("setIsLoading", true);
@@ -68,15 +72,27 @@ export default class VirtualRoom extends PIXI.Container {
         this.addChild(commonObject);
       }
       if (object.__t === "animated_object") {
-        console.log("Animated OBJECT", object);
         let animatedObject = new AnimatedObject(
           object.x * this.tileSize,
           object.y * this.tileSize,
-          32,
-          72,
           object.animation.identifier
         );
         this.addChild(animatedObject);
+      }
+      if (object.__t === "interactive_object") {
+        let interactiveObject = new InteractiveObject(
+          0,
+          0,
+          object.animation.identifier,
+          object.content.html
+        );
+        let interactiveContainer = new InteractiveContainer(
+          object.x * this.tileSize,
+          object.y * this.tileSize,
+          interactiveObject
+        );
+        this.interactiveObjects.push(interactiveObject);
+        this.addChild(interactiveContainer);
       }
     });
   }
@@ -96,5 +112,9 @@ export default class VirtualRoom extends PIXI.Container {
       store.state.exitObjects.push(exitObject);
       this.addChild(exitObject);
     });
+  }
+
+  getInteractiveObjects() {
+    return this.interactiveObjects;
   }
 }

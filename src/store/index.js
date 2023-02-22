@@ -8,6 +8,7 @@ export default new Vuex.Store({
     isMobile: false,
     isLoading: false,
     isPlaying: false,
+    modalOpen: false,
     server: {
       host: "http://localhost",
       api_port: 9003,
@@ -52,6 +53,9 @@ export default new Vuex.Store({
     },
     isPlaying: (state) => {
       return state.isPlaying;
+    },
+    modalOpen: (state) => {
+      return state.modalOpen
     },
     setupData: (state) => {
       return state.setupData;
@@ -105,6 +109,10 @@ export default new Vuex.Store({
     },
     setIsPlaying(state, isPlaying) {
       state.isPlaying = isPlaying;
+    },
+    setModalOpen(state, modalState) {
+      console.log('modal', modalState)
+      state.modalOpen = modalState
     },
     setSetupConfig(state, config) {
       state.setupData.username = config.username;

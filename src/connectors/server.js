@@ -65,7 +65,6 @@ export default class ServerConnector {
   }
   handleRoomEntered(parsed) {
     parsed.data.forEach((clientAvatar) => {
-      console.log('CLIENT AVATAR', clientAvatar)
       store.commit("setClientAvatar", clientAvatar);
     });
   }

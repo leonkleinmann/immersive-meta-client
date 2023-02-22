@@ -10,6 +10,7 @@
   "dependencies": {
     "@pixi/animate": "^2.0.4",
     "@pixi/loaders": "^6.5.8",
+    "@pixi/math-extras": "^7.1.2",
     "@pixi/tilemap": "^3.2.2",
     "axios": "^1.2.2",
     "bowser": "^2.11.0",

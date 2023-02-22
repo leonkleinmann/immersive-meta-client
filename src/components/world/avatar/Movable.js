@@ -13,6 +13,7 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.avatarIdleSheet = {};
     this.animations = store.getters.animations;
 
+    this.zIndex = 9
     this.loop = false;
 
     this.buildAvatarIdleSheet();

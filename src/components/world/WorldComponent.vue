@@ -11,7 +11,7 @@ import axios from "axios";
 import { mapGetters } from "vuex";
 import ChatComponent from "@/components/chat/ChatComponent";
 import VirtualRoom from "@/components/world/room";
-import Avatar from "@/components/world/avatar";
+import Avatar from "@/components/world/avatar/Avatar";
 import AvatarContainer from "@/components/world/avatar/AvatarContainer";
 import gsap from "gsap";
 import ServerConnector from "@/connectors/server";

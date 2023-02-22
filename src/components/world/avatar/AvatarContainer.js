@@ -5,6 +5,7 @@ export default class AvatarContainer extends PIXI.Container {
     super();
     this.username = username;
     this.link = link;
+    this.zIndex = 10
     this.build();
   }
 
@@ -16,6 +17,7 @@ export default class AvatarContainer extends PIXI.Container {
     background.y = 0;
     background.zIndex = 2
     background.alpha = 0.5
+
     this.addChild(background);
 
     const gr = new PIXI.Graphics();

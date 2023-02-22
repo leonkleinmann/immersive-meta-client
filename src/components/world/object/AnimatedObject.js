@@ -7,10 +7,10 @@ export default class AnimatedObject extends PIXI.AnimatedSprite {
 
     this.x = x;
     this.y = y;
-    //this.width = width;
-    //this.height = height;
+
     this.textures = store.getters.animations[animation_type];
 
+    this.zIndex = 10
     this.animationSpeed = 1 / this.textures.length;
     this.loop = true;
     this.play()

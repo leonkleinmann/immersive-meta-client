@@ -34,20 +34,13 @@ export default class InteractiveObject extends AnimatedObject {
       canInteract = true;
     }
 
-    console.log(canInteract)
     return canInteract;
   }
 
-  toggleInteraction() {
-    console.log("TOGGLE");
-  }
-
   hitTestRectangle(objA, objB) {
-    // Berechnung der umfassenden Rechtecke der beiden Objekte
     const aBounds = objA.getBounds();
     const bBounds = objB.getBounds();
 
-    // Überprüfen, ob sich die umfassenden Rechtecke überschneiden
     return (
       aBounds.x + aBounds.width > bBounds.x &&
       aBounds.x < bBounds.x + bBounds.width &&

@@ -1,7 +1,7 @@
 <template>
   <div class="metaspace">
     <ModalComponent title="Content">
-      <div v-html="modalData"></div>
+      <div v-html="modalContent"></div>
     </ModalComponent>
     <div class="world"></div>
     <ChatComponent />
@@ -15,11 +15,11 @@ import { mapGetters } from "vuex";
 import ChatComponent from "@/components/chat/ChatComponent";
 import Avatar from "@/components/world/avatar/Avatar";
 import AvatarContainer from "@/components/world/avatar/AvatarContainer";
-import gsap from "gsap";
 import ServerConnector from "@/connectors/server";
 import ModalComponent from "@/components/ui/ModalComponent";
 import VirtualRoom from "@/components/world/room/VirtualRoom";
 import Movable from "@/components/world/avatar/Movable";
+import gsap from "gsap";
 
 export default {
   name: "WorldComponent",
@@ -27,7 +27,6 @@ export default {
   mounted() {
     this.$store.commit("setIsLoading", true);
     document.querySelectorAll(".world")[0].appendChild(this.$pixiApp.view);
-    window.addEventListener("resize", this.scrollRoom);
     this.$pixiApp.loader = new AssetManager();
 
     this.loadSettings();
@@ -53,8 +52,7 @@ export default {
       clientAvatars: {},
       clientAvatarContainers: {},
       mustScrollX: false,
-      mustScrollY: false,
-      modalData: "",
+      mustScrollY: false
     };
   },
   computed: {
@@ -62,12 +60,9 @@ export default {
       "server",
       "setupData",
       "settingsData",
-      "textures",
       "currentRoom",
-      "avatarInformationWidth",
-      "avatarInformationHeight",
-      "exitObjects",
       "worldData",
+      "modalContent",
     ]),
   },
   watch: {
@@ -141,9 +136,6 @@ export default {
 
       this.room = new VirtualRoom(this.currentRoom);
 
-      this.mustScrollX = this.room.roomWidth > window.innerWidth;
-      this.mustScrollY = this.room.roomHeight > window.innerHeight;
-
       this.avatar = new Avatar(
         this.currentRoom.initial_position.x * this.settingsData.tileSize,
         this.currentRoom.initial_position.y * this.settingsData.tileSize,
@@ -164,30 +156,23 @@ export default {
       this.room.addChild(this.avatarContainer);
       this.$pixiApp.stage.addChild(this.room);
       this.room.addObjects();
-      this.$pixiApp.ticker.add(this.animationUpdate);
-      this.$pixiApp.ticker.add(this.scrollRoom);
-      this.$pixiApp.ticker.add(this.collisionUpdate);
 
-      this.$store.commit("setIsLoading", false);
+      this.$pixiApp.ticker.add(this.animationUpdate);
+      this.$pixiApp.ticker.add(this.collisionUpdate);
+      this.$pixiApp.ticker.add(this.scroll)
+
       ServerConnector.getInstance().sendMessage("ROOM_ENTRY", {
         x: this.avatar.x,
         y: this.avatar.y,
         room_id: this.currentRoom._id,
       });
-    },
-    scrollRoom() {
-      if (this.mustScrollX) {
-        gsap.to(this.room, {
-          x: window.innerWidth / 2 - this.avatar.x,
-          duration: 0.5,
-        });
-      }
-      if (this.mustScrollY) {
-        gsap.to(this.room, {
-          y: window.innerHeight / 2 - this.avatar.y,
-          duration: 0.5,
-        });
-      }
+
+      this.mustScrollX = this.room.roomWidth > window.innerWidth;
+      this.mustScrollY = this.room.roomHeight > window.innerHeight;
+
+      this.scroll()
+
+      this.$store.commit("setIsLoading", false);
     },
     modifyClientAvatars(updatedAvatars) {
       if (
@@ -263,12 +248,25 @@ export default {
       }
     },
     collisionUpdate() {
-      //COLLISION
-      this.exitObjects.forEach((exitObject) => {
+      this.room.getExitObjects().forEach((exitObject) => {
         if (exitObject.x === this.avatar.x && exitObject.y === this.avatar.y) {
           this.loadRoom(exitObject.nextRoom);
         }
       });
+    },
+    scroll() {
+      if (this.mustScrollX) {
+        gsap.to(this.room, {
+          x: window.innerWidth / 2 - this.avatar.x,
+          duration: 0.5,
+        });
+      }
+      if (this.mustScrollY) {
+        gsap.to(this.room, {
+          y: window.innerHeight / 2 - this.avatar.y,
+          duration: 0.5,
+        });
+      }
     },
   },
 };

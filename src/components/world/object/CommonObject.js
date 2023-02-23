@@ -7,5 +7,6 @@ export default class CommonObject extends PIXI.Sprite {
         this.y = y
         this.width = width
         this.height = height
+        this.zIndex = 10
     }
 }

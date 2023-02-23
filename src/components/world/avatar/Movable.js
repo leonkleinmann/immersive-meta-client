@@ -65,11 +65,9 @@ export default class Movable extends PIXI.AnimatedSprite {
         y >= object.y &&
         y < object.y + objectBounds.height
       ) {
-        console.log("collide", true);
         return true;
       }
     }
-    console.log("collide", false);
     return false;
   }
 

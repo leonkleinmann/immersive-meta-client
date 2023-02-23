@@ -6,6 +6,7 @@ export default class InteractiveObjectContainer extends PIXI.Container {
     super();
 
     this.position.set(x, y);
+    this.zIndex = 10
 
     const circle = new PIXI.Graphics()
       .beginFill(0x228b22)

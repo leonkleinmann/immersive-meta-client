@@ -1,55 +1,77 @@
 import ServerConnector from "@/connectors/server";
-import Movable from "@/components/world/avatar/Movable";
+import Movable, { Directions } from "@/components/world/avatar/Movable";
+import store from "@/store";
 
 export default class Avatar extends Movable {
   constructor(x, y, gender) {
     super(x, y, gender);
+    this.registerKeyEvents();
   }
 
-  moveNorth() {
-    if (!this.playing && this.willStayInside(this.x, this.y - this.tileSize)) {
-
-      const toX = this.x;
-      const toY = this.y - this.tileSize;
-      this.notifyServer(toX, toY, "north");
-      this.move(toX, toY, "north")
-    }
+  registerKeyEvents() {
+    document.addEventListener(
+      "keydown",
+      (event) => {
+        if (event.code === "ArrowUp" || event.code === "KeyW") {
+          this.moveToDirection(Directions.NORTH);
+        }
+        if (event.code === "ArrowRight" || event.code === "KeyD") {
+          this.moveToDirection(Directions.EAST);
+        }
+        if (event.code === "ArrowDown" || event.code === "KeyS") {
+          this.moveToDirection(Directions.SOUTH);
+        }
+        if (event.code === "ArrowLeft" || event.code === "KeyA") {
+          this.moveToDirection(Directions.WEST);
+        }
+        if (event.code === "KeyX") {
+          const objects = this.parent.getInteractiveObjects();
+          objects.forEach((object) => {
+            if (object.canInteract(this)) {
+              store.commit("setModalContent", object.content);
+              store.commit("setModalOpen", true);
+            }
+          });
+        }
+      },
+      false
+    );
   }
-  moveEast() {
-    if (!this.playing && this.willStayInside(this.x + this.tileSize, this.x)) {
 
-      const toX = this.x + this.tileSize;
-      const toY = this.y;
-      this.notifyServer(toX, toY, "east");
-      this.move(toX, toY, "east")
+  moveToDirection(direction) {
+    if (!this.playing) {
+      let toX = this.x;
+      let toY = this.y;
 
-    }
-  }
+      switch (direction) {
+        case Directions.NORTH:
+          toY -= this.tileSize;
+          break;
+        case Directions.EAST:
+          toX += this.tileSize;
+          break;
+        case Directions.SOUTH:
+          toY += this.tileSize;
+          break;
+        case Directions.WEST:
+          toX -= this.tileSize;
+          break;
+        default:
+          return;
+      }
 
-  moveSouth() {
-    if (!this.playing && this.willStayInside(this.x, this.y + this.tileSize)) {
-
-      const toX = this.x;
-      const toY = this.y + this.tileSize;
-      this.notifyServer(toX, toY, "south");
-      this.move(toX, toY, "south")
-    }
-  }
-  moveWest() {
-    if (!this.playing && this.willStayInside(this.x - this.tileSize, this.y)) {
-
-      const toX = this.x - this.tileSize;
-      const toY = this.y;
-      this.notifyServer(toX, toY, "west");
-      this.move(toX, toY, "west")
+      if (this.willStayInside(toX, toY)) {
+        this.notifyServer(toX, toY, direction);
+        this.move(toX, toY, direction);
+      }
     }
   }
 
   notifyServer(x, y, direction) {
     ServerConnector.getInstance().sendMessage("AVATAR_STATE_UPDATE", {
-      x: x,
-      y: y,
-      direction: direction
+      x,
+      y,
+      direction,
     });
   }
 }

@@ -1,13 +1,26 @@
 <template>
   <div class="chat">
-    <div class="messages">
-      <div v-for="(msg, idx) in chatMessages" :key="idx" class="message">
+    <div
+      class="messages"
+      style="
+        height: 200px;
+        min-height: 200px;
+        max-height: 200px;
+        overflow-y: scroll;
+      "
+    >
+      <div
+        v-for="(msg, idx) in chatMessages"
+        :key="idx"
+        class="message"
+        style="width: 100%; height: 50px; margin-left: 5px"
+      >
         <MessageComponent :author="msg.author" :message="msg.message" />
       </div>
     </div>
     <div class="sender">
-      <input v-model="message" type="text" />
-      <button @click="sendMessage()">Send</button>
+      <input v-model="message" type="text" style="width: 200px" />
+      <button @click="sendMessage()" style="width: 50px">Send</button>
     </div>
   </div>
 </template>
@@ -27,7 +40,7 @@ export default {
     };
   },
   mounted() {
-    this.server = ServerConnector.getInstance("ws://localhost:8888")
+    this.server = ServerConnector.getInstance("ws://localhost:8888");
   },
   computed: {
     ...mapGetters(["setupData", "chatMessages"]),
@@ -39,10 +52,7 @@ export default {
         message: this.message,
       };
 
-      this.server.sendMessage(
-        "CHAT_MSG",
-        message
-      );
+      this.server.sendMessage("CHAT_MSG", message);
     },
   },
 };
@@ -60,36 +70,19 @@ export default {
   .messages {
     display: flex;
     flex-direction: column;
-    overflow-y: scroll;
     width: 250px;
     max-width: 250px;
-    height: 200px;
-    min-height: 200px;
-    max-height: 200px;
     border: 1px solid black;
     border-radius: 5px;
     background: white;
     z-index: 2;
     overflow-x: hidden;
-
-    .message {
-      width: 100%;
-      height: 50px;
-      margin-left: 5px;
-    }
   }
 
   .sender {
     display: flex;
     flex-direction: row;
     z-index: 2;
-
-    input {
-      width: 200px;
-    }
-    button {
-      width: 50px;
-    }
   }
 }
 </style>

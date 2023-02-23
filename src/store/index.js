@@ -4,11 +4,12 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    devMode: true,
+    devMode: false,
     isMobile: false,
     isLoading: false,
     isPlaying: false,
     modalOpen: false,
+    modalContent: "",
     server: {
       host: "http://localhost",
       api_port: 9003,
@@ -55,7 +56,10 @@ export default new Vuex.Store({
       return state.isPlaying;
     },
     modalOpen: (state) => {
-      return state.modalOpen
+      return state.modalOpen;
+    },
+    modalContent: (state) => {
+      return state.modalContent;
     },
     setupData: (state) => {
       return state.setupData;
@@ -85,7 +89,7 @@ export default new Vuex.Store({
       return state.currentRoom;
     },
     clientAvatars: (state) => {
-      return state.clientAvatars
+      return state.clientAvatars;
     },
     exitObjects: (state) => {
       return state.exitObjects;
@@ -111,8 +115,10 @@ export default new Vuex.Store({
       state.isPlaying = isPlaying;
     },
     setModalOpen(state, modalState) {
-      console.log('modal', modalState)
-      state.modalOpen = modalState
+      state.modalOpen = modalState;
+    },
+    setModalContent(state, modalContent) {
+      state.modalContent = modalContent;
     },
     setSetupConfig(state, config) {
       state.setupData.username = config.username;
@@ -149,11 +155,11 @@ export default new Vuex.Store({
       state.exitObjects.push(exitObject);
     },
     setClientAvatar(state, data) {
-      Vue.set(state.clientAvatars, data.clientId, data)
+      Vue.set(state.clientAvatars, data.clientId, data);
     },
     removeClientAvatar(state, clientId) {
-      Vue.delete(state.clientAvatars, clientId.toString())
-    }
+      Vue.delete(state.clientAvatars, clientId.toString());
+    },
   },
   actions: {},
 });

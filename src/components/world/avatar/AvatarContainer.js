@@ -5,35 +5,32 @@ export default class AvatarContainer extends PIXI.Container {
     super();
     this.username = username;
     this.link = link;
-    this.zIndex = 11
+    this.zIndex = 11;
     this.build();
   }
 
   build() {
-    let background = new PIXI.Sprite(PIXI.Texture.WHITE);
+    const background = new PIXI.Sprite(PIXI.Texture.WHITE);
     background.width = 120;
     background.height = 40;
-    background.x = 0;
-    background.y = 0;
-    background.zIndex = 2
-    background.alpha = 0.5
-
+    background.position.set(0, 0);
+    background.alpha = 0.5;
+    background.zIndex = 2;
     this.addChild(background);
 
-    const gr = new PIXI.Graphics();
-    gr.beginFill(0x228b22);
-    gr.drawCircle(20, 20, 10);
-    gr.endFill();
-    this.addChild(gr);
+    const status = new PIXI.Graphics();
+    status.beginFill(0x228b22);
+    status.drawCircle(20, 20, 10);
+    status.endFill();
+    this.addChild(status);
 
-    const username = new PIXI.Text(this.username, {
+    const usernameText = new PIXI.Text(this.username, {
       fontFamily: "Helvetica",
       fontSize: 12,
       fill: "black",
       align: "center",
     });
-    username.x = gr.x + 40;
-    username.y = gr.y + 12;
-    this.addChild(username);
+    usernameText.position.set(status.x + 40, status.y + 12);
+    this.addChild(usernameText);
   }
 }

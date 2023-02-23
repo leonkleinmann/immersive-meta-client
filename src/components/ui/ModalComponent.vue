@@ -2,21 +2,15 @@
   <div v-if="modalOpen" class="modal">
     <div class="background" />
     <div class="wrapper">
-      <div class="title">
-        {{ title }}
-      </div>
-      <div class="content">
-        <slot> Lorem Ipsum </slot>
-      </div>
-      <div class="close" @click="closeModal()">
-        x
-      </div>
+      <div class="title">{{ title }}</div>
+      <div class="content"><slot>Lorem Ipsum</slot></div>
+      <div class="close" @click="closeModal()">x</div>
     </div>
   </div>
 </template>
 
 <script>
-import {mapGetters} from "vuex";
+import { mapGetters } from "vuex";
 
 export default {
   name: "ModalComponent",
@@ -26,14 +20,12 @@ export default {
       required: true,
     },
   },
-  computed: {
-    ...mapGetters(["modalOpen"])
-  },
+  computed: mapGetters(["modalOpen"]),
   methods: {
     closeModal() {
-      this.$store.commit('setModalOpen', false)
-    }
-  }
+      this.$store.commit("setModalOpen", false);
+    },
+  },
 };
 </script>
 
@@ -75,9 +67,7 @@ export default {
 
     .content {
       font-size: 20px;
-      margin-top: 50px;
-      margin-left: 20%;
-      margin-right: 20%;
+      margin: 50px 20%;
     }
 
     .close {

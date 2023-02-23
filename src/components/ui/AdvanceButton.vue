@@ -6,14 +6,13 @@
     @click="$emit('advance')"
   >
     <img
-      v-if="hovered === false"
+      :src="
+        hovered
+          ? '/assets/setup/checkmark_white.svg'
+          : '/assets/setup/checkmark_black.svg'
+      "
       alt="checkmark"
-      src="/assets/setup/checkmark_black.svg"
-    />
-    <img
-      v-if="hovered"
-      alt="checkmark"
-      src="/assets/setup/checkmark_white.svg"
+      class="checkmark"
     />
   </div>
 </template>
@@ -44,7 +43,7 @@ export default {
     background: black;
   }
 
-  img {
+  .checkmark {
     position: absolute;
     width: 40px;
     height: 40px;

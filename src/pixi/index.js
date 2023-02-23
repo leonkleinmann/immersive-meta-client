@@ -2,7 +2,6 @@ import * as PIXI from "pixi.js";
 import Vue from "vue";
 
 const PixiPlugin = {
-  // eslint-disable-next-line no-unused-vars
   install(Vue) {
     Vue.prototype.$pixiApp = new PIXI.Application({
       resizeTo: window,

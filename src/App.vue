@@ -23,7 +23,6 @@ import Bowser from "bowser";
 import { mapGetters } from "vuex";
 import WorldComponent from "@/components/world/WorldComponent";
 import LoadingComponent from "@/components/LoadingComponent";
-//import SetupComponent from "@/components/setup/SetupComponent";
 import SingleSetupComponent from "@/components/setup/SingleSetupComponent";
 import SettingsComponent from "@/components/ui/SettingsComponent";
 
@@ -32,7 +31,6 @@ export default {
   components: {
     SettingsComponent,
     SingleSetupComponent,
-    //SetupComponent,
     WorldComponent,
     LoadingComponent,
   },

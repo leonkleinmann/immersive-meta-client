@@ -1,11 +1,7 @@
 <template>
   <div class="message">
-    <div class="author">
-      {{author}}
-    </div>
-    <div class="message">
-      {{message}}
-    </div>
+    <div class="author">{{author}}</div>
+    <div class="message">{{message}}</div>
   </div>
 </template>
 
@@ -39,3 +35,6 @@ export default {
   }
 }
 </style>
+
+
+

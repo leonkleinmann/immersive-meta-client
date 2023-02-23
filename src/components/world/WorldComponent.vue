@@ -37,7 +37,6 @@ export default {
     this.$pixiApp.loader.onComplete.add((loader, resources) => {
       loader.generateTextures(resources);
       loader.generateAnimations();
-      this.registerKeyEvents();
       this.loadWorld().then(() => {
         this.loadRoom(this.worldData.initial_room);
       });
@@ -174,36 +173,6 @@ export default {
         y: this.avatar.y,
         room_id: this.currentRoom._id,
       });
-    },
-    registerKeyEvents() {
-      document.addEventListener(
-        "keydown",
-        (event) => {
-          if (event.code === "ArrowUp" || event.code === "KeyW") {
-            this.avatar.moveNorth();
-          }
-          if (event.code === "ArrowRight" || event.code === "KeyD") {
-            this.avatar.moveEast();
-          }
-          if (event.code === "ArrowDown" || event.code === "KeyS") {
-            this.avatar.moveSouth();
-          }
-          if (event.code === "ArrowLeft" || event.code === "KeyA") {
-            this.avatar.moveWest();
-          }
-          if (event.code === "KeyX") {
-            const objects = this.room.getInteractiveObjects();
-            objects.forEach((object) => {
-              if (object.canInteract(this.avatar)) {
-                this.modalData = object.content;
-                console.log(this.modalData)
-                this.$store.commit("setModalOpen", true)
-              }
-            });
-          }
-        },
-        false
-      );
     },
     scrollRoom() {
       if (this.mustScrollX) {

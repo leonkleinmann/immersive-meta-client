@@ -3,26 +3,18 @@
     <div class="interaction">
       <div class="audio item" @click="audio = !audio">
         <img
-          v-if="audio"
+          :src="
+            '/assets/ui/microphone_' + (audio ? 'enabled' : 'disabled') + '.svg'
+          "
           alt="mic_enabled"
-          src="/assets/ui/microphone_enabled.svg"
-        />
-        <img
-          v-if="!audio"
-          alt="mic_enabled"
-          src="/assets/ui/microphone_disabled.svg"
         />
       </div>
       <div class="video item" @click="video = !video">
         <img
-          v-if="video"
+          :src="
+            '/assets/ui/webcam_' + (video ? 'enabled' : 'disabled') + '.svg'
+          "
           alt="mic_enabled"
-          src="/assets/ui/webcam_enabled.svg"
-        />
-        <img
-          v-if="!video"
-          alt="mic_enabled"
-          src="/assets/ui/webcam_disabled.svg"
         />
       </div>
     </div>
@@ -71,7 +63,7 @@ export default {
     width: 50px;
     height: 50px;
     border-radius: 100%;
-    
+
     img {
       width: 30px;
       height: 30px;

@@ -11,26 +11,28 @@ export default class InteractiveObject extends AnimatedObject {
     const tileSize = store.getters.settingsData.tileSize;
     let canInteract = false;
 
-    let avatarCpy = avatar;
-    avatarCpy.x = avatarCpy.x + tileSize;
-    if (this.hitTestRectangle(avatarCpy, this.parent)) {
+    let avatarBounds = avatar.getBounds()
+    let parentBounds = this.parent.getBounds()
+
+    avatarBounds.x = avatarBounds.x + tileSize;
+    if (this.hitTestRectangle(avatarBounds, parentBounds)) {
       canInteract = true;
     }
 
-    avatarCpy = avatar;
-    avatarCpy.x = avatarCpy.x - tileSize - 1;
-    if (this.hitTestRectangle(avatarCpy, this.parent)) {
+    avatarBounds = avatar.getBounds()
+    avatarBounds.x = avatarBounds.x - tileSize;
+    if (this.hitTestRectangle(avatarBounds, parentBounds)) {
       canInteract = true;
     }
 
-    avatarCpy = avatar;
-    avatarCpy.y = avatarCpy.y + tileSize;
-    if (this.hitTestRectangle(avatarCpy, this.parent)) {
+    avatarBounds = avatar.getBounds()
+    avatarBounds.y = avatarBounds.y + tileSize;
+    if (this.hitTestRectangle(avatarBounds, parentBounds)) {
       canInteract = true;
     }
-    avatarCpy = avatar;
-    avatarCpy.y = avatarCpy.y - tileSize;
-    if (this.hitTestRectangle(avatarCpy, this.parent)) {
+    avatarBounds = avatar.getBounds()
+    avatarBounds.y = avatarBounds.y - tileSize;
+    if (this.hitTestRectangle(avatarBounds, parentBounds)) {
       canInteract = true;
     }
 
@@ -38,8 +40,8 @@ export default class InteractiveObject extends AnimatedObject {
   }
 
   hitTestRectangle(objA, objB) {
-    const aBounds = objA.getBounds();
-    const bBounds = objB.getBounds();
+    const aBounds = objA;
+    const bBounds = objB;
 
     return (
       aBounds.x + aBounds.width > bBounds.x &&

@@ -19,7 +19,7 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.avatarIdleSheet = {};
     this.animations = store.getters.animations;
     this.zIndex = 9;
-    this.loop = false;
+    this.loop = true;
     this.buildAvatarIdleSheet();
     this.textures = this.avatarIdleSheet["south"];
   }
@@ -36,7 +36,8 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   move(x, y, direction) {
-    if (!this.willCollide(x, y)) {
+    console.log(direction)
+    if (!this.playing && !this.willCollide(x, y)) {
       const walkAnimation = this.animations[`${this.gender}_walk_${direction}`];
       this.textures = walkAnimation;
       this.animationSpeed = 1 / walkAnimation.length;
@@ -46,10 +47,10 @@ export default class Movable extends PIXI.AnimatedSprite {
         },
         x: x,
         y: y,
-        duration: 0.5,
+        duration: .5,
         onComplete: () => {
           this.stop();
-          this.textures = this.avatarIdleSheet[direction];
+          //this.textures = this.avatarIdleSheet[direction];
         },
       });
     }

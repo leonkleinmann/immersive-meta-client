@@ -137,8 +137,8 @@ export default {
       this.room = new VirtualRoom(this.currentRoom);
 
       this.avatar = new Avatar(
-        this.currentRoom.initial_position.x * this.settingsData.tileSize,
-        this.currentRoom.initial_position.y * this.settingsData.tileSize,
+        0,
+        0,
         this.setupData.gender
       );
 

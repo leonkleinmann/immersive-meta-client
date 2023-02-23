@@ -5,11 +5,10 @@ import ExitObject from "@/components/world/object/ExitObject";
 import CommonObject from "@/components/world/object/CommonObject";
 import AnimatedObject from "@/components/world/object/AnimatedObject";
 import InteractiveObject from "@/components/world/object/InteractiveObject";
-import InteractiveContainer from "@/components/world/object/InteractiveContainer";
 
 export default class VirtualRoom extends PIXI.Container {
+  tiles = [];
   interactiveObjects = [];
-  collidableObjects = [];
   exitObjects = [];
 
   constructor(roomData) {
@@ -32,11 +31,23 @@ export default class VirtualRoom extends PIXI.Container {
     backgroundContainer.cacheAsBitmap = true;
     this.backgroundContainer = backgroundContainer;
 
+    this.buildTileMap();
     this.buildBackground();
     this.addChild(this.backgroundContainer);
     this.addExits();
 
     store.commit("setIsLoading", false);
+  }
+
+  buildTileMap() {
+    console.log("ROOM WIDTH / HEIGHT", this.roomWidth, this.roomHeight);
+    for (let y = 0; y < this.roomHeight / this.tileSize; y++) {
+      this.tiles[y] = [];
+      for (let x = 0; x < this.roomWidth / this.tileSize; x++) {
+        this.tiles[y][x] = null;
+      }
+    }
+    console.log("TILEMAP CREATED", this.tiles.length, this.tiles[0].length);
   }
 
   buildBackground() {
@@ -62,41 +73,53 @@ export default class VirtualRoom extends PIXI.Container {
   addObjects() {
     const objectData = this.roomData.objects;
     objectData.forEach((object) => {
+      let toAdd = null;
+
       if (object.__t === "common_object") {
         const objectTexture = store.getters.textures[object.texture.type];
-        let commonObject = new CommonObject(
+        toAdd = new CommonObject(
           object.x * this.tileSize,
           object.y * this.tileSize,
           object.texture.width,
           object.texture.height,
           objectTexture
         );
-        this.collidableObjects.push(commonObject);
-        this.addChild(commonObject);
       }
       if (object.__t === "animated_object") {
-        let animatedObject = new AnimatedObject(
+        toAdd = new AnimatedObject(
           object.x * this.tileSize,
           object.y * this.tileSize,
           object.animation.identifier
         );
-        this.addChild(animatedObject);
       }
       if (object.__t === "interactive_object") {
-        let interactiveObject = new InteractiveObject(
-          0,
-          0,
+        toAdd = new InteractiveObject(
+          object.x * this.tileSize,
+          object.y * this.tileSize,
           object.animation.identifier,
           object.content.html
         );
-        let interactiveContainer = new InteractiveContainer(
-          object.x * this.tileSize,
-          object.y * this.tileSize,
-          interactiveObject
-        );
-        this.interactiveObjects.push(interactiveObject);
-        this.collidableObjects.push(interactiveContainer);
-        this.addChild(interactiveContainer);
+      }
+
+      if (toAdd !== null) {
+        this.addChild(toAdd);
+
+        let toAddBounds = toAdd.getBounds();
+        let n_width = toAddBounds.width;
+        let n_height = toAddBounds.height;
+        for (
+          let i = toAdd.x;
+          i < toAdd.x + Math.round(n_width);
+          i = i + this.tileSize
+        ) {
+          for (
+            let j = toAdd.y;
+            j < toAdd.y + Math.round(n_height);
+            j = j + this.tileSize
+          ) {
+            this.tiles[i / this.tileSize][j / this.tileSize] = toAdd;
+          }
+        }
       }
     });
   }
@@ -114,17 +137,12 @@ export default class VirtualRoom extends PIXI.Container {
         exit.next_room
       );
       this.exitObjects.push(exitObject);
-      //store.state.exitObjects.push(exitObject);
       this.addChild(exitObject);
     });
   }
 
-  getInteractiveObjects() {
-    return this.interactiveObjects;
-  }
-
-  getCollidableObjects() {
-    return this.collidableObjects;
+  getTile(x, y) {
+    return this.tiles[y / this.tileSize][x / this.tileSize];
   }
 
   getExitObjects() {

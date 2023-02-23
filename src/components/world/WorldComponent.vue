@@ -136,20 +136,15 @@ export default {
 
       this.room = new VirtualRoom(this.currentRoom);
 
-      this.avatar = new Avatar(
-        0,
-        0,
-        this.setupData.gender
-      );
+      this.avatar = new Avatar(0, 0, this.setupData.gender);
 
       this.avatarContainer = new AvatarContainer(
         this.setupData.username,
         this.setupData.link
       );
       this.avatarContainer.x =
-        this.avatar.x -
-        this.avatarInformationWidth / 2 +
-        this.settingsData.tileSize / 2;
+        this.avatar.x - 60 + this.settingsData.tileSize / 2;
+
       this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
 
       this.room.addChild(this.avatar);
@@ -200,10 +195,7 @@ export default {
             clientAvatar.username,
             clientAvatar.link
           );
-          avaContainer.x =
-            ava.x -
-            this.avatarInformationWidth / 2 +
-            this.settingsData.tileSize / 2;
+          avaContainer.x = ava.x - 60 + this.settingsData.tileSize / 2;
           avaContainer.y = ava.y - this.settingsData.tileSize;
 
           this.clientAvatars[clientId] = ava;
@@ -225,9 +217,7 @@ export default {
     animationUpdate() {
       /* UPDATE USER AVATAR */
       this.avatarContainer.x =
-        this.avatar.x -
-        this.avatarInformationWidth / 2 +
-        this.settingsData.tileSize / 2;
+        this.avatar.x - 60 + this.settingsData.tileSize / 2;
       this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
 
       /* UPDATE CLIENT AVATARS */
@@ -240,9 +230,7 @@ export default {
           clientAvatar.y !== undefined
         ) {
           clientContainer.x =
-            clientAvatar.x -
-            this.avatarInformationWidth / 2 +
-            this.settingsData.tileSize / 2;
+            clientAvatar.x - 60 + this.settingsData.tileSize / 2;
           clientContainer.y = clientAvatar.y - this.settingsData.tileSize;
         }
       }

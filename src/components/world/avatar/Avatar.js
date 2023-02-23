@@ -1,11 +1,13 @@
 import ServerConnector from "@/connectors/server";
 import Movable, { Directions } from "@/components/world/avatar/Movable";
 import store from "@/store";
+import InteractiveObject from "@/components/world/object/InteractiveObject";
 
 export default class Avatar extends Movable {
   constructor(x, y, gender) {
     super(x, y, gender);
     this.registerKeyEvents();
+    //this.anchor.set(0.5, 0.5)
   }
 
   registerKeyEvents() {
@@ -25,13 +27,33 @@ export default class Avatar extends Movable {
           this.moveToDirection(Directions.WEST);
         }
         if (event.code === "KeyX") {
-          const objects = this.parent.getInteractiveObjects();
-          objects.forEach((object) => {
-            if (object.canInteract(this)) {
-              store.commit("setModalContent", object.content);
-              store.commit("setModalOpen", true);
-            }
-          });
+          let triggerTile = undefined;
+
+          console.log('AVATAR POS', this.x/32, this.y/32)
+          let northTile = this.parent.getTile(this.x, this.y - this.tileSize);
+          let eastTile = this.parent.getTile(this.x + this.tileSize, this.y);
+          let southTile = this.parent.getTile(this.x, this.y + this.tileSize);
+          let westTile = this.parent.getTile(this.x - this.tileSize, this.y);
+          console.log(northTile, eastTile, southTile, westTile);
+
+          if (northTile instanceof InteractiveObject) {
+            triggerTile = northTile;
+          }
+          if (eastTile instanceof InteractiveObject) {
+            triggerTile = eastTile;
+          }
+          if (southTile instanceof InteractiveObject) {
+            triggerTile = southTile;
+          }
+          if (westTile instanceof InteractiveObject) {
+            triggerTile = westTile;
+          }
+
+          console.log("trigger", triggerTile);
+          if (triggerTile !== undefined) {
+            store.commit("setModalContent", triggerTile.content);
+            store.commit("setModalOpen", true);
+          }
         }
       },
       false
@@ -39,31 +61,29 @@ export default class Avatar extends Movable {
   }
 
   moveToDirection(direction) {
-    if (!this.playing) {
-      let toX = this.x;
-      let toY = this.y;
+    let toX = this.x;
+    let toY = this.y;
 
-      switch (direction) {
-        case Directions.NORTH:
-          toY -= this.tileSize;
-          break;
-        case Directions.EAST:
-          toX += this.tileSize;
-          break;
-        case Directions.SOUTH:
-          toY += this.tileSize;
-          break;
-        case Directions.WEST:
-          toX -= this.tileSize;
-          break;
-        default:
-          return;
-      }
+    switch (direction) {
+      case Directions.NORTH:
+        toY -= this.tileSize;
+        break;
+      case Directions.EAST:
+        toX += this.tileSize;
+        break;
+      case Directions.SOUTH:
+        toY += this.tileSize;
+        break;
+      case Directions.WEST:
+        toX -= this.tileSize;
+        break;
+      default:
+        return;
+    }
 
-      if (this.willStayInside(toX, toY)) {
-        this.notifyServer(toX, toY, direction);
-        this.move(toX, toY, direction);
-      }
+    if (this.willStayInside(toX, toY)) {
+      this.notifyServer(toX, toY, direction);
+      this.move(toX, toY, direction);
     }
   }
 

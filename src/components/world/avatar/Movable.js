@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import store from "@/store";
 import gsap from "gsap";
+import ExitObject from "@/components/world/object/ExitObject";
 
 export const Directions = Object.freeze({
   NORTH: "north",
@@ -36,7 +37,6 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   move(x, y, direction) {
-    console.log(direction)
     if (!this.playing && !this.willCollide(x, y)) {
       const walkAnimation = this.animations[`${this.gender}_walk_${direction}`];
       this.textures = walkAnimation;
@@ -47,29 +47,24 @@ export default class Movable extends PIXI.AnimatedSprite {
         },
         x: x,
         y: y,
-        duration: .5,
+        duration: 0.5,
         onComplete: () => {
           this.stop();
-          //this.textures = this.avatarIdleSheet[direction];
+          this.textures = this.avatarIdleSheet[direction];
         },
       });
     }
   }
 
   willCollide(x, y) {
-    const collidableObjects = this.parent.getCollidableObjects();
-    for (const object of collidableObjects) {
-      const objectBounds = object.getBounds();
-      if (
-        x >= object.x &&
-        x < object.x + objectBounds.width &&
-        y >= object.y &&
-        y < object.y + objectBounds.height
-      ) {
-        return true;
-      }
+    let willColide = false;
+    let tile = this.parent.getTile(x, y);
+    console.log('TILE', tile)
+    if (tile !== null && !(tile instanceof ExitObject)) {
+      willColide = true;
     }
-    return false;
+
+    return willColide;
   }
 
   willStayInside(x, y) {

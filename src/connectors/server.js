@@ -72,13 +72,13 @@ export default class ServerConnector {
     store.commit("setClientAvatar", parsed.data);
   }
   handleRoomLeave(parsed) {
-    store.commit('removeClientAvatar', parsed.data.clientId)
+    store.commit("removeClientAvatar", parsed.data.clientId);
   }
   handleAvatarStateUpdated(parsed) {
     let avatarToChange = store.getters.clientAvatars[parsed.clientId];
     avatarToChange.x = parsed.x;
     avatarToChange.y = parsed.y;
-    avatarToChange.direction = parsed.direction
+    avatarToChange.direction = parsed.direction;
 
     store.commit("setClientAvatar", avatarToChange);
   }

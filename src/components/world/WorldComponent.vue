@@ -52,7 +52,7 @@ export default {
       clientAvatars: {},
       clientAvatarContainers: {},
       mustScrollX: false,
-      mustScrollY: false
+      mustScrollY: false,
     };
   },
   computed: {
@@ -159,7 +159,7 @@ export default {
 
       this.$pixiApp.ticker.add(this.animationUpdate);
       this.$pixiApp.ticker.add(this.collisionUpdate);
-      this.$pixiApp.ticker.add(this.scroll)
+      this.$pixiApp.ticker.add(this.scroll);
 
       ServerConnector.getInstance().sendMessage("ROOM_ENTRY", {
         x: this.avatar.x,
@@ -170,7 +170,7 @@ export default {
       this.mustScrollX = this.room.roomWidth > window.innerWidth;
       this.mustScrollY = this.room.roomHeight > window.innerHeight;
 
-      this.scroll()
+      this.scroll();
 
       this.$store.commit("setIsLoading", false);
     },

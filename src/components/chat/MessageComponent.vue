@@ -1,7 +1,7 @@
 <template>
   <div class="message">
-    <div class="author">{{author}}</div>
-    <div class="message">{{message}}</div>
+    <div class="author">{{ author }}</div>
+    <div class="message">{{ message }}</div>
   </div>
 </template>
 
@@ -11,14 +11,14 @@ export default {
   props: {
     author: {
       type: String,
-      required: true
+      required: true,
     },
     message: {
       type: String,
-      required: true
-    }
-  }
-}
+      required: true,
+    },
+  },
+};
 </script>
 
 <style lang="scss" scoped>
@@ -35,6 +35,3 @@ export default {
   }
 }
 </style>
-
-
-

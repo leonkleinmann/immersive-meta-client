@@ -8,7 +8,7 @@ const PixiPlugin = {
       backgroundColor: "black",
       autoDensity: true,
       resolution: window.devicePixelRatio || 1,
-      antialias: true
+      antialias: true,
     });
   },
 };

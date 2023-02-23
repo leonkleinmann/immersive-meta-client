@@ -13,12 +13,13 @@ import AssetManager from "@/components/world/assets/index";
 import axios from "axios";
 import { mapGetters } from "vuex";
 import ChatComponent from "@/components/chat/ChatComponent";
-import VirtualRoom from "@/components/world/room";
 import Avatar from "@/components/world/avatar/Avatar";
 import AvatarContainer from "@/components/world/avatar/AvatarContainer";
 import gsap from "gsap";
 import ServerConnector from "@/connectors/server";
 import ModalComponent from "@/components/ui/ModalComponent";
+import VirtualRoom from "@/components/world/room/VirtualRoom";
+import Movable from "@/components/world/avatar/Movable";
 
 export default {
   name: "WorldComponent",
@@ -209,7 +210,7 @@ export default {
         let clientY = clientAvatar.y;
 
         if (this.clientAvatars[clientId] === undefined) {
-          let ava = new Avatar(clientX, clientY, clientAvatar.gender);
+          let ava = new Movable(clientX, clientY, clientAvatar.gender);
           let avaContainer = new AvatarContainer(
             clientAvatar.username,
             clientAvatar.link

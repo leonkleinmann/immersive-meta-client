@@ -9,6 +9,7 @@ import InteractiveContainer from "@/components/world/object/InteractiveContainer
 
 export default class VirtualRoom extends PIXI.Container {
   interactiveObjects = [];
+  collidableObjects = []
 
   constructor(roomData) {
     super();
@@ -69,6 +70,7 @@ export default class VirtualRoom extends PIXI.Container {
           object.texture.height,
           objectTexture
         );
+        this.collidableObjects.push(commonObject)
         this.addChild(commonObject);
       }
       if (object.__t === "animated_object") {
@@ -92,6 +94,7 @@ export default class VirtualRoom extends PIXI.Container {
           interactiveObject
         );
         this.interactiveObjects.push(interactiveObject);
+        this.collidableObjects.push(interactiveObject)
         this.addChild(interactiveContainer);
       }
     });
@@ -116,5 +119,9 @@ export default class VirtualRoom extends PIXI.Container {
 
   getInteractiveObjects() {
     return this.interactiveObjects;
+  }
+
+  getCollidableObjects() {
+    return this.collidableObjects
   }
 }

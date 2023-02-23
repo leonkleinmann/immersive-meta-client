@@ -13,7 +13,7 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.avatarIdleSheet = {};
     this.animations = store.getters.animations;
 
-    this.zIndex = 9
+    this.zIndex = 9;
     this.loop = false;
 
     this.buildAvatarIdleSheet();
@@ -32,22 +32,55 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   move(x, y, direction) {
-    this.textures = this.animations[this.gender + "_walk_" + direction];
-    this.animationSpeed =
-      1 / this.animations[this.gender + "_walk_" + direction].length;
+    if (!this.willCollide(x, y)) {
+      this.textures = this.animations[this.gender + "_walk_" + direction];
+      this.animationSpeed =
+        1 / this.animations[this.gender + "_walk_" + direction].length;
 
-    gsap.to(this, {
-      onStart: () => {
-        this.play();
-      },
-      x: x,
-      y: y,
-      duration: 0.5,
-      onComplete: () => {
-        this.stop();
-        this.textures = this.avatarIdleSheet[direction];
-      },
+      gsap.to(this, {
+        onStart: () => {
+          this.play();
+        },
+        x: x,
+        y: y,
+        duration: 0.5,
+        onComplete: () => {
+          this.stop();
+          this.textures = this.avatarIdleSheet[direction];
+        },
+      });
+    }
+  }
+
+  willCollide(x, y) {
+    let collide = false;
+
+    const collidableObjects = this.parent.getCollidableObjects();
+    collidableObjects.forEach((object) => {
+      const objectBounds = object.getBounds();
+
+
+      console.log(
+          x,
+          y,
+          "/",
+          object.x,
+          object.y,
+          objectBounds.width,
+          objectBounds.height
+      );
+      if (
+        x >= object.x &&
+        x < object.x + objectBounds.width &&
+        y >= object.y &&
+        y < object.y + objectBounds.height
+      ) {
+        collide = true;
+      }
     });
+
+    console.log("collide", collide);
+    return collide;
   }
 
   willStayInside(x, y) {

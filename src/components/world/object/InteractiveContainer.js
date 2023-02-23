@@ -18,8 +18,4 @@ export default class extends PIXI.Container {
 
     this.addChild(interactiveObject);
   }
-
-  toggle() {
-    console.log("INTERACTION");
-  }
 }

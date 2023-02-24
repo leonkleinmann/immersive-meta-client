@@ -78,8 +78,7 @@ export default class Avatar extends Movable {
     }
 
     if (this.willStayInside(toX, toY)) {
-      this.notifyServer(toX, toY, direction);
-      this.move(toX, toY, direction);
+      this.move(toX, toY, direction, this.notifyServer);
     }
   }
 

@@ -36,7 +36,7 @@ export default class Movable extends PIXI.AnimatedSprite {
     });
   }
 
-  move(x, y, direction) {
+  move(x, y, direction, callback) {
     if (!this.playing && !this.willCollide(x, y)) {
       const walkAnimation = this.animations[`${this.gender}_walk_${direction}`];
       this.textures = walkAnimation;
@@ -51,6 +51,7 @@ export default class Movable extends PIXI.AnimatedSprite {
         onComplete: () => {
           this.stop();
           this.textures = this.avatarIdleSheet[direction];
+          callback(x, y, direction)
         },
       });
     }

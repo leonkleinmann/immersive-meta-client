@@ -1,5 +1,4 @@
 import * as PIXI from "pixi.js";
-import Avatar from "@/components/world/avatar/Avatar";
 import InteractiveObject from "@/components/world/object/InteractiveObject";
 import ExitObject from "@/components/world/object/ExitObject";
 
@@ -15,33 +14,30 @@ export default class MiniMap extends PIXI.Container {
     this.avatar = avatar;
     this.avatarGraphic = undefined;
 
-    //this.scale.set(mirrorScene.roomWidth / this.mapWidth, mirrorScene.roomHeight / this.mapHeight)
+    ticker.add(this.updateAvatar, this);
+  }
 
+  drawBackground() {
     //background
     const graphics = new PIXI.Graphics();
     graphics.beginFill(0xffffff);
     graphics.drawRect(0, 0, this.mapWidth, this.mapHeight);
     graphics.endFill();
-
     this.addChild(graphics);
+  }
 
-    this.drawEntities();
-    ticker.add(this.updateAvatar, this);
+  drawAvatar() {
+    let avatarGraphic = new PIXI.Graphics();
+    avatarGraphic.beginFill(0xff0000);
+    avatarGraphic.drawRect(0, 0, 10, 10);
+    avatarGraphic.endFill();
+    this.avatarGraphic = avatarGraphic;
+    this.addChild(avatarGraphic);
   }
 
   drawEntities() {
+    this.drawBackground()
     this.mirrorScene.children.forEach((child) => {
-      if (child instanceof Avatar) {
-        //let avatarX = child.x * (this.mapWidth / this.mirrorScene.roomWidth);
-        //let avatarY = child.y * (this.mapHeight / this.mirrorScene.roomHeight);
-
-        let avatarGraphic = new PIXI.Graphics();
-        avatarGraphic.beginFill(0xff0000);
-        avatarGraphic.drawRect(0, 0, 10, 10);
-        avatarGraphic.endFill();
-        this.avatarGraphic = avatarGraphic;
-        this.addChild(avatarGraphic);
-      }
       if (child instanceof InteractiveObject) {
         let objectX = child.x * (this.mapWidth / this.mirrorScene.roomWidth);
         let objectY = child.y * (this.mapHeight / this.mirrorScene.roomHeight);
@@ -67,11 +63,24 @@ export default class MiniMap extends PIXI.Container {
     });
   }
   updateAvatar() {
-    let avatarX = this.avatar.x * (this.mapWidth / this.mirrorScene.roomWidth);
-    let avatarY =
-      this.avatar.y * (this.mapHeight / this.mirrorScene.roomHeight);
+    if (this.avatar !== undefined && this.avatarGraphic !== undefined) {
+      let avatarX =
+        this.avatar.x * (this.mapWidth / this.mirrorScene.roomWidth);
+      let avatarY =
+        this.avatar.y * (this.mapHeight / this.mirrorScene.roomHeight);
 
-    this.avatarGraphic.x = avatarX;
-    this.avatarGraphic.y = avatarY;
+      this.avatarGraphic.x = avatarX;
+      this.avatarGraphic.y = avatarY;
+    }
+  }
+  setAvatar(avatar) {
+    this.removeChild(this.avatar)
+    this.avatar = avatar;
+    this.drawAvatar()
+  }
+  setMirrorScene(mirrorScene) {
+    this.mirrorScene = mirrorScene;
+    this.removeChildren();
+    this.drawEntities();
   }
 }

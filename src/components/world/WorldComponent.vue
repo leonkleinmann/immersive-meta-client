@@ -60,6 +60,7 @@ export default {
     this.$pixiApp.loader.onComplete.add((loader, resources) => {
       loader.generateTextures(resources);
       loader.generateAnimations();
+      this.addEntities();
       this.loadWorld().then(() => {
         this.loadRoom(this.worldData.initial_room);
       });
@@ -76,6 +77,22 @@ export default {
     },
   },
   methods: {
+    addEntities() {
+      this.miniMap = new MiniMap(
+        0,
+        0,
+        200,
+        200,
+        undefined,
+        undefined,
+        this.$pixiApp.ticker
+      );
+      this.avatar = new Avatar(0, 0, this.setupData.gender);
+      this.avatarContainer = new AvatarContainer(
+        this.setupData.username,
+        this.setupData.link
+      );
+    },
     async loadSettings() {
       try {
         await axios
@@ -126,65 +143,55 @@ export default {
         console.log("ERROR LOADING ROOM");
       }
     },
+    removeRoom() {
+      this.$pixiApp.ticker.remove(this.animationUpdate);
+      this.$pixiApp.ticker.remove(this.collisionUpdate);
+      this.$pixiApp.ticker.remove(this.scroll);
+
+      this.$pixiApp.stage.removeChild(this.room);
+      this.room.destroy();
+      this.clientAvatars = {};
+      this.clientAvatarContainers = {};
+      this.$store.commit("clearClientAvatars");
+
+      ServerConnector.getInstance().sendMessage("ROOM_LEAVE");
+    },
     changeRoom() {
       this.$store.commit("setIsLoading", true);
 
       if (this.room !== undefined) {
-        this.$pixiApp.stage.removeChild(this.room);
-        this.room.destroy()
-        ServerConnector.getInstance().sendMessage("ROOM_LEAVE");
-        this.clientAvatars = {};
-        this.clientAvatarContainers = {};
-        this.$store.commit('clearClientAvatars')
+        this.removeRoom();
       }
 
       this.room = new VirtualRoom(this.currentRoom);
 
-      this.avatar = new Avatar(
-        this.currentRoom.initial_position.x * this.settingsData.tileSize,
-        this.currentRoom.initial_position.y * this.settingsData.tileSize,
-        this.setupData.gender
-      );
+      this.avatar.x =
+        this.currentRoom.initial_position.x * this.settingsData.tileSize;
+      this.avatar.y =
+        this.currentRoom.initial_position.y * this.settingsData.tileSize;
 
-      this.avatarContainer = new AvatarContainer(
-        this.setupData.username,
-        this.setupData.link
-      );
-      this.avatarContainer.x =
-        this.avatar.x - 60 + this.settingsData.tileSize / 2;
-
-      this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
+      this.miniMap.setMirrorScene(this.room);
+      this.miniMap.setAvatar(this.avatar);
 
       this.room.addChild(this.avatar);
       this.room.addChild(this.avatarContainer);
-      this.$pixiApp.stage.addChild(this.room);
 
-      this.miniMap = new MiniMap(
-        0,
-        0,
-        200,
-        200,
-        this.room,
-        this.avatar,
-        this.$pixiApp.ticker
-      );
-      this.miniMap.x = 0;
-      this.miniMap.y = 0;
+      this.$pixiApp.stage.addChild(this.room);
       this.$pixiApp.stage.addChild(this.miniMap);
 
       this.$pixiApp.ticker.add(this.animationUpdate);
       this.$pixiApp.ticker.add(this.collisionUpdate);
       this.$pixiApp.ticker.add(this.scroll);
 
+      this.mustScrollX = this.room.roomWidth > window.innerWidth;
+      this.mustScrollY = this.room.roomHeight > window.innerHeight;
+      this.scroll();
+
       ServerConnector.getInstance().sendMessage("ROOM_ENTRY", {
         x: this.avatar.x,
         y: this.avatar.y,
         room_id: this.currentRoom._id,
       });
-
-      this.mustScrollX = this.room.roomWidth > window.innerWidth;
-      this.mustScrollY = this.room.roomHeight > window.innerHeight;
-      this.scroll();
 
       this.$store.commit("setIsLoading", false);
     },

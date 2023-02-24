@@ -70,9 +70,11 @@ export default {
   },
   watch: {
     "$store.state.clientAvatars"(updatedAvatars) {
+      console.log('UPDATE AVATARS')
       this.modifyClientAvatars(updatedAvatars);
     },
     "$store.state.currentRoom"() {
+      console.log('UPDATE ROOM')
       this.changeRoom();
     },
   },
@@ -127,6 +129,10 @@ export default {
       }
     },
     async loadRoom(roomId) {
+      if (this.room !== undefined) {
+        this.removeRoom();
+      }
+
       try {
         await axios
           .get(
@@ -144,24 +150,20 @@ export default {
       }
     },
     removeRoom() {
+      ServerConnector.getInstance().sendMessage("ROOM_LEAVE");
+
       this.$pixiApp.ticker.remove(this.animationUpdate);
       this.$pixiApp.ticker.remove(this.collisionUpdate);
       this.$pixiApp.ticker.remove(this.scroll);
 
       this.$pixiApp.stage.removeChild(this.room);
-      this.room.destroy();
       this.clientAvatars = {};
       this.clientAvatarContainers = {};
       this.$store.commit("clearClientAvatars");
-
-      ServerConnector.getInstance().sendMessage("ROOM_LEAVE");
     },
     changeRoom() {
+      console.log('CHANGEROOM')
       this.$store.commit("setIsLoading", true);
-
-      if (this.room !== undefined) {
-        this.removeRoom();
-      }
 
       this.room = new VirtualRoom(this.currentRoom);
 
@@ -185,7 +187,6 @@ export default {
 
       this.mustScrollX = this.room.roomWidth > window.innerWidth;
       this.mustScrollY = this.room.roomHeight > window.innerHeight;
-      this.scroll();
 
       ServerConnector.getInstance().sendMessage("ROOM_ENTRY", {
         x: this.avatar.x,
@@ -196,6 +197,7 @@ export default {
       this.$store.commit("setIsLoading", false);
     },
     modifyClientAvatars(updatedAvatars) {
+      console.log('MODIFY', updatedAvatars)
       if (
         Object.keys(this.clientAvatars).length >
         Object.keys(updatedAvatars).length

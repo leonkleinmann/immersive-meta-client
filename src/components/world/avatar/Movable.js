@@ -51,7 +51,9 @@ export default class Movable extends PIXI.AnimatedSprite {
         onComplete: () => {
           this.stop();
           this.textures = this.avatarIdleSheet[direction];
-          callback(x, y, direction)
+          if (typeof callback === "function") {
+            callback(x, y, direction);
+          }
         },
       });
     }

@@ -19,7 +19,7 @@ export default new Vuex.Store({
     setupData: {
       gender: "male",
       username: "DevUser",
-      link: "",
+      link: "https://hs-rm.de/",
     },
     settingsData: {
       tileSize: undefined,
@@ -160,6 +160,9 @@ export default new Vuex.Store({
     removeClientAvatar(state, clientId) {
       Vue.delete(state.clientAvatars, clientId.toString());
     },
+    clearClientAvatars(state) {
+      state.clientAvatars = []
+    }
   },
   actions: {},
 });

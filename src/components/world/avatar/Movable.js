@@ -59,8 +59,8 @@ export default class Movable extends PIXI.AnimatedSprite {
   willCollide(x, y) {
     let willColide = false;
     let tile = this.parent.getTile(x, y);
-    console.log('TILE', tile)
-    if (tile !== null && !(tile instanceof ExitObject)) {
+
+    if (tile !== null && tile !== undefined && !(tile instanceof ExitObject)) {
       willColide = true;
     }
 

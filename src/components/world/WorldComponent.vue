@@ -20,10 +20,33 @@ import ModalComponent from "@/components/ui/ModalComponent";
 import VirtualRoom from "@/components/world/room/VirtualRoom";
 import Movable from "@/components/world/avatar/Movable";
 import gsap from "gsap";
+import MiniMap from "@/components/world/room/MiniMap";
 
 export default {
   name: "WorldComponent",
   components: { ModalComponent, ChatComponent },
+  data() {
+    return {
+      room: undefined,
+      avatar: undefined,
+      avatarContainer: undefined,
+      clientAvatars: {},
+      clientAvatarContainers: {},
+      mustScrollX: false,
+      mustScrollY: false,
+      miniMap: undefined,
+    };
+  },
+  computed: {
+    ...mapGetters([
+      "server",
+      "setupData",
+      "settingsData",
+      "currentRoom",
+      "worldData",
+      "modalContent",
+    ]),
+  },
   mounted() {
     this.$store.commit("setIsLoading", true);
     document.querySelectorAll(".world")[0].appendChild(this.$pixiApp.view);
@@ -43,27 +66,6 @@ export default {
 
       this.$store.commit("setIsLoading", false);
     });
-  },
-  data() {
-    return {
-      room: undefined,
-      avatar: undefined,
-      avatarContainer: undefined,
-      clientAvatars: {},
-      clientAvatarContainers: {},
-      mustScrollX: false,
-      mustScrollY: false,
-    };
-  },
-  computed: {
-    ...mapGetters([
-      "server",
-      "setupData",
-      "settingsData",
-      "currentRoom",
-      "worldData",
-      "modalContent",
-    ]),
   },
   watch: {
     "$store.state.clientAvatars"(updatedAvatars) {
@@ -129,14 +131,20 @@ export default {
 
       if (this.room !== undefined) {
         this.$pixiApp.stage.removeChild(this.room);
+        this.room.destroy()
         ServerConnector.getInstance().sendMessage("ROOM_LEAVE");
         this.clientAvatars = {};
         this.clientAvatarContainers = {};
+        this.$store.commit('clearClientAvatars')
       }
 
       this.room = new VirtualRoom(this.currentRoom);
 
-      this.avatar = new Avatar(0, 0, this.setupData.gender);
+      this.avatar = new Avatar(
+        this.currentRoom.initial_position.x * this.settingsData.tileSize,
+        this.currentRoom.initial_position.y * this.settingsData.tileSize,
+        this.setupData.gender
+      );
 
       this.avatarContainer = new AvatarContainer(
         this.setupData.username,
@@ -150,7 +158,19 @@ export default {
       this.room.addChild(this.avatar);
       this.room.addChild(this.avatarContainer);
       this.$pixiApp.stage.addChild(this.room);
-      this.room.addObjects();
+
+      this.miniMap = new MiniMap(
+        0,
+        0,
+        200,
+        200,
+        this.room,
+        this.avatar,
+        this.$pixiApp.ticker
+      );
+      this.miniMap.x = 0;
+      this.miniMap.y = 0;
+      this.$pixiApp.stage.addChild(this.miniMap);
 
       this.$pixiApp.ticker.add(this.animationUpdate);
       this.$pixiApp.ticker.add(this.collisionUpdate);
@@ -164,7 +184,6 @@ export default {
 
       this.mustScrollX = this.room.roomWidth > window.innerWidth;
       this.mustScrollY = this.room.roomHeight > window.innerHeight;
-
       this.scroll();
 
       this.$store.commit("setIsLoading", false);

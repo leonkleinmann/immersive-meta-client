@@ -29,12 +29,10 @@ export default class Avatar extends Movable {
         if (event.code === "KeyX") {
           let triggerTile = undefined;
 
-          console.log('AVATAR POS', this.x/32, this.y/32)
           let northTile = this.parent.getTile(this.x, this.y - this.tileSize);
           let eastTile = this.parent.getTile(this.x + this.tileSize, this.y);
           let southTile = this.parent.getTile(this.x, this.y + this.tileSize);
           let westTile = this.parent.getTile(this.x - this.tileSize, this.y);
-          console.log(northTile, eastTile, southTile, westTile);
 
           if (northTile instanceof InteractiveObject) {
             triggerTile = northTile;
@@ -48,8 +46,6 @@ export default class Avatar extends Movable {
           if (westTile instanceof InteractiveObject) {
             triggerTile = westTile;
           }
-
-          console.log("trigger", triggerTile);
           if (triggerTile !== undefined) {
             store.commit("setModalContent", triggerTile.content);
             store.commit("setModalOpen", true);

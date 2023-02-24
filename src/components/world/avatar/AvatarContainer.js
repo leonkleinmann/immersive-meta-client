@@ -1,4 +1,5 @@
 import * as PIXI from "pixi.js";
+import store from "@/store";
 
 export default class AvatarContainer extends PIXI.Container {
   constructor(username, link) {
@@ -32,5 +33,17 @@ export default class AvatarContainer extends PIXI.Container {
     });
     usernameText.position.set(status.x + 40, status.y + 12);
     this.addChild(usernameText);
+
+    const link = new PIXI.Sprite(store.getters.textures["link"])
+    link.width = 20
+    link.height = 20
+    link.x = usernameText.x + 55
+    link.y = 10
+    link.interactive = true
+    link.on('click', () => {
+      window.open(this.link, '_blank').focus();
+    })
+    this.addChild(link)
+
   }
 }

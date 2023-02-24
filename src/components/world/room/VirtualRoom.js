@@ -8,7 +8,6 @@ import InteractiveObject from "@/components/world/object/InteractiveObject";
 
 export default class VirtualRoom extends PIXI.Container {
   tiles = [];
-  interactiveObjects = [];
   exitObjects = [];
 
   constructor(roomData) {
@@ -33,21 +32,23 @@ export default class VirtualRoom extends PIXI.Container {
 
     this.buildTileMap();
     this.buildBackground();
-    this.addChild(this.backgroundContainer);
+
+    this.addTiles();
+    this.addObjects();
     this.addExits();
+
+    this.addChild(this.backgroundContainer);
 
     store.commit("setIsLoading", false);
   }
 
   buildTileMap() {
-    console.log("ROOM WIDTH / HEIGHT", this.roomWidth, this.roomHeight);
     for (let y = 0; y < this.roomHeight / this.tileSize; y++) {
       this.tiles[y] = [];
       for (let x = 0; x < this.roomWidth / this.tileSize; x++) {
         this.tiles[y][x] = null;
       }
     }
-    console.log("TILEMAP CREATED", this.tiles.length, this.tiles[0].length);
   }
 
   buildBackground() {
@@ -68,6 +69,24 @@ export default class VirtualRoom extends PIXI.Container {
         );
       }
     }
+  }
+
+  addTiles() {
+    const tiles = this.roomData.tiles;
+    tiles.forEach((tile) => {
+      if (tile.__t === "base_tile") {
+        const texture = store.getters.textures[tile.texture.type];
+        this.backgroundContainer.addChild(
+          new BaseTile(
+            tile.x * this.tileSize,
+            tile.y *this.tileSize,
+            tile.texture.width,
+            tile.texture.height,
+            texture
+          )
+        );
+      }
+    });
   }
 
   addObjects() {
@@ -142,7 +161,7 @@ export default class VirtualRoom extends PIXI.Container {
   }
 
   getTile(x, y) {
-    return this.tiles[y / this.tileSize][x / this.tileSize];
+    return this.tiles[x / this.tileSize][y / this.tileSize];
   }
 
   getExitObjects() {

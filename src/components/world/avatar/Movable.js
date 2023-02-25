@@ -38,8 +38,8 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   removeInfoContainer() {
-    this.parent.removeChild(this.info)
-    this.info = undefined
+    this.parent.removeChild(this.info);
+    this.info = undefined;
   }
 
   buildAvatarIdleSheet() {
@@ -60,35 +60,43 @@ export default class Movable extends PIXI.AnimatedSprite {
       this.animationSpeed = 1 / walkAnimation.length;
 
       let timeline = new gsap.timeline({
-        onStart: function() {
+        onStart: function () {
           console.log("Die Timeline wurde gestartet");
         },
-        onComplete: function() {
+        onComplete: function () {
           console.log("Die Timeline wurde abgeschlossen");
-        }
-      });
-      timeline.to(this, {
-        onStart: () => {
-          this.play();
-          if (typeof callback === "function") {
-            callback(x, y, direction);
-          }
         },
-        x: x,
-        y: y,
-        duration: 0.5,
-        onComplete: () => {
-          this.stop();
-          this.textures = this.avatarIdleSheet[direction];
-        }
-      }, 0)
+      });
+      timeline.to(
+        this,
+        {
+          onStart: () => {
+            this.play();
+            if (typeof callback === "function") {
+              callback(x, y, direction);
+            }
+          },
+          x: x,
+          y: y,
+          duration: 0.5,
+          onComplete: () => {
+            this.stop();
+            this.textures = this.avatarIdleSheet[direction];
+          },
+        },
+        0
+      );
       if (this.info) {
-        timeline.to(this.info, {
-          x: x - 60 + this.tileSize / 2,
-          y: y - this.tileSize,
-        }, 0)
+        timeline.to(
+          this.info,
+          {
+            x: x - 60 + this.tileSize / 2,
+            y: y - this.tileSize,
+          },
+          0
+        );
       }
-      timeline.play()
+      timeline.play();
     }
   }
 

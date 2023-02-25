@@ -1,6 +1,7 @@
 import * as PIXI from "pixi.js";
 import InteractiveObject from "@/components/world/object/InteractiveObject";
 import ExitObject from "@/components/world/object/ExitObject";
+import NPC from "@/components/world/npc/NPC";
 
 export default class MiniMap extends PIXI.Container {
   constructor(x, y, width, height, mirrorScene, avatar, ticker) {
@@ -55,6 +56,17 @@ export default class MiniMap extends PIXI.Container {
 
         let objectGraphic = new PIXI.Graphics();
         objectGraphic.beginFill(0x00ff00);
+        objectGraphic.drawRect(exitX, exitY, 10, 10);
+        objectGraphic.endFill();
+
+        this.addChild(objectGraphic);
+      }
+      if (child instanceof NPC) {
+        let exitX = child.x * (this.mapWidth / this.mirrorScene.roomWidth);
+        let exitY = child.y * (this.mapHeight / this.mirrorScene.roomHeight);
+
+        let objectGraphic = new PIXI.Graphics();
+        objectGraphic.beginFill(0x6495ED);
         objectGraphic.drawRect(exitX, exitY, 10, 10);
         objectGraphic.endFill();
 

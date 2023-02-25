@@ -5,6 +5,8 @@ import ExitObject from "@/components/world/object/ExitObject";
 import CommonObject from "@/components/world/object/CommonObject";
 import AnimatedObject from "@/components/world/object/AnimatedObject";
 import InteractiveObject from "@/components/world/object/InteractiveObject";
+import { Directions } from "@/components/world/avatar/Movable";
+import NPC from "@/components/world/npc/NPC";
 
 export default class VirtualRoom extends PIXI.Container {
   tiles = [];
@@ -36,6 +38,7 @@ export default class VirtualRoom extends PIXI.Container {
     this.addTiles();
     this.addObjects();
     this.addExits();
+    this.addNpcs();
 
     this.addChild(this.backgroundContainer);
 
@@ -79,7 +82,7 @@ export default class VirtualRoom extends PIXI.Container {
         this.backgroundContainer.addChild(
           new BaseTile(
             tile.x * this.tileSize,
-            tile.y *this.tileSize,
+            tile.y * this.tileSize,
             tile.texture.width,
             tile.texture.height,
             texture
@@ -157,6 +160,36 @@ export default class VirtualRoom extends PIXI.Container {
       );
       this.exitObjects.push(exitObject);
       this.addChild(exitObject);
+    });
+  }
+
+  addNpcs() {
+    this.roomData.npcs.forEach((npc) => {
+      let npcToAdd = new NPC(
+        npc.x * this.tileSize,
+        npc.y * this.tileSize,
+        npc.animation_identifier,
+        npc.name,
+        Directions.SOUTH
+      );
+      this.addChild(npcToAdd);
+
+      let npcBounds = npcToAdd.getBounds();
+      let n_width = npcBounds.width;
+      let n_height = npcBounds.height;
+      for (
+        let i = npcToAdd.x;
+        i < npcToAdd.x + Math.round(n_width);
+        i = i + this.tileSize
+      ) {
+        for (
+          let j = npcToAdd.y;
+          j < npcToAdd.y + Math.round(n_height);
+          j = j + this.tileSize
+        ) {
+          this.tiles[i / this.tileSize][j / this.tileSize] = npcToAdd;
+        }
+      }
     });
   }
 

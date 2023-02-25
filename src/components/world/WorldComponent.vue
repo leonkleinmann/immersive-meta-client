@@ -91,7 +91,8 @@ export default {
         0,
         this.setupData.gender,
         this.setupData.username,
-        this.setupData.link
+        this.setupData.link,
+        "south"
       );
     },
     async loadSettings() {
@@ -173,7 +174,7 @@ export default {
       this.miniMap.setAvatar(this.avatar);
 
       this.room.addChild(this.avatar);
-      this.avatar.addInfoContainer()
+      this.avatar.addInfoContainer();
 
       this.$pixiApp.stage.addChild(this.room, this.miniMap);
 
@@ -202,24 +203,26 @@ export default {
         .filter((key) => !newKeys.includes(key))
         .forEach((key) => {
           const avatar = this.clientAvatars[key];
-          avatar.removeInfoContainer()
+          avatar.removeInfoContainer();
           this.room.removeChild(avatar);
           delete this.clientAvatars[key];
         });
 
-      updatedAvatars.forEach(({ clientId, x, y, gender, username, link, direction }) => {
-        if (!this.clientAvatars[clientId]) {
-          const ava = new Movable(x, y, gender, username, link, direction);
-          this.clientAvatars[clientId] = ava;
-          this.room.addChild(ava);
-          ava.addInfoContainer()
-        } else if (
-          this.clientAvatars[clientId].x !== x ||
-          this.clientAvatars[clientId].y !== y
-        ) {
-          this.clientAvatars[clientId].move(x, y, direction);
+      updatedAvatars.forEach(
+        ({ clientId, x, y, gender, username, link, direction }) => {
+          if (!this.clientAvatars[clientId]) {
+            const ava = new Movable(x, y, gender, username, link, direction);
+            this.clientAvatars[clientId] = ava;
+            this.room.addChild(ava);
+            ava.addInfoContainer();
+          } else if (
+            this.clientAvatars[clientId].x !== x ||
+            this.clientAvatars[clientId].y !== y
+          ) {
+            this.clientAvatars[clientId].move(x, y, direction);
+          }
         }
-      });
+      );
     },
     collisionUpdate() {
       this.room.getExitObjects().forEach((exitObject) => {

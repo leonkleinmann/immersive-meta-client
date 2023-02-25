@@ -4,7 +4,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    devMode: true,
+    devMode: false,
     isMobile: false,
     isLoading: false,
     isPlaying: false,
@@ -35,6 +35,8 @@ export default new Vuex.Store({
     clientAvatars: [],
     exitObjects: [],
     chatMessages: [],
+    audioSource: '',
+    playMusic: true,
   },
   getters: {
     server: (state) => {
@@ -100,6 +102,12 @@ export default new Vuex.Store({
     avatarInformationHeight: (state) => {
       return state.settingsData.avatarInformationHeight;
     },
+    audioSource: (state) => {
+      return state.audioSource
+    },
+    playMusic: (state) => {
+      return state.playMusic
+    }
   },
   mutations: {
     setClientId(state, clientId) {
@@ -162,6 +170,12 @@ export default new Vuex.Store({
     },
     clearClientAvatars(state) {
       state.clientAvatars = []
+    },
+    setPlayMusic(state, play) {
+      state.playMusic = play
+    },
+    setAudioSource(state, audioSource) {
+      state.audioSource = audioSource
     }
   },
   actions: {},

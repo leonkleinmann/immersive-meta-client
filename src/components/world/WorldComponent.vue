@@ -3,6 +3,7 @@
     <ModalComponent title="Content">
       <div v-html="modalContent"></div>
     </ModalComponent>
+    <SoundComponent />
     <div class="world"></div>
     <ChatComponent />
   </div>
@@ -21,10 +22,11 @@ import VirtualRoom from "@/components/world/room/VirtualRoom";
 import Movable from "@/components/world/avatar/Movable";
 import gsap from "gsap";
 import MiniMap from "@/components/world/room/MiniMap";
+import SoundComponent from "@/components/sound/SoundComponent";
 
 export default {
   name: "WorldComponent",
-  components: { ModalComponent, ChatComponent },
+  components: {SoundComponent, ModalComponent, ChatComponent },
   data() {
     return {
       room: undefined,
@@ -188,6 +190,8 @@ export default {
         y: this.avatar.y,
         room_id: this.currentRoom._id,
       });
+
+      this.$store.commit('setAudioSource', this.currentRoom.music)
 
       this.$store.commit("setIsLoading", false);
     },

@@ -70,11 +70,9 @@ export default {
   },
   watch: {
     "$store.state.clientAvatars"(updatedAvatars) {
-      console.log('UPDATE AVATARS')
       this.modifyClientAvatars(updatedAvatars);
     },
     "$store.state.currentRoom"() {
-      console.log('UPDATE ROOM')
       this.changeRoom();
     },
   },
@@ -162,7 +160,6 @@ export default {
       this.$store.commit("clearClientAvatars");
     },
     changeRoom() {
-      console.log('CHANGEROOM')
       this.$store.commit("setIsLoading", true);
 
       this.room = new VirtualRoom(this.currentRoom);
@@ -175,11 +172,9 @@ export default {
       this.miniMap.setMirrorScene(this.room);
       this.miniMap.setAvatar(this.avatar);
 
-      this.room.addChild(this.avatar);
-      this.room.addChild(this.avatarContainer);
+      this.room.addChild(this.avatar, this.avatarContainer);
 
-      this.$pixiApp.stage.addChild(this.room);
-      this.$pixiApp.stage.addChild(this.miniMap);
+      this.$pixiApp.stage.addChild(this.room, this.miniMap);
 
       this.$pixiApp.ticker.add(this.animationUpdate);
       this.$pixiApp.ticker.add(this.collisionUpdate);
@@ -197,70 +192,48 @@ export default {
       this.$store.commit("setIsLoading", false);
     },
     modifyClientAvatars(updatedAvatars) {
-      console.log('MODIFY', updatedAvatars)
-      if (
-        Object.keys(this.clientAvatars).length >
-        Object.keys(updatedAvatars).length
-      ) {
-        const keys1 = Object.keys(this.clientAvatars);
-        const keys2 = Object.keys(updatedAvatars);
+      const oldKeys = Object.keys(this.clientAvatars);
+      const newKeys = Object.keys(updatedAvatars);
 
-        const diff = keys1.filter((key) => !keys2.includes(key))[0];
-        let avatar = this.clientAvatars[diff];
-        let avatarInfo = this.clientAvatarContainers[diff];
-        this.room.removeChild(avatar);
-        this.room.removeChild(avatarInfo);
-      }
+      oldKeys
+        .filter((key) => !newKeys.includes(key))
+        .forEach((key) => {
+          const avatar = this.clientAvatars[key];
+          const avatarInfo = this.clientAvatarContainers[key];
+          this.room.removeChild(avatar, avatarInfo);
+          delete this.clientAvatars[key];
+          delete this.clientAvatarContainers[key];
+        });
 
-      updatedAvatars.forEach((clientAvatar) => {
-        let clientId = clientAvatar.clientId;
-        let clientX = clientAvatar.x;
-        let clientY = clientAvatar.y;
-
-        if (this.clientAvatars[clientId] === undefined) {
-          let ava = new Movable(clientX, clientY, clientAvatar.gender);
-          let avaContainer = new AvatarContainer(
-            clientAvatar.username,
-            clientAvatar.link
-          );
-          avaContainer.x = ava.x - 60 + this.settingsData.tileSize / 2;
-          avaContainer.y = ava.y - this.settingsData.tileSize;
-
-          this.clientAvatars[clientId] = ava;
-          this.clientAvatarContainers[clientId] = avaContainer;
-          this.room.addChild(this.clientAvatars[clientId]);
-          this.room.addChild(this.clientAvatarContainers[clientId]);
-        } else {
-          let cpy = this.clientAvatars[clientId];
-          if (cpy.x !== clientX || cpy.y !== clientY) {
-            this.clientAvatars[clientId].move(
-              clientAvatar.x,
-              clientAvatar.y,
-              clientAvatar.direction
-            );
+      updatedAvatars.forEach(
+        ({ clientId, x, y, gender, username, link, direction }) => {
+          if (!this.clientAvatars[clientId]) {
+            const ava = new Movable(x, y, gender);
+            const avaContainer = new AvatarContainer(username, link);
+            this.clientAvatars[clientId] = ava;
+            this.clientAvatarContainers[clientId] = avaContainer;
+            this.room.addChild(ava, avaContainer);
+          } else if (
+            this.clientAvatars[clientId].x !== x ||
+            this.clientAvatars[clientId].y !== y
+          ) {
+            this.clientAvatars[clientId].move(x, y, direction);
           }
         }
-      });
+      );
     },
     animationUpdate() {
-      /* UPDATE USER AVATAR */
-      this.avatarContainer.x =
-        this.avatar.x - 60 + this.settingsData.tileSize / 2;
-      this.avatarContainer.y = this.avatar.y - this.settingsData.tileSize;
-
-      /* UPDATE CLIENT AVATARS */
+      this.avatarContainer.position.set(
+        this.avatar.x - 60 + this.settingsData.tileSize / 2,
+        this.avatar.y - this.settingsData.tileSize
+      );
       for (const client in this.clientAvatars) {
-        let clientAvatar = this.clientAvatars[client];
-        let clientContainer = this.clientAvatarContainers[client];
-        if (
-          clientAvatar &&
-          clientAvatar.x !== undefined &&
-          clientAvatar.y !== undefined
-        ) {
-          clientContainer.x =
-            clientAvatar.x - 60 + this.settingsData.tileSize / 2;
-          clientContainer.y = clientAvatar.y - this.settingsData.tileSize;
-        }
+        const clientAvatar = this.clientAvatars[client];
+        const clientContainer = this.clientAvatarContainers[client];
+        clientContainer.position.set(
+          clientAvatar.x - 60 + this.settingsData.tileSize / 2,
+          clientAvatar.y - this.settingsData.tileSize
+        );
       }
     },
     collisionUpdate() {

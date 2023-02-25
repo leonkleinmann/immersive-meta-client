@@ -29,11 +29,11 @@ export default class Movable extends PIXI.AnimatedSprite {
     const textures = store.getters.textures;
     const gender = store.getters.setupData.gender;
 
-    Object.keys(Directions).forEach((direction) => {
-      this.avatarIdleSheet[Directions[direction]] = [
-        textures[`${gender}_idle_${Directions[direction]}`],
+    for (const direction of Object.values(Directions)) {
+      this.avatarIdleSheet[direction] = [
+        textures[`${gender}_idle_${direction}`],
       ];
-    });
+    }
   }
 
   move(x, y, direction, callback) {
@@ -44,6 +44,9 @@ export default class Movable extends PIXI.AnimatedSprite {
       gsap.to(this, {
         onStart: () => {
           this.play();
+          if (typeof callback === "function") {
+            callback(x, y, direction);
+          }
         },
         x: x,
         y: y,
@@ -51,9 +54,6 @@ export default class Movable extends PIXI.AnimatedSprite {
         onComplete: () => {
           this.stop();
           this.textures = this.avatarIdleSheet[direction];
-          if (typeof callback === "function") {
-            callback(x, y, direction);
-          }
         },
       });
     }

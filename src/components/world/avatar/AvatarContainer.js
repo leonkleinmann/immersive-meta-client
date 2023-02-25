@@ -1,7 +1,7 @@
 import * as PIXI from "pixi.js";
 import store from "@/store";
 
-export default class AvatarContainer extends PIXI.Container {
+export default class AvatarInfoContainer extends PIXI.Container {
   constructor(username, link) {
     super();
     this.username = username;

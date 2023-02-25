@@ -4,8 +4,8 @@ import store from "@/store";
 import InteractiveObject from "@/components/world/object/InteractiveObject";
 
 export default class Avatar extends Movable {
-  constructor(x, y, gender) {
-    super(x, y, gender);
+  constructor(x, y, gender, username, link) {
+    super(x, y, gender, username, link);
     this.registerKeyEvents();
   }
 

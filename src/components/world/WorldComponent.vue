@@ -15,7 +15,6 @@ import axios from "axios";
 import { mapGetters } from "vuex";
 import ChatComponent from "@/components/chat/ChatComponent";
 import Avatar from "@/components/world/avatar/Avatar";
-import AvatarContainer from "@/components/world/avatar/AvatarContainer";
 import ServerConnector from "@/connectors/server";
 import ModalComponent from "@/components/ui/ModalComponent";
 import VirtualRoom from "@/components/world/room/VirtualRoom";
@@ -26,14 +25,12 @@ import SoundComponent from "@/components/sound/SoundComponent";
 
 export default {
   name: "WorldComponent",
-  components: {SoundComponent, ModalComponent, ChatComponent },
+  components: { SoundComponent, ModalComponent, ChatComponent },
   data() {
     return {
       room: undefined,
       avatar: undefined,
-      avatarContainer: undefined,
       clientAvatars: {},
-      clientAvatarContainers: {},
       mustScrollX: false,
       mustScrollY: false,
       miniMap: undefined,
@@ -89,8 +86,10 @@ export default {
         undefined,
         this.$pixiApp.ticker
       );
-      this.avatar = new Avatar(0, 0, this.setupData.gender);
-      this.avatarContainer = new AvatarContainer(
+      this.avatar = new Avatar(
+        0,
+        0,
+        this.setupData.gender,
         this.setupData.username,
         this.setupData.link
       );
@@ -158,7 +157,6 @@ export default {
 
       this.$pixiApp.stage.removeChild(this.room);
       this.clientAvatars = {};
-      this.clientAvatarContainers = {};
       this.$store.commit("clearClientAvatars");
     },
     changeRoom() {
@@ -174,7 +172,8 @@ export default {
       this.miniMap.setMirrorScene(this.room);
       this.miniMap.setAvatar(this.avatar);
 
-      this.room.addChild(this.avatar, this.avatarContainer);
+      this.room.addChild(this.avatar);
+      this.avatar.addInfoContainer()
 
       this.$pixiApp.stage.addChild(this.room, this.miniMap);
 
@@ -191,7 +190,7 @@ export default {
         room_id: this.currentRoom._id,
       });
 
-      this.$store.commit('setAudioSource', this.currentRoom.music)
+      this.$store.commit("setAudioSource", this.currentRoom.music);
 
       this.$store.commit("setIsLoading", false);
     },
@@ -203,42 +202,24 @@ export default {
         .filter((key) => !newKeys.includes(key))
         .forEach((key) => {
           const avatar = this.clientAvatars[key];
-          const avatarInfo = this.clientAvatarContainers[key];
-          this.room.removeChild(avatar, avatarInfo);
+          avatar.removeInfoContainer()
+          this.room.removeChild(avatar);
           delete this.clientAvatars[key];
-          delete this.clientAvatarContainers[key];
         });
 
-      updatedAvatars.forEach(
-        ({ clientId, x, y, gender, username, link, direction }) => {
-          if (!this.clientAvatars[clientId]) {
-            const ava = new Movable(x, y, gender);
-            const avaContainer = new AvatarContainer(username, link);
-            this.clientAvatars[clientId] = ava;
-            this.clientAvatarContainers[clientId] = avaContainer;
-            this.room.addChild(ava, avaContainer);
-          } else if (
-            this.clientAvatars[clientId].x !== x ||
-            this.clientAvatars[clientId].y !== y
-          ) {
-            this.clientAvatars[clientId].move(x, y, direction);
-          }
+      updatedAvatars.forEach(({ clientId, x, y, gender, username, link, direction }) => {
+        if (!this.clientAvatars[clientId]) {
+          const ava = new Movable(x, y, gender, username, link, direction);
+          this.clientAvatars[clientId] = ava;
+          this.room.addChild(ava);
+          ava.addInfoContainer()
+        } else if (
+          this.clientAvatars[clientId].x !== x ||
+          this.clientAvatars[clientId].y !== y
+        ) {
+          this.clientAvatars[clientId].move(x, y, direction);
         }
-      );
-    },
-    animationUpdate() {
-      this.avatarContainer.position.set(
-        this.avatar.x - 60 + this.settingsData.tileSize / 2,
-        this.avatar.y - this.settingsData.tileSize
-      );
-      for (const client in this.clientAvatars) {
-        const clientAvatar = this.clientAvatars[client];
-        const clientContainer = this.clientAvatarContainers[client];
-        clientContainer.position.set(
-          clientAvatar.x - 60 + this.settingsData.tileSize / 2,
-          clientAvatar.y - this.settingsData.tileSize
-        );
-      }
+      });
     },
     collisionUpdate() {
       this.room.getExitObjects().forEach((exitObject) => {

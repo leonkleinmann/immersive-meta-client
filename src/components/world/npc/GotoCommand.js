@@ -10,32 +10,26 @@ export default class GotoCommand {
 
   execute(npc) {
     const tileSize = store.getters.settingsData.tileSize;
-    const direction = this.determineDirection(npc)
+    const direction = this.determineDirection(npc);
 
-    return npc
-      .move(this.x * tileSize, this.y * tileSize, direction, () => {})
-      .then(() => {
-        return;
-      });
+    return npc.move(this.x * tileSize, this.y * tileSize, direction, () => {});
   }
 
   determineDirection(npc) {
-    const npcX = npc.x
-    const npcY = npc.y
+    const npcX = npc.x;
+    const npcY = npc.y;
 
     if (npcX === this.x && npcY === this.y) {
-      return Directions.SOUTH
+      return Directions.SOUTH;
     }
 
-    const xDistance = Math.abs(npcX - this.x)
-    const yDistance = Math.abs(npcY - this.y)
+    const xDistance = Math.abs(npcX - this.x);
+    const yDistance = Math.abs(npcY - this.y);
 
     if (xDistance > yDistance) {
-      return npcX < this.x ? Directions.EAST : Directions.WEST
+      return npcX < this.x ? Directions.EAST : Directions.WEST;
     } else {
-      return npcY < this.y ? Directions.SOUTH : Directions.NORTH
+      return npcY < this.y ? Directions.SOUTH : Directions.NORTH;
     }
   }
 }
-
-

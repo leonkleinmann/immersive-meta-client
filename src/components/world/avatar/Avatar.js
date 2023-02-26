@@ -1,7 +1,7 @@
 import ServerConnector from "@/connectors/server";
 import Movable, { Directions } from "@/components/world/avatar/Movable";
-import store from "@/store";
 import InteractiveObject from "@/components/world/object/InteractiveObject";
+import NPC from "@/components/world/npc/NPC";
 
 export default class Avatar extends Movable {
   constructor(x, y, gender, username, link) {
@@ -33,21 +33,33 @@ export default class Avatar extends Movable {
           let southTile = this.parent.getTile(this.x, this.y + this.tileSize);
           let westTile = this.parent.getTile(this.x - this.tileSize, this.y);
 
-          if (northTile instanceof InteractiveObject) {
+          if (
+            northTile instanceof InteractiveObject ||
+            northTile instanceof NPC
+          ) {
             triggerTile = northTile;
           }
-          if (eastTile instanceof InteractiveObject) {
+          if (
+            eastTile instanceof InteractiveObject ||
+            eastTile instanceof NPC
+          ) {
             triggerTile = eastTile;
           }
-          if (southTile instanceof InteractiveObject) {
+          if (
+            southTile instanceof InteractiveObject ||
+            southTile instanceof NPC
+          ) {
             triggerTile = southTile;
           }
-          if (westTile instanceof InteractiveObject) {
+          if (
+            westTile instanceof InteractiveObject ||
+            westTile instanceof NPC
+          ) {
             triggerTile = westTile;
           }
           if (triggerTile !== undefined) {
-            store.commit("setModalContent", triggerTile.content);
-            store.commit("setModalOpen", true);
+            console.log('TRIGGER', triggerTile)
+            triggerTile.trigger();
           }
         }
       },

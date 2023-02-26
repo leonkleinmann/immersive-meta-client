@@ -7,6 +7,11 @@ export default class InteractiveObject extends AnimatedObject {
     this.content = content;
   }
 
+  trigger() {
+    store.commit("setModalContent", this.content);
+    store.commit("setModalOpen", true);
+  }
+
   canInteract(avatar) {
     const tileSize = store.getters.settingsData.tileSize;
     let canInteract = false;

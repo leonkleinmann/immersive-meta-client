@@ -5,7 +5,6 @@ import ExitObject from "@/components/world/object/ExitObject";
 import CommonObject from "@/components/world/object/CommonObject";
 import AnimatedObject from "@/components/world/object/AnimatedObject";
 import InteractiveObject from "@/components/world/object/InteractiveObject";
-import { Directions } from "@/components/world/avatar/Movable";
 import NPC from "@/components/world/npc/NPC";
 
 export default class VirtualRoom extends PIXI.Container {
@@ -165,12 +164,13 @@ export default class VirtualRoom extends PIXI.Container {
 
   addNpcs() {
     this.roomData.npcs.forEach((npc) => {
+      console.log("NPC", npc);
       let npcToAdd = new NPC(
         npc.x * this.tileSize,
         npc.y * this.tileSize,
         npc.animation_identifier,
         npc.name,
-        Directions.SOUTH
+        npc.chain.commands
       );
       this.addChild(npcToAdd);
 

@@ -53,11 +53,14 @@ export default class Movable extends PIXI.AnimatedSprite {
     }
   }
 
-  move(x, y, direction, callback) {
+  async move(x, y, direction, callback) {
     if (!this.playing && !this.willCollide(x, y)) {
+      console.log('MOVE', x, y, this.gender)
+
       const walkAnimation = this.animations[`${this.gender}_walk_${direction}`];
       this.textures = walkAnimation;
       this.animationSpeed = 1 / walkAnimation.length;
+
 
       let timeline = new gsap.timeline({
         onStart: function () {
@@ -67,7 +70,7 @@ export default class Movable extends PIXI.AnimatedSprite {
           console.log("Die Timeline wurde abgeschlossen");
         },
       });
-      timeline.to(
+      await timeline.to(
         this,
         {
           onStart: () => {
@@ -78,7 +81,7 @@ export default class Movable extends PIXI.AnimatedSprite {
           },
           x: x,
           y: y,
-          duration: 0.5,
+          duration: 2,
           onComplete: () => {
             this.stop();
             this.textures = this.avatarIdleSheet[direction];
@@ -87,7 +90,7 @@ export default class Movable extends PIXI.AnimatedSprite {
         0
       );
       if (this.info) {
-        timeline.to(
+        await timeline.to(
           this.info,
           {
             x: x - 60 + this.tileSize / 2,

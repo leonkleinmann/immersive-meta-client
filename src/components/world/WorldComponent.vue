@@ -20,12 +20,12 @@ import Avatar from "@/components/world/avatar/Avatar";
 import ServerConnector from "@/connectors/server";
 import ModalComponent from "@/components/ui/ModalComponent";
 import VirtualRoom from "@/components/world/room/VirtualRoom";
-import Movable from "@/components/world/avatar/Movable";
 import gsap from "gsap";
 import MiniMap from "@/components/world/room/MiniMap";
 import SoundComponent from "@/components/sound/SoundComponent";
 import MultimediaComponent from "@/components/ui/MultimediaComponent";
 import SettingsComponent from "@/components/ui/SettingsComponent";
+import ClientAvatar from "@/components/world/avatar/ClientAvatar";
 
 export default {
   name: "WorldComponent",
@@ -214,7 +214,14 @@ export default {
       updatedAvatars.forEach(
         ({ clientId, x, y, gender, username, link, direction }) => {
           if (!this.clientAvatars[clientId]) {
-            const ava = new Movable(x, y, gender, username, link, direction);
+            const ava = new ClientAvatar(
+              x,
+              y,
+              gender,
+              username,
+              link,
+              direction
+            );
             this.clientAvatars[clientId] = ava;
             this.room.addChild(ava);
             ava.addInfoContainer();

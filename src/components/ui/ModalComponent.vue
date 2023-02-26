@@ -20,11 +20,22 @@ export default {
       required: true,
     },
   },
+  mounted() {
+    document.addEventListener("keydown", this.keyEvent)
+  },
+  destroyed() {
+    document.removeEventListener("keydown", this.keyEvent)
+  },
   computed: mapGetters(["modalOpen"]),
   methods: {
     closeModal() {
       this.$store.commit("setModalOpen", false);
     },
+    keyEvent(event) {
+      if(event.code === "Space") {
+        this.closeModal()
+      }
+    }
   },
 };
 </script>

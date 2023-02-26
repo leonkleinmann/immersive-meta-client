@@ -1,6 +1,7 @@
 import Movable, { Directions } from "@/components/world/avatar/Movable";
 import GotoCommand from "@/components/world/npc/GotoCommand";
 import ContentCommand from "@/components/world/npc/ContentCommand";
+import ActionAnimation from "@/components/world/ui/ActionAnimation";
 
 export default class NPC extends Movable {
   constructor(x, y, identifier, name, chainedCommands) {
@@ -8,7 +9,16 @@ export default class NPC extends Movable {
 
     this.chain = [];
     this.chainedCommands = chainedCommands;
+
     this.buildChain();
+  }
+
+  buildAnimation() {
+    let actionAnimation = new ActionAnimation()
+    actionAnimation.x = this.x
+    actionAnimation.y = this.y
+    this.actionAnimation = actionAnimation
+    this.parent.addChild(actionAnimation)
   }
 
   buildChain() {
@@ -22,6 +32,15 @@ export default class NPC extends Movable {
         this.chain.push(new ContentCommand(command.content));
       }
     });
+  }
+
+  triggerAnimation() {
+    if (!this.actionAnimation.playing) {
+      this.actionAnimation.play()
+    }
+  }
+  stopAnimation() {
+    this.actionAnimation.stop()
   }
 
   trigger() {

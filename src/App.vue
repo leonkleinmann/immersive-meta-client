@@ -6,7 +6,6 @@
       </template>
       <template v-if="isPlaying">
         <WorldComponent />
-        <SettingsComponent />
       </template>
       <LoadingComponent />
     </template>
@@ -24,12 +23,10 @@ import { mapGetters } from "vuex";
 import WorldComponent from "@/components/world/WorldComponent";
 import LoadingComponent from "@/components/LoadingComponent";
 import SingleSetupComponent from "@/components/setup/SingleSetupComponent";
-import SettingsComponent from "@/components/ui/SettingsComponent";
 
 export default {
   name: "App",
   components: {
-    SettingsComponent,
     SingleSetupComponent,
     WorldComponent,
     LoadingComponent,

@@ -10,6 +10,7 @@ import NPC from "@/components/world/npc/NPC";
 export default class VirtualRoom extends PIXI.Container {
   tiles = [];
   exitObjects = [];
+  interactiveEntities = [];
 
   constructor(roomData) {
     super();
@@ -120,10 +121,14 @@ export default class VirtualRoom extends PIXI.Container {
           object.animation.identifier,
           object.content.html
         );
+        this.interactiveEntities.push(toAdd);
       }
 
       if (toAdd !== null) {
         this.addChild(toAdd);
+        if (toAdd instanceof InteractiveObject) {
+          toAdd.buildAnimation();
+        }
 
         let toAddBounds = toAdd.getBounds();
         let n_width = toAddBounds.width;
@@ -171,7 +176,9 @@ export default class VirtualRoom extends PIXI.Container {
         npc.name,
         npc.chain.commands
       );
+      this.interactiveEntities.push(npcToAdd);
       this.addChild(npcToAdd);
+      npcToAdd.buildAnimation();
 
       let npcBounds = npcToAdd.getBounds();
       let n_width = npcBounds.width;
@@ -183,7 +190,7 @@ export default class VirtualRoom extends PIXI.Container {
       ) {
         for (
           let j = npcToAdd.y;
-          j < npcToAdd.y + Math.round(n_height);
+          j < npcToAdd.y + Math.floor(n_height);
           j = j + this.tileSize
         ) {
           this.tiles[i / this.tileSize][j / this.tileSize] = npcToAdd;
@@ -198,5 +205,9 @@ export default class VirtualRoom extends PIXI.Container {
 
   getExitObjects() {
     return this.exitObjects;
+  }
+
+  getInteractiveEntities() {
+    return this.interactiveEntities;
   }
 }

@@ -26,6 +26,8 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.loop = true;
     this.buildAvatarIdleSheet();
     this.textures = this.avatarIdleSheet[direction];
+    this.height = this.tileSize
+    this.width = this.tileSize
   }
 
   addInfoContainer() {
@@ -58,7 +60,6 @@ export default class Movable extends PIXI.AnimatedSprite {
       const walkAnimation = this.animations[`${this.gender}_walk_${direction}`];
       this.textures = walkAnimation;
       this.animationSpeed = 1 / walkAnimation.length;
-
 
       let timeline = new gsap.timeline();
       timeline.to(

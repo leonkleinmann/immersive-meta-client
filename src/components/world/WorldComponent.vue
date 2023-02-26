@@ -6,6 +6,8 @@
     <SoundComponent />
     <div class="world"></div>
     <ChatComponent />
+    <MultimediaComponent />
+    <SettingsComponent />
   </div>
 </template>
 
@@ -22,10 +24,18 @@ import Movable from "@/components/world/avatar/Movable";
 import gsap from "gsap";
 import MiniMap from "@/components/world/room/MiniMap";
 import SoundComponent from "@/components/sound/SoundComponent";
+import MultimediaComponent from "@/components/ui/MultimediaComponent";
+import SettingsComponent from "@/components/ui/SettingsComponent";
 
 export default {
   name: "WorldComponent",
-  components: { SoundComponent, ModalComponent, ChatComponent },
+  components: {
+    SettingsComponent,
+    MultimediaComponent,
+    SoundComponent,
+    ModalComponent,
+    ChatComponent,
+  },
   data() {
     return {
       room: undefined,
@@ -152,7 +162,7 @@ export default {
     removeRoom() {
       ServerConnector.getInstance().sendMessage("ROOM_LEAVE");
 
-      this.$pixiApp.ticker.remove(this.animationUpdate);
+      this.$pixiApp.ticker.remove(this.animationTrigger);
       this.$pixiApp.ticker.remove(this.collisionUpdate);
       this.$pixiApp.ticker.remove(this.scroll);
 
@@ -178,7 +188,7 @@ export default {
 
       this.$pixiApp.stage.addChild(this.room, this.miniMap);
 
-      this.$pixiApp.ticker.add(this.animationUpdate);
+      this.$pixiApp.ticker.add(this.animationTrigger);
       this.$pixiApp.ticker.add(this.collisionUpdate);
       this.$pixiApp.ticker.add(this.scroll);
 
@@ -231,6 +241,40 @@ export default {
         }
       });
     },
+    animationTrigger() {
+      //const tileSize = this.settingsData.tileSize;
+      const avaX = this.avatar.x;
+      const avaY = this.avatar.y;
+      const interactiveEntities = this.room.getInteractiveEntities();
+
+      // don't exec when avatar is moving
+      if (avaX % 1 === 0 && avaY % 1 === 0) {
+        interactiveEntities.forEach((interactive) => {
+          if (this.hitTestRectangle(this.avatar, interactive)) {
+            interactive.triggerAnimation();
+          } else {
+            interactive.stopAnimation();
+          }
+        });
+      }
+    },
+    hitTestRectangle(a, b) {
+      const aBounds = a.getBounds();
+      const bBounds = b.getBounds();
+      let result = false
+
+      if (
+        aBounds.x + aBounds.width >= bBounds.x &&
+        aBounds.x <= bBounds.x + bBounds.width &&
+        aBounds.y + aBounds.height >= bBounds.y &&
+        aBounds.y <= bBounds.y + bBounds.height
+      ) {
+        result = true;
+      }
+
+      return result
+    },
+
     scroll() {
       if (this.mustScrollX) {
         gsap.to(this.room, {

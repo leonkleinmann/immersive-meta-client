@@ -1,6 +1,6 @@
 import Movable, { Directions } from "@/components/world/avatar/Movable";
-import GotoCommand from "@/components/world/npc/GotoCommand";
-import ContentCommand from "@/components/world/npc/ContentCommand";
+import GotoCommand from "@/components/world/commands/GotoCommand";
+import ContentCommand from "@/components/world/commands/ContentCommand";
 import ActionAnimation from "@/components/world/ui/ActionAnimation";
 
 export default class NPC extends Movable {
@@ -14,11 +14,14 @@ export default class NPC extends Movable {
   }
 
   buildAnimation() {
-    let actionAnimation = new ActionAnimation()
-    actionAnimation.x = this.x
-    actionAnimation.y = this.y
-    this.actionAnimation = actionAnimation
-    this.parent.addChild(actionAnimation)
+    let actionAnimation = new ActionAnimation();
+    actionAnimation.x =
+      this.x +
+      this.getBounds().width / 2 -
+      actionAnimation.getBounds().width / 2;
+    actionAnimation.y = this.y - 20;
+    this.actionAnimation = actionAnimation;
+    this.parent.addChild(actionAnimation);
   }
 
   buildChain() {
@@ -36,14 +39,16 @@ export default class NPC extends Movable {
 
   triggerAnimation() {
     if (!this.actionAnimation.playing) {
-      this.actionAnimation.play()
+      this.actionAnimation.play();
     }
   }
   stopAnimation() {
-    this.actionAnimation.stop()
+    this.actionAnimation.reset();
+    this.actionAnimation.stop();
   }
 
   trigger() {
+    this.parent.removeChild(this.actionAnimation);
     this.chain.reduce(async (prev, current) => {
       await prev;
       await current.execute(this);

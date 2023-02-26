@@ -73,8 +73,6 @@ export default {
       this.loadWorld().then(() => {
         this.loadRoom(this.worldData.initial_room);
       });
-
-      this.$store.commit("setIsLoading", false);
     });
   },
   watch: {
@@ -165,8 +163,8 @@ export default {
       this.$pixiApp.ticker.remove(this.animationTrigger);
       this.$pixiApp.ticker.remove(this.collisionUpdate);
       this.$pixiApp.ticker.remove(this.scroll);
-
       this.$pixiApp.stage.removeChild(this.room);
+
       this.clientAvatars = {};
       this.$store.commit("clearClientAvatars");
     },
@@ -175,13 +173,10 @@ export default {
 
       this.room = new VirtualRoom(this.currentRoom);
 
-      this.avatar.x =
-        this.currentRoom.initial_position.x * this.settingsData.tileSize;
-      this.avatar.y =
-        this.currentRoom.initial_position.y * this.settingsData.tileSize;
-
-      this.miniMap.setMirrorScene(this.room);
-      this.miniMap.setAvatar(this.avatar);
+      this.avatar.position.set(
+        this.currentRoom.initial_position.x * this.settingsData.tileSize,
+        this.currentRoom.initial_position.y * this.settingsData.tileSize
+      );
 
       this.room.addChild(this.avatar);
       this.avatar.addInfoContainer();
@@ -202,8 +197,6 @@ export default {
       });
 
       this.$store.commit("setAudioSource", this.currentRoom.music);
-
-      this.$store.commit("setIsLoading", false);
     },
     modifyClientAvatars(updatedAvatars) {
       const oldKeys = Object.keys(this.clientAvatars);
@@ -242,7 +235,6 @@ export default {
       });
     },
     animationTrigger() {
-      //const tileSize = this.settingsData.tileSize;
       const avaX = this.avatar.x;
       const avaY = this.avatar.y;
       const interactiveEntities = this.room.getInteractiveEntities();
@@ -261,7 +253,7 @@ export default {
     hitTestRectangle(a, b) {
       const aBounds = a.getBounds();
       const bBounds = b.getBounds();
-      let result = false
+      let result = false;
 
       if (
         aBounds.x + aBounds.width >= bBounds.x &&
@@ -272,7 +264,7 @@ export default {
         result = true;
       }
 
-      return result
+      return result;
     },
 
     scroll() {

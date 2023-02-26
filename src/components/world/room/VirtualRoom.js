@@ -24,11 +24,13 @@ export default class VirtualRoom extends PIXI.Container {
     this.roomWidth = roomData.width * this.tileSize;
     this.roomHeight = roomData.height * this.tileSize;
 
+    this.mustScrollX = this.roomWidth > window.innerWidth;
+    this.mustScrollY = this.roomHeight > window.innerHeight;
+
     this.sortableChildren = true;
 
     let backgroundContainer = new PIXI.Container();
-    backgroundContainer.x = 0;
-    backgroundContainer.y = 0;
+    backgroundContainer.position.set(0, 0)
     backgroundContainer.cacheAsBitmap = true;
     this.backgroundContainer = backgroundContainer;
 

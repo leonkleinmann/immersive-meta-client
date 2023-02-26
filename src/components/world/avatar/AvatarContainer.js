@@ -37,13 +37,11 @@ export default class AvatarInfoContainer extends PIXI.Container {
     const link = new PIXI.Sprite(store.getters.textures["link"])
     link.width = 20
     link.height = 20
-    link.x = usernameText.x + 55
-    link.y = 10
+    link.position.set(usernameText.x + 55, 10)
     link.interactive = true
     link.on('click', () => {
       window.open(this.link, '_blank').focus();
     })
     this.addChild(link)
-
   }
 }

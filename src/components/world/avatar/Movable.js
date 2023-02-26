@@ -70,7 +70,7 @@ export default class Movable extends PIXI.AnimatedSprite {
           console.log("Die Timeline wurde abgeschlossen");
         },
       });
-      await timeline.to(
+      timeline.to(
         this,
         {
           onStart: () => {
@@ -81,7 +81,7 @@ export default class Movable extends PIXI.AnimatedSprite {
           },
           x: x,
           y: y,
-          duration: 2,
+          duration: 0.5,
           onComplete: () => {
             this.stop();
             this.textures = this.avatarIdleSheet[direction];
@@ -90,16 +90,17 @@ export default class Movable extends PIXI.AnimatedSprite {
         0
       );
       if (this.info) {
-        await timeline.to(
+        timeline.to(
           this.info,
           {
             x: x - 60 + this.tileSize / 2,
             y: y - this.tileSize,
+            duration: 0.5
           },
           0
         );
       }
-      timeline.play();
+      await timeline.play();
     }
   }
 

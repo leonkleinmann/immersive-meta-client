@@ -55,21 +55,12 @@ export default class Movable extends PIXI.AnimatedSprite {
 
   async move(x, y, direction, callback) {
     if (!this.playing && !this.willCollide(x, y)) {
-      console.log('MOVE', x, y, this.gender)
-
       const walkAnimation = this.animations[`${this.gender}_walk_${direction}`];
       this.textures = walkAnimation;
       this.animationSpeed = 1 / walkAnimation.length;
 
 
-      let timeline = new gsap.timeline({
-        onStart: function () {
-          console.log("Die Timeline wurde gestartet");
-        },
-        onComplete: function () {
-          console.log("Die Timeline wurde abgeschlossen");
-        },
-      });
+      let timeline = new gsap.timeline();
       timeline.to(
         this,
         {

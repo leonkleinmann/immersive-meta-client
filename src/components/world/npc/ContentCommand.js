@@ -20,7 +20,6 @@ export default class ContentCommand {
     return new Promise(resolve => {
       const intervalId = setInterval(() => {
         if (store.getters.modalOpen === false) {
-          console.log(store.getters.modalOpen)
           clearInterval(intervalId);
           resolve();
         }

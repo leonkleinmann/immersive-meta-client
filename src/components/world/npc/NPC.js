@@ -8,7 +8,6 @@ export default class NPC extends Movable {
 
     this.chain = [];
     this.chainedCommands = chainedCommands;
-    console.log("CMDS", this.chainedCommands);
     this.buildChain();
   }
 

@@ -59,7 +59,6 @@ export default class Avatar extends Movable {
             triggerTile = westTile;
           }
           if (triggerTile !== undefined) {
-            console.log('TRIGGER', triggerTile)
             triggerTile.trigger();
           }
         }

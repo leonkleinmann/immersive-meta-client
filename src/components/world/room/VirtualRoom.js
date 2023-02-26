@@ -164,7 +164,6 @@ export default class VirtualRoom extends PIXI.Container {
 
   addNpcs() {
     this.roomData.npcs.forEach((npc) => {
-      console.log("NPC", npc);
       let npcToAdd = new NPC(
         npc.x * this.tileSize,
         npc.y * this.tileSize,

@@ -7,6 +7,7 @@ export default class Avatar extends Movable {
   constructor(x, y, gender, username, link) {
     super(x, y, gender, username, link);
     this.registerKeyEvents();
+    this.zIndex = 10
   }
 
   registerKeyEvents() {

@@ -60,7 +60,6 @@ export default {
     this.$store.commit("setIsLoading", true);
     document.querySelectorAll(".world")[0].appendChild(this.$pixiApp.view);
     this.$pixiApp.loader = new AssetManager();
-
     this.loadSettings();
     this.loadAssets().then(() => {
       this.$pixiApp.loader.loadAssets();
@@ -161,6 +160,7 @@ export default {
       ServerConnector.getInstance().sendMessage("ROOM_LEAVE");
 
       this.$pixiApp.ticker.remove(this.animationTrigger);
+      this.$pixiApp.ticker.remove(this.avatarCollision);
       this.$pixiApp.ticker.remove(this.collisionUpdate);
       this.$pixiApp.ticker.remove(this.scroll);
       this.$pixiApp.stage.removeChild(this.room);
@@ -181,9 +181,11 @@ export default {
       this.room.addChild(this.avatar);
       this.avatar.addInfoContainer();
 
+      console.log('minimap', this.miniMap)
       this.$pixiApp.stage.addChild(this.room, this.miniMap);
 
       this.$pixiApp.ticker.add(this.animationTrigger);
+      this.$pixiApp.ticker.add(this.avatarCollision);
       this.$pixiApp.ticker.add(this.collisionUpdate);
       this.$pixiApp.ticker.add(this.scroll);
 
@@ -212,7 +214,7 @@ export default {
         });
 
       updatedAvatars.forEach(
-        ({ clientId, x, y, gender, username, link, direction }) => {
+        ({ clientId, x, y, gender, username, link, direction, ip }) => {
           if (!this.clientAvatars[clientId]) {
             const ava = new ClientAvatar(
               x,
@@ -220,7 +222,9 @@ export default {
               gender,
               username,
               link,
-              direction
+              direction,
+              clientId,
+              ip
             );
             this.clientAvatars[clientId] = ava;
             this.room.addChild(ava);
@@ -257,6 +261,13 @@ export default {
         });
       }
     },
+    avatarCollision() {
+      Object.values(this.clientAvatars).forEach((clientAvatar) => {
+        if (this.hitTestRectangle(clientAvatar, this.avatar)) {
+          console.log("WE CAN INIT CONNECTION");
+        }
+      });
+    },
     hitTestRectangle(a, b) {
       const aBounds = a.getBounds();
       const bBounds = b.getBounds();
@@ -273,7 +284,6 @@ export default {
 
       return result;
     },
-
     scroll() {
       if (this.mustScrollX) {
         gsap.to(this.room, {

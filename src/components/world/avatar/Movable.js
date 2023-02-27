@@ -3,6 +3,7 @@ import store from "@/store";
 import gsap from "gsap";
 import ExitObject from "@/components/world/object/ExitObject";
 import AvatarInfoContainer from "@/components/world/avatar/AvatarContainer";
+import AvatarMediaContainer from "@/components/world/avatar/AvatarMediaContainer";
 
 export const Directions = Object.freeze({
   NORTH: "north",
@@ -26,8 +27,8 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.loop = true;
     this.buildAvatarIdleSheet();
     this.textures = this.avatarIdleSheet[direction];
-    this.height = this.tileSize
-    this.width = this.tileSize
+    this.height = this.tileSize;
+    this.width = this.tileSize;
   }
 
   addInfoContainer() {
@@ -37,6 +38,15 @@ export default class Movable extends PIXI.AnimatedSprite {
       this.y - this.tileSize
     );
     this.parent.addChild(this.info);
+  }
+
+  addVideoContainer(muted = false) {
+    this.video = new AvatarMediaContainer(muted);
+    this.video.position.set(
+      this.x - 60 + this.tileSize / 2,
+      this.y - this.tileSize - 80
+    );
+    this.parent.addChild(this.video);
   }
 
   removeInfoContainer() {
@@ -87,7 +97,18 @@ export default class Movable extends PIXI.AnimatedSprite {
           {
             x: x - 60 + this.tileSize / 2,
             y: y - this.tileSize,
-            duration: 0.5
+            duration: 0.5,
+          },
+          0
+        );
+      }
+      if (this.video) {
+        timeline.to(
+          this.video,
+          {
+            x: x - 60 + this.tileSize / 2,
+            y: y - this.tileSize - 80,
+            duration: 0.5,
           },
           0
         );

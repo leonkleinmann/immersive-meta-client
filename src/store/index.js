@@ -35,8 +35,9 @@ export default new Vuex.Store({
     clientAvatars: [],
     exitObjects: [],
     chatMessages: [],
-    audioSource: '',
+    audioSource: "",
     playMusic: true,
+    connectedClients: {},
   },
   getters: {
     server: (state) => {
@@ -103,11 +104,14 @@ export default new Vuex.Store({
       return state.settingsData.avatarInformationHeight;
     },
     audioSource: (state) => {
-      return state.audioSource
+      return state.audioSource;
     },
     playMusic: (state) => {
-      return state.playMusic
-    }
+      return state.playMusic;
+    },
+    connectedClients: (state) => {
+      return state.connectedClients;
+    },
   },
   mutations: {
     setClientId(state, clientId) {
@@ -169,14 +173,24 @@ export default new Vuex.Store({
       Vue.delete(state.clientAvatars, clientId.toString());
     },
     clearClientAvatars(state) {
-      state.clientAvatars = []
+      state.clientAvatars = [];
     },
     setPlayMusic(state, play) {
-      state.playMusic = play
+      state.playMusic = play;
     },
     setAudioSource(state, audioSource) {
-      state.audioSource = audioSource
-    }
+      state.audioSource = audioSource;
+    },
+    setConnectedClients(state, connectedClients) {
+      state.connectedClients = connectedClients;
+    },
+    addConnectedClient(state, clientId) {
+      state.connectedClients[clientId] = true;
+    },
+    removeConnectedClient(state, clientId) {
+      state.connectedClients[clientId] = false;
+      delete state.connectedClients[clientId];
+    },
   },
   actions: {},
 });

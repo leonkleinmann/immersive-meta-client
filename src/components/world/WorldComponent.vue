@@ -54,6 +54,7 @@ export default {
       "currentRoom",
       "worldData",
       "modalContent",
+      "connectedClients",
     ]),
   },
   mounted() {
@@ -180,8 +181,9 @@ export default {
 
       this.room.addChild(this.avatar);
       this.avatar.addInfoContainer();
-      this.miniMap.setMirrorScene(this.room)
-      this.miniMap.setAvatar(this.avatar)
+      this.avatar.addVideoContainer();
+      this.miniMap.setMirrorScene(this.room);
+      this.miniMap.setAvatar(this.avatar);
 
       this.$pixiApp.stage.addChild(this.room, this.miniMap);
 
@@ -264,8 +266,19 @@ export default {
     },
     avatarCollision() {
       Object.values(this.clientAvatars).forEach((clientAvatar) => {
-        if (this.hitTestRectangle(clientAvatar, this.avatar)) {
-          console.log("WE CAN INIT CONNECTION");
+        if (
+          this.connectedClients[clientAvatar.id] === undefined ||
+          this.connectedClients[clientAvatar.id] === false
+        ) {
+          if (this.hitTestRectangle(clientAvatar, this.avatar)) {
+            console.log("WE CAN INIT CONNECTION");
+            this.$store.commit("addConnectedClient", clientAvatar.id);
+          }
+        } else {
+          if (this.hitTestRectangle(clientAvatar, this.avatar) === false) {
+            this.$store.commit("removeConnectedClient", clientAvatar.id)
+            console.log('LOOSE CONNECTION')
+          }
         }
       });
     },

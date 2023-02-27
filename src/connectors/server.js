@@ -4,6 +4,7 @@ export default class ServerConnector {
   constructor(host) {
     this.host = host;
     this.serverSocket = null;
+    this.streams = {}
     this.init();
   }
 
@@ -44,7 +45,7 @@ export default class ServerConnector {
         this.handleChatMessage(parsedCommand);
         break;
       case "ROOM_ENTERED":
-        parsedCommand.data.forEach(clientAvatar => {
+        parsedCommand.data.forEach((clientAvatar) => {
           store.commit("setClientAvatar", clientAvatar);
         });
         break;
@@ -56,6 +57,9 @@ export default class ServerConnector {
         break;
       case "AVATAR_STATE_UPDATED":
         this.handleAvatarStateUpdated(parsedCommand);
+        break;
+      case "CLIENT_STREAM":
+        this.handleClientStream(parsedCommand);
         break;
       default:
         console.warn("Unknown command type: ", parsedCommand);
@@ -81,10 +85,10 @@ export default class ServerConnector {
 
   sendMessage(command_type, parameters) {
     console.log(
-        "SENDING COMMAND",
-        store.getters.clientId,
-        command_type,
-        parameters
+      "SENDING COMMAND",
+      store.getters.clientId,
+      command_type,
+      parameters
     );
     let command = {
       command: command_type,
@@ -92,5 +96,9 @@ export default class ServerConnector {
       clientId: store.getters.clientId,
     };
     this.serverSocket.send(JSON.stringify(command));
+  }
+
+  handleClientStream(parsed) {
+    console.log(parsed.command, parsed)
   }
 }

@@ -1,20 +1,27 @@
 export default class MultimediaManager {
-
-  static instance = null
+  static instance = null;
 
   static getInstance() {
     if (this.instance === null) {
-      this.instance = new MultimediaManager()
+      this.instance = new MultimediaManager();
     }
-    return this.instance
+    return this.instance;
   }
 
-  async getAudioVideoStream() {
-    const stream = await navigator.mediaDevices.getUserMedia({ video: true, audio: true });
-    const video = document.createElement('video');
-    video.srcObject = stream;
-    video.src = stream;
-    return video;
+  async getVideoStream() {
+    if (!this.videoStream) {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: true,
+        audio: true,
+      });
+      const video = document.createElement("video");
+      video.srcObject = stream;
+      video.muted = true;
+      await video.play();
+      this.videoStream = video;
+    }
+
+    return this.videoStream;
   }
 
   async getScreenStream() {

@@ -180,8 +180,9 @@ export default {
 
       this.room.addChild(this.avatar);
       this.avatar.addInfoContainer();
+      this.miniMap.setMirrorScene(this.room)
+      this.miniMap.setAvatar(this.avatar)
 
-      console.log('minimap', this.miniMap)
       this.$pixiApp.stage.addChild(this.room, this.miniMap);
 
       this.$pixiApp.ticker.add(this.animationTrigger);

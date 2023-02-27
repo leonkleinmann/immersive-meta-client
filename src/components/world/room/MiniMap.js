@@ -18,6 +18,12 @@ export default class MiniMap extends PIXI.Container {
     ticker.add(this.updateAvatar, this);
   }
 
+  draw() {
+    this.drawBackground()
+    this.drawAvatar()
+    this.drawEntities()
+  }
+
   drawBackground() {
     //background
     const graphics = new PIXI.Graphics();

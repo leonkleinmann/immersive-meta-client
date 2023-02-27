@@ -12,11 +12,10 @@ export default class MultimediaManager {
     if (!this.videoStream) {
       const stream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: true,
+        audio: { echoCancellation: true },
       });
       const video = document.createElement("video");
       video.srcObject = stream;
-      video.muted = true;
       await video.play();
       this.videoStream = video;
     }

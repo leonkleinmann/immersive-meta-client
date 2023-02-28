@@ -10,23 +10,20 @@ export default class MultimediaManager {
 
   async getVideoStream() {
     if (!this.videoStream) {
-      const stream = await navigator.mediaDevices.getUserMedia({
+      this.videoStream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: { echoCancellation: true },
-      });
-      const video = document.createElement("video");
-      video.srcObject = stream;
-      await video.play();
-      this.videoStream = video;
+        audio: {noiseSuppression: true}
+      })
     }
-
-    return this.videoStream;
+    return this.videoStream
   }
 
-  async getScreenStream() {
-    const stream = await navigator.mediaDevices.getDisplayMedia({
-      video: true,
-    });
-    return stream;
+  async getVideoElement() {
+    const stream = await this.getVideoStream()
+    const video = document.createElement("video")
+    video.srcObject = stream
+    await video.play()
+
+    return video
   }
 }

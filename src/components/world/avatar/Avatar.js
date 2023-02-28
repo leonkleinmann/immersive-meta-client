@@ -1,7 +1,5 @@
 import ServerConnector from "@/connectors/server";
 import Movable, { Directions } from "@/components/world/avatar/Movable";
-import InteractiveObject from "@/components/world/object/InteractiveObject";
-import NPC from "@/components/world/npc/NPC";
 
 export default class Avatar extends Movable {
   constructor(x, y, gender, username, link) {
@@ -27,44 +25,33 @@ export default class Avatar extends Movable {
           this.moveToDirection(Directions.WEST);
         }
         if (event.code === "KeyX") {
-          let triggerTile = undefined;
-
-          let northTile = this.parent.getTile(this.x, this.y - this.tileSize);
-          let eastTile = this.parent.getTile(this.x + this.tileSize, this.y);
-          let southTile = this.parent.getTile(this.x, this.y + this.tileSize);
-          let westTile = this.parent.getTile(this.x - this.tileSize, this.y);
-
-          if (
-            northTile instanceof InteractiveObject ||
-            northTile instanceof NPC
-          ) {
-            triggerTile = northTile;
-          }
-          if (
-            eastTile instanceof InteractiveObject ||
-            eastTile instanceof NPC
-          ) {
-            triggerTile = eastTile;
-          }
-          if (
-            southTile instanceof InteractiveObject ||
-            southTile instanceof NPC
-          ) {
-            triggerTile = southTile;
-          }
-          if (
-            westTile instanceof InteractiveObject ||
-            westTile instanceof NPC
-          ) {
-            triggerTile = westTile;
-          }
-          if (triggerTile !== undefined) {
-            triggerTile.trigger();
-          }
+          const interactiveObjects = this.parent.getInteractiveEntities()
+          interactiveObjects.forEach((obj) => {
+            if (this.hitTestRectangle(this, obj)) {
+              obj.trigger()
+            }
+          })
         }
       },
       false
     );
+  }
+
+  hitTestRectangle(a, b) {
+    const aBounds = a.getBounds();
+    const bBounds = b.getBounds();
+    let result = false;
+
+    if (
+        aBounds.x + aBounds.width >= bBounds.x &&
+        aBounds.x <= bBounds.x + bBounds.width &&
+        aBounds.y + aBounds.height >= bBounds.y &&
+        aBounds.y <= bBounds.y + bBounds.height
+    ) {
+      result = true;
+    }
+
+    return result;
   }
 
   moveToDirection(direction) {

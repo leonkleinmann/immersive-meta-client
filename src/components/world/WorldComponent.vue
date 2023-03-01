@@ -272,15 +272,13 @@ export default {
         // eslint-disable-next-line no-prototype-builtins
         if (!this.connectedClients.hasOwnProperty(clientAvatar.id)) {
           if (this.hitTestRectangle(clientAvatar, this.avatar)) {
-            console.log('CLIENT GEFUNDEN')
             this.$store.commit("addConnectedClient", clientAvatar.id);
             clientAvatar.addVideoContainer(clientAvatar.id);
           }
         } else {
           if (this.hitTestRectangle(clientAvatar, this.avatar) === false) {
-            console.log('CLIENT KOMMMT WEG')
-            //this.$store.commit("removeConnectedClient", clientAvatar.id);
-            //clientAvatar.removeVideoContainer();
+            this.$store.commit("removeConnectedClient", clientAvatar.id);
+            clientAvatar.removeVideoContainer();
           }
         }
       });

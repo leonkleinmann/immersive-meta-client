@@ -4,14 +4,14 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    devMode: true,
+    devMode: false,
     isMobile: false,
     isLoading: false,
     isPlaying: false,
     modalOpen: false,
     modalContent: "",
     server: {
-      host: "http://localhost",
+      host: "http://192.168.0.203",
       api_port: 9003,
       state_machine_port: 8888,
       clientId: undefined,
@@ -37,7 +37,7 @@ export default new Vuex.Store({
     chatMessages: [],
     audioSource: "",
     playMusic: true,
-    connectedClients: {},
+    connectedClients: [],
   },
   getters: {
     server: (state) => {
@@ -188,9 +188,11 @@ export default new Vuex.Store({
       state.connectedClients[clientId] = true;
     },
     removeConnectedClient(state, clientId) {
-      state.connectedClients[clientId] = false;
-      delete state.connectedClients[clientId];
+      Vue.delete(state.connectedClients, clientId)
     },
+    updateConnectedClient(state, data) {
+      Vue.set(state.connectedClients, data.clientId, data.chunk)
+    }
   },
   actions: {},
 });

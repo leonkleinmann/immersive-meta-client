@@ -83,7 +83,6 @@ export default class ServerConnector {
   }
 
   handleVideoChunk(parsed) {
-    console.log('CHUNK RECEIVED')
     store.commit("updateConnectedClient", parsed);
   }
 

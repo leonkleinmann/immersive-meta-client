@@ -28,20 +28,24 @@ export default class AvatarMediaContainer extends PIXI.Container {
       store.watch(
         () => store.state.connectedClients[this.id],
         async (chunk) => {
-          await this.stream.pause();
+          try {
+            await this.stream.pause();
 
-          const byteCharacters = atob(chunk);
-          const byteNumbers = new Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+            const byteCharacters = atob(chunk);
+            const byteNumbers = new Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteNumbers[i] = byteCharacters.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            const blob = new Blob([byteArray], { type: "video/webm" });
+            const blobURL = URL.createObjectURL(blob);
+            this.stream.srcObject = null;
+            this.stream.src = null;
+            this.stream.src = blobURL;
+            this.stream.play();
+          } catch {
+            console.log("Connection lost during updating");
           }
-          const byteArray = new Uint8Array(byteNumbers);
-          const blob = new Blob([byteArray], { type: "video/webm" });
-          const blobURL = URL.createObjectURL(blob);
-          this.stream.srcObject = null;
-          this.stream.src = null
-          this.stream.src = blobURL;
-          this.stream.play()
         },
         { deep: true }
       );

@@ -26,6 +26,7 @@ import SoundComponent from "@/components/sound/SoundComponent";
 import MultimediaComponent from "@/components/ui/MultimediaComponent";
 import SettingsComponent from "@/components/ui/SettingsComponent";
 import ClientAvatar from "@/components/world/avatar/ClientAvatar";
+import MultimediaManager from "@/multimedia/MultimediaManager";
 
 export default {
   name: "WorldComponent",
@@ -55,12 +56,14 @@ export default {
       "worldData",
       "modalContent",
       "connectedClients",
+      "clientId",
     ]),
   },
   mounted() {
     this.$store.commit("setIsLoading", true);
     document.querySelectorAll(".world")[0].appendChild(this.$pixiApp.view);
     this.$pixiApp.loader = new AssetManager();
+    MultimediaManager.getInstance().sendVideoChunks(1);
     this.loadSettings();
     this.loadAssets().then(() => {
       this.$pixiApp.loader.loadAssets();
@@ -181,7 +184,7 @@ export default {
 
       this.room.addChild(this.avatar);
       this.avatar.addInfoContainer();
-      this.avatar.addVideoContainer();
+      this.avatar.addVideoContainer(this.clientId);
       this.miniMap.setMirrorScene(this.room);
       this.miniMap.setAvatar(this.avatar);
 
@@ -266,18 +269,18 @@ export default {
     },
     avatarCollision() {
       Object.values(this.clientAvatars).forEach((clientAvatar) => {
-        if (
-          this.connectedClients[clientAvatar.id] === undefined ||
-          this.connectedClients[clientAvatar.id] === false
-        ) {
+        // eslint-disable-next-line no-prototype-builtins
+        if (!this.connectedClients.hasOwnProperty(clientAvatar.id)) {
           if (this.hitTestRectangle(clientAvatar, this.avatar)) {
-            console.log("WE CAN INIT CONNECTION");
+            console.log('CLIENT GEFUNDEN')
             this.$store.commit("addConnectedClient", clientAvatar.id);
+            clientAvatar.addVideoContainer(clientAvatar.id);
           }
         } else {
           if (this.hitTestRectangle(clientAvatar, this.avatar) === false) {
-            this.$store.commit("removeConnectedClient", clientAvatar.id)
-            console.log('LOOSE CONNECTION')
+            console.log('CLIENT KOMMMT WEG')
+            //this.$store.commit("removeConnectedClient", clientAvatar.id);
+            //clientAvatar.removeVideoContainer();
           }
         }
       });

@@ -40,8 +40,8 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.parent.addChild(this.info);
   }
 
-  addVideoContainer(muted = false) {
-    this.video = new AvatarMediaContainer(muted);
+  addVideoContainer(id) {
+    this.video = new AvatarMediaContainer(id);
     this.video.position.set(
       this.x - 60 + this.tileSize / 2,
       this.y - this.tileSize - 80
@@ -50,8 +50,17 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   removeInfoContainer() {
-    this.parent.removeChild(this.info);
-    this.info = undefined;
+    if (this.info) {
+      this.parent.removeChild(this.info);
+      this.info = undefined;
+    }
+  }
+
+  removeVideoContainer() {
+    if (this.video) {
+      this.parent.removeChild(this.video)
+      this.video = undefined
+    }
   }
 
   buildAvatarIdleSheet() {

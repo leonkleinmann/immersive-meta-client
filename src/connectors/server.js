@@ -4,7 +4,6 @@ export default class ServerConnector {
   constructor(host) {
     this.host = host;
     this.serverSocket = null;
-    this.streams = {}
     this.init();
   }
 
@@ -36,7 +35,7 @@ export default class ServerConnector {
 
   handleMessage(event) {
     const parsedCommand = JSON.parse(event.data);
-    console.log("COMMAND RECEIVED", parsedCommand);
+    //console.log("COMMAND RECEIVED", parsedCommand);
     switch (parsedCommand.command) {
       case "REGISTER_COMPLETE":
         this.handleRegisterComplete(parsedCommand);
@@ -58,8 +57,8 @@ export default class ServerConnector {
       case "AVATAR_STATE_UPDATED":
         this.handleAvatarStateUpdated(parsedCommand);
         break;
-      case "CLIENT_STREAM":
-        this.handleClientStream(parsedCommand);
+      case "VIDEO_CHUNK":
+        this.handleVideoChunk(parsedCommand);
         break;
       default:
         console.warn("Unknown command type: ", parsedCommand);
@@ -83,22 +82,17 @@ export default class ServerConnector {
     store.commit("setClientAvatar", avatarToChange);
   }
 
+  handleVideoChunk(parsed) {
+    console.log('CHUNK RECEIVED')
+    store.commit("updateConnectedClient", parsed);
+  }
+
   sendMessage(command_type, parameters) {
-    console.log(
-      "SENDING COMMAND",
-      store.getters.clientId,
-      command_type,
-      parameters
-    );
     let command = {
       command: command_type,
       message: parameters,
       clientId: store.getters.clientId,
     };
     this.serverSocket.send(JSON.stringify(command));
-  }
-
-  handleClientStream(parsed) {
-    console.log(parsed.command, parsed)
   }
 }

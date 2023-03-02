@@ -34,7 +34,7 @@ export default class MultimediaManager {
     const stream = video.srcObject;
     await video.play();
 
-    let recorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
+    let recorder = new MediaRecorder(stream, { mimeType: 'video/webm; codecs="opus, vp9"' });
     recorder.ondataavailable = async (event) => {
       const toClients = store.getters.connectedClients;
       if (Object.keys(toClients).length) {

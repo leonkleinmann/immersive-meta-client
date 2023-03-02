@@ -12,8 +12,8 @@ export default class AvatarInfoContainer extends PIXI.Container {
 
   build() {
     const background = new PIXI.Sprite(PIXI.Texture.WHITE);
-    background.width = 120;
-    background.height = 40;
+    background.width = 100;
+    background.height = 30;
     background.position.set(0, 0);
     background.alpha = 0.5;
     background.zIndex = 2;
@@ -21,27 +21,27 @@ export default class AvatarInfoContainer extends PIXI.Container {
 
     const status = new PIXI.Graphics();
     status.beginFill(0x228b22);
-    status.drawCircle(20, 20, 10);
+    status.drawCircle(15, 15, 8);
     status.endFill();
     this.addChild(status);
 
     const usernameText = new PIXI.Text(this.username, {
       fontFamily: "Helvetica",
-      fontSize: 12,
+      fontSize: 10,
       fill: "black",
       align: "center",
     });
-    usernameText.position.set(status.x + 40, status.y + 12);
+    usernameText.position.set(this.width / 2 - (this.username.length / 2) * 5, 10);
     this.addChild(usernameText);
 
-    const link = new PIXI.Sprite(store.getters.textures["link"])
-    link.width = 20
-    link.height = 20
-    link.position.set(usernameText.x + 55, 10)
-    link.interactive = true
-    link.on('click', () => {
-      window.open(this.link, '_blank').focus();
-    })
-    this.addChild(link)
+    const link = new PIXI.Sprite(store.getters.textures["link"]);
+    link.width = 20;
+    link.height = 20;
+    link.position.set(this.width - 25, 5);
+    link.interactive = true;
+    link.on("click", () => {
+      window.open(this.link, "_blank").focus();
+    });
+    this.addChild(link);
   }
 }

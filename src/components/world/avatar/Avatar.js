@@ -5,7 +5,7 @@ export default class Avatar extends Movable {
   constructor(x, y, gender, username, link) {
     super(x, y, gender, username, link);
     this.registerKeyEvents();
-    this.zIndex = 10
+    this.zIndex = 10;
   }
 
   registerKeyEvents() {
@@ -25,12 +25,12 @@ export default class Avatar extends Movable {
           this.moveToDirection(Directions.WEST);
         }
         if (event.code === "KeyX") {
-          const interactiveObjects = this.parent.getInteractiveEntities()
+          const interactiveObjects = this.parent.getInteractiveEntities();
           interactiveObjects.forEach((obj) => {
             if (this.hitTestRectangle(this, obj)) {
-              obj.trigger()
+              obj.trigger();
             }
-          })
+          });
         }
       },
       false
@@ -43,10 +43,10 @@ export default class Avatar extends Movable {
     let result = false;
 
     if (
-        aBounds.x + aBounds.width >= bBounds.x &&
-        aBounds.x <= bBounds.x + bBounds.width &&
-        aBounds.y + aBounds.height >= bBounds.y &&
-        aBounds.y <= bBounds.y + bBounds.height
+      aBounds.x + aBounds.width >= bBounds.x &&
+      aBounds.x <= bBounds.x + bBounds.width &&
+      aBounds.y + aBounds.height >= bBounds.y &&
+      aBounds.y <= bBounds.y + bBounds.height
     ) {
       result = true;
     }

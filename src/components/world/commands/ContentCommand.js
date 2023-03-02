@@ -6,7 +6,7 @@ export default class ContentCommand {
   }
 
   async execute() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       store.commit("setModalContent", this.content.html);
       store.commit("setModalOpen", true);
 
@@ -17,7 +17,7 @@ export default class ContentCommand {
   }
 
   async canResume(interval = 100) {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
       const intervalId = setInterval(() => {
         if (store.getters.modalOpen === false) {
           clearInterval(intervalId);

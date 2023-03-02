@@ -2,7 +2,7 @@ import * as PIXI from "pixi.js";
 import store from "@/store";
 import gsap from "gsap";
 import ExitObject from "@/components/world/object/ExitObject";
-import AvatarInfoContainer from "@/components/world/avatar/AvatarContainer";
+import AvatarInfoContainer from "@/components/world/avatar/AvatarInfoContainer";
 import AvatarMediaContainer from "@/components/world/avatar/AvatarMediaContainer";
 
 export const Directions = Object.freeze({
@@ -32,21 +32,25 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   addInfoContainer() {
-    this.info = new AvatarInfoContainer(this.username, this.link);
-    this.info.position.set(
-      this.x - 60 + this.tileSize / 2,
-      this.y - this.tileSize
-    );
-    this.parent.addChild(this.info);
+    if (!this.info) {
+      this.info = new AvatarInfoContainer(this.username, this.link);
+      this.info.position.set(
+        this.x - 50 + this.tileSize / 2,
+        this.y - this.tileSize
+      );
+      this.parent.addChild(this.info);
+    }
   }
 
   addVideoContainer(id) {
-    this.video = new AvatarMediaContainer(id);
-    this.video.position.set(
-      this.x - 60 + this.tileSize / 2,
-      this.y - this.tileSize - 80
-    );
-    this.parent.addChild(this.video);
+    if (!this.video) {
+      this.video = new AvatarMediaContainer(id);
+      this.video.position.set(
+        this.x - 50 + this.tileSize / 2,
+        this.y - this.tileSize - this.tileSize - 30
+      );
+      this.parent.addChild(this.video);
+    }
   }
 
   removeInfoContainer() {
@@ -58,8 +62,8 @@ export default class Movable extends PIXI.AnimatedSprite {
 
   removeVideoContainer() {
     if (this.video) {
-      this.parent.removeChild(this.video)
-      this.video = undefined
+      this.parent.removeChild(this.video);
+      this.video = undefined;
     }
   }
 
@@ -104,7 +108,7 @@ export default class Movable extends PIXI.AnimatedSprite {
         timeline.to(
           this.info,
           {
-            x: x - 60 + this.tileSize / 2,
+            x: x - 50 + this.tileSize / 2,
             y: y - this.tileSize,
             duration: 0.5,
           },

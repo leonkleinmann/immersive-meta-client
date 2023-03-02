@@ -184,7 +184,7 @@ export default {
 
       this.room.addChild(this.avatar);
       this.avatar.addInfoContainer();
-      this.avatar.addVideoContainer(this.clientId);
+      //this.avatar.addVideoContainer(this.clientId);
       this.miniMap.setMirrorScene(this.room);
       this.miniMap.setAvatar(this.avatar);
 
@@ -255,8 +255,6 @@ export default {
       const avaX = this.avatar.x;
       const avaY = this.avatar.y;
       const interactiveEntities = this.room.getInteractiveEntities();
-
-      // don't exec when avatar is moving
       if (avaX % 1 === 0 && avaY % 1 === 0) {
         interactiveEntities.forEach((interactive) => {
           if (this.hitTestRectangle(this.avatar, interactive)) {
@@ -282,6 +280,19 @@ export default {
           }
         }
       });
+
+      let realLen = 0;
+      this.connectedClients.forEach((key) => {
+        if (key !== undefined) {
+          realLen = realLen + 1;
+        }
+      });
+
+      if (realLen > 0) {
+        this.avatar.addVideoContainer(this.clientId);
+      } else {
+        this.avatar.removeVideoContainer();
+      }
     },
     hitTestRectangle(a, b) {
       const aBounds = a.getBounds();

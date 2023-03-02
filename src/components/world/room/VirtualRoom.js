@@ -30,7 +30,7 @@ export default class VirtualRoom extends PIXI.Container {
     this.sortableChildren = true;
 
     let backgroundContainer = new PIXI.Container();
-    backgroundContainer.position.set(0, 0)
+    backgroundContainer.position.set(0, 0);
     backgroundContainer.cacheAsBitmap = true;
     this.backgroundContainer = backgroundContainer;
 

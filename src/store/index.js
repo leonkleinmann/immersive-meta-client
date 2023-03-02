@@ -188,11 +188,11 @@ export default new Vuex.Store({
       state.connectedClients[clientId] = true;
     },
     removeConnectedClient(state, clientId) {
-      Vue.delete(state.connectedClients, clientId)
+      Vue.delete(state.connectedClients, clientId);
     },
     updateConnectedClient(state, data) {
-      Vue.set(state.connectedClients, data.clientId, data.chunk)
-    }
+      Vue.set(state.connectedClients, data.clientId, data.chunk);
+    },
   },
   actions: {},
 });

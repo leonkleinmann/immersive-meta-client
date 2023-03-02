@@ -19,9 +19,9 @@ export default class MiniMap extends PIXI.Container {
   }
 
   draw() {
-    this.drawBackground()
-    this.drawAvatar()
-    this.drawEntities()
+    this.drawBackground();
+    this.drawAvatar();
+    this.drawEntities();
   }
 
   drawBackground() {
@@ -43,7 +43,7 @@ export default class MiniMap extends PIXI.Container {
   }
 
   drawEntities() {
-    this.drawBackground()
+    this.drawBackground();
     this.mirrorScene.children.forEach((child) => {
       if (child instanceof InteractiveObject) {
         let objectX = child.x * (this.mapWidth / this.mirrorScene.roomWidth);
@@ -72,7 +72,7 @@ export default class MiniMap extends PIXI.Container {
         let exitY = child.y * (this.mapHeight / this.mirrorScene.roomHeight);
 
         let objectGraphic = new PIXI.Graphics();
-        objectGraphic.beginFill(0x6495ED);
+        objectGraphic.beginFill(0x6495ed);
         objectGraphic.drawRect(exitX, exitY, 10, 10);
         objectGraphic.endFill();
 
@@ -92,9 +92,9 @@ export default class MiniMap extends PIXI.Container {
     }
   }
   setAvatar(avatar) {
-    this.removeChild(this.avatar)
+    this.removeChild(this.avatar);
     this.avatar = avatar;
-    this.drawAvatar()
+    this.drawAvatar();
   }
   setMirrorScene(mirrorScene) {
     this.mirrorScene = mirrorScene;

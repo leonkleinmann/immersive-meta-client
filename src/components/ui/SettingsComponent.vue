@@ -1,7 +1,7 @@
 <template>
   <div class="settings">
     <div class="items">
-      <div class="item">
+      <div @click="logout" class="item">
         <img src="/assets/ui/logout.png" alt="mic_enabled" />
       </div>
     </div>
@@ -11,6 +11,11 @@
 <script>
 export default {
   name: "SettingsComponent",
+  methods: {
+    logout() {
+      this.$store.commit('setIsPlaying', false)
+    },
+  },
 };
 </script>
 

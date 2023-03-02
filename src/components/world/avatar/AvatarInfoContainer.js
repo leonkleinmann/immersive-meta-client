@@ -12,8 +12,8 @@ export default class AvatarInfoContainer extends PIXI.Container {
 
   build() {
     const background = new PIXI.Sprite(PIXI.Texture.WHITE);
-    background.width = 100;
-    background.height = 30;
+    background.width = store.getters.settingsData.avatarInformationWidth;
+    background.height = store.getters.settingsData.avatarInformationHeight;
     background.position.set(0, 0);
     background.alpha = 0.5;
     background.zIndex = 2;

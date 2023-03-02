@@ -35,6 +35,10 @@ export default class NPC extends Movable {
         this.chain.push(new ContentCommand(command.content));
       }
     });
+    //go back
+    this.chain.push(
+      new GotoCommand(super.x / this.tileSize, super.y / this.tileSize, false)
+    );
   }
 
   triggerAnimation() {

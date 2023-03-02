@@ -201,6 +201,18 @@ export default class VirtualRoom extends PIXI.Container {
     });
   }
 
+  createMatrix() {
+    let array = this.tiles
+    const matrix = [];
+    for (let y = 0; y < array.length; y++) {
+      matrix[y] = [];
+      for (let x = 0; x < array[y].length; x++) {
+        matrix[y][x] = array[y][x] === null ? 0 : 1;
+      }
+    }
+    return matrix;
+  }
+
   getTile(x, y) {
     return this.tiles[x / this.tileSize][y / this.tileSize];
   }

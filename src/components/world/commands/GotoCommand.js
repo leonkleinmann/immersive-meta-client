@@ -8,28 +8,51 @@ export default class GotoCommand {
     this.withUser = withUser;
   }
 
-  execute(npc) {
+  async execute(npc) {
     const tileSize = store.getters.settingsData.tileSize;
-    const direction = this.determineDirection(npc);
-
-    return npc.move(this.x * tileSize, this.y * tileSize, direction, () => {});
+    // eslint-disable-next-line no-async-promise-executor
+    return new Promise(async (resolve) => {
+      const path = npc.findPath(this.x, this.y);
+      console.log("GOTO", this.x, this.y);
+      console.log("CALC PATH", path);
+      for (let i = 0; i < path.length; i++) {
+        const pair = path[i];
+        await npc.move(
+          pair[0] * tileSize,
+          pair[1] * tileSize,
+          this.determineDirection(
+            npc.x,
+            npc.y,
+            pair[0] * tileSize,
+            pair[1] * tileSize
+          ),
+          () => {}
+        );
+      }
+      resolve();
+    });
   }
 
-  determineDirection(npc) {
-    const npcX = npc.x;
-    const npcY = npc.y;
-
-    if (npcX === this.x && npcY === this.y) {
+  determineDirection(npcX, npcY, nextX, nextY) {
+    console.log(
+      "determineDirection(npcX, npcY, nextX, nextY)",
+      npcX,
+      npcY,
+      nextX,
+      nextY
+    );
+    if (npcX < nextX) {
+      return Directions.EAST;
+    }
+    if (npcX > nextX) {
+      return Directions.WEST;
+    }
+    if (npcY > nextY) {
+      return Directions.NORTH;
+    }
+    if (npcY < nextY) {
       return Directions.SOUTH;
     }
-
-    const xDistance = Math.abs(npcX - this.x);
-    const yDistance = Math.abs(npcY - this.y);
-
-    if (xDistance > yDistance) {
-      return npcX < this.x ? Directions.EAST : Directions.WEST;
-    } else {
-      return npcY < this.y ? Directions.SOUTH : Directions.NORTH;
-    }
+    return Directions.SOUTH;
   }
 }

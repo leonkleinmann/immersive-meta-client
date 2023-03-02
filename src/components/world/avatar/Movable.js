@@ -1,9 +1,10 @@
 import * as PIXI from "pixi.js";
 import store from "@/store";
 import gsap from "gsap";
-import ExitObject from "@/components/world/object/ExitObject";
+import PF from "pathfinding";
 import AvatarInfoContainer from "@/components/world/avatar/AvatarInfoContainer";
 import AvatarMediaContainer from "@/components/world/avatar/AvatarMediaContainer";
+import ExitObject from "@/components/world/object/ExitObject";
 
 export const Directions = Object.freeze({
   NORTH: "north",
@@ -138,6 +139,20 @@ export default class Movable extends PIXI.AnimatedSprite {
       }
       await timeline.play();
     }
+  }
+
+  findPath(xEnd, yEnd) {
+    console.log("findPath(toX, toY)", this.x, this.y, xEnd, yEnd);
+    let matrix = this.parent.createMatrix();
+    let grid = new PF.Grid(matrix);
+    let finder = new PF.AStarFinder();
+    return finder.findPath(
+      this.x / this.tileSize,
+      this.y / this.tileSize,
+      xEnd,
+      yEnd,
+      grid
+    );
   }
 
   willCollide(x, y) {

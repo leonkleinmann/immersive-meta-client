@@ -25,8 +25,10 @@ export default new Vuex.Store({
       tileSize: undefined,
       maxPlayers: undefined,
       initialRoom: undefined,
-      avatarInformationWidth: 120,
-      avatarInformationHeight: 120,
+      avatarInformationWidth: 100,
+      avatarInformationHeight: 30,
+      avatarMediaWidth: 100,
+      avatarMediaHeight: 60
     },
     worldData: undefined,
     textures: {},

@@ -19,6 +19,7 @@ export default class ServerConnector {
   init() {
     this.serverSocket = new WebSocket(this.host);
     this.serverSocket.onopen = this.handleOpen.bind(this);
+    this.serverSocket.onclose = this.handleClose.bind(this);
     this.serverSocket.onmessage = this.handleMessage.bind(this);
   }
 
@@ -31,6 +32,11 @@ export default class ServerConnector {
       username: setupData.username,
       link: setupData.link,
     });
+  }
+
+  handleClose() {
+    console.log('Connection to Server was lost..')
+    store.commit('setIsLoading', true)
   }
 
   handleMessage(event) {

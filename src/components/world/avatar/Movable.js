@@ -47,7 +47,7 @@ export default class Movable extends PIXI.AnimatedSprite {
       this.video = new AvatarMediaContainer(id);
       this.video.position.set(
         this.x - 50 + this.tileSize / 2,
-        this.y - this.tileSize - this.tileSize - 30
+        this.info.y - 60
       );
       this.parent.addChild(this.video);
     }
@@ -119,8 +119,8 @@ export default class Movable extends PIXI.AnimatedSprite {
         timeline.to(
           this.video,
           {
-            x: x - 60 + this.tileSize / 2,
-            y: y - this.tileSize - 80,
+            x: x - 50 + this.tileSize / 2,
+            y: y - this.tileSize - 60,
             duration: 0.5,
           },
           0

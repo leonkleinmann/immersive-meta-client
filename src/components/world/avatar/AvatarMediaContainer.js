@@ -19,8 +19,8 @@ export default class AvatarMediaContainer extends PIXI.Container {
 
     this.videoSprite = new PIXI.Sprite(videoTexture);
     this.videoSprite.position.set(0, 0);
-    this.videoSprite.width = 120;
-    this.videoSprite.height = 80;
+    this.videoSprite.width = 100;
+    this.videoSprite.height = 60;
 
     this.addChild(this.videoSprite);
 

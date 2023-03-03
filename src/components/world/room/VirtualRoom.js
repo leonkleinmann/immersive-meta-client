@@ -137,23 +137,7 @@ export default class VirtualRoom extends PIXI.Container {
         if (toAdd instanceof InteractiveObject) {
           toAdd.buildAnimation();
         }
-
-        let toAddBounds = toAdd.getBounds();
-        let n_width = toAddBounds.width;
-        let n_height = toAddBounds.height;
-        for (
-          let i = toAdd.x;
-          i < toAdd.x + Math.round(n_width);
-          i = i + this.tileSize
-        ) {
-          for (
-            let j = toAdd.y;
-            j < toAdd.y + Math.round(n_height);
-            j = j + this.tileSize
-          ) {
-            this.tiles[i / this.tileSize][j / this.tileSize] = toAdd;
-          }
-        }
+        this.addToTilemap(toAdd)
       }
     });
   }
@@ -187,24 +171,27 @@ export default class VirtualRoom extends PIXI.Container {
       this.interactiveEntities.push(npcToAdd);
       this.addChild(npcToAdd);
       npcToAdd.buildAnimation();
-
-      let npcBounds = npcToAdd.getBounds();
-      let n_width = npcBounds.width;
-      let n_height = npcBounds.height;
-      for (
-        let i = npcToAdd.x;
-        i < npcToAdd.x + Math.round(n_width);
-        i = i + this.tileSize
-      ) {
-        for (
-          let j = npcToAdd.y;
-          j < npcToAdd.y + Math.floor(n_height);
-          j = j + this.tileSize
-        ) {
-          this.tiles[i / this.tileSize][j / this.tileSize] = npcToAdd;
-        }
-      }
+      this.addToTilemap(npcToAdd)
     });
+  }
+
+  addToTilemap(toAdd) {
+    let toAddBounds = toAdd.getBounds();
+    let n_width = toAddBounds.width;
+    let n_height = toAddBounds.height;
+    for (
+        let i = toAdd.x;
+        i < toAdd.x + Math.round(n_width);
+        i = i + this.tileSize
+    ) {
+      for (
+          let j = toAdd.y;
+          j < toAdd.y + Math.round(n_height);
+          j = j + this.tileSize
+      ) {
+        this.tiles[i / this.tileSize][j / this.tileSize] = toAdd;
+      }
+    }
   }
 
   createMatrix() {

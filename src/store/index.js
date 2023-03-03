@@ -28,18 +28,18 @@ export default new Vuex.Store({
       avatarInformationWidth: 100,
       avatarInformationHeight: 30,
       avatarMediaWidth: 100,
-      avatarMediaHeight: 60
+      avatarMediaHeight: 60,
     },
     worldData: undefined,
     textures: {},
     animations: {},
     currentRoom: {},
     clientAvatars: [],
-    exitObjects: [],
     chatMessages: [],
     audioSource: "",
     playMusic: true,
     connectedClients: [],
+    workshopObjectData: {},
   },
   getters: {
     server: (state) => {
@@ -95,9 +95,6 @@ export default new Vuex.Store({
     },
     clientAvatars: (state) => {
       return state.clientAvatars;
-    },
-    exitObjects: (state) => {
-      return state.exitObjects;
     },
     avatarInformationWidth: (state) => {
       return state.settingsData.avatarInformationWidth;
@@ -165,9 +162,6 @@ export default new Vuex.Store({
     setCurrentRoom(state, currentRoom) {
       state.currentRoom = currentRoom;
     },
-    addExitObject(state, exitObject) {
-      state.exitObjects.push(exitObject);
-    },
     setClientAvatar(state, data) {
       Vue.set(state.clientAvatars, data.clientId, data);
     },
@@ -194,6 +188,12 @@ export default new Vuex.Store({
     },
     updateConnectedClient(state, data) {
       Vue.set(state.connectedClients, data.clientId, data.chunk);
+    },
+    updateWorkshopObject(state, data) {
+      Vue.set(state.workshopObjectData, data.objectId, data.chunk);
+    },
+    removeWorkshopObject(state, objectId) {
+      Vue.delete(state.workshopObjectData, objectId);
     },
   },
   actions: {},

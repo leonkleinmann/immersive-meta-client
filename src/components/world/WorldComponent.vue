@@ -168,7 +168,7 @@ export default {
       this.$pixiApp.ticker.remove(this.avatarCollision);
       this.$pixiApp.ticker.remove(this.collisionUpdate);
       this.$pixiApp.ticker.remove(this.scroll);
-      this.$pixiApp.stage.removeChild(this.room);
+      this.$pixiApp.stage.removeChild(this.room, this.miniMap);
 
       this.clientAvatars = {};
       this.$store.commit("clearClientAvatars");

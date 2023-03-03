@@ -35,8 +35,8 @@ export default class ServerConnector {
   }
 
   handleClose() {
-    console.log('Connection to Server was lost..')
-    store.commit('setIsLoading', true)
+    console.log("Connection to Server was lost..");
+    store.commit("setIsLoading", true);
   }
 
   handleMessage(event) {
@@ -66,6 +66,9 @@ export default class ServerConnector {
       case "VIDEO_CHUNK":
         this.handleVideoChunk(parsedCommand);
         break;
+      case "SCREEN_CHUNK":
+        this.handleScreenChunk(parsedCommand);
+        break;
       default:
         console.warn("Unknown command type: ", parsedCommand);
         break;
@@ -90,6 +93,11 @@ export default class ServerConnector {
 
   handleVideoChunk(parsed) {
     store.commit("updateConnectedClient", parsed);
+  }
+
+  handleScreenChunk(parsed) {
+    console.log("RECEIVING CHUNK -> obj.id", parsed.objectId)
+    store.commit("updateWorkshopObject", parsed);
   }
 
   sendMessage(command_type, parameters) {

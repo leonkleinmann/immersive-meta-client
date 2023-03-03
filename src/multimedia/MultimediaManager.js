@@ -15,18 +15,63 @@ export default class MultimediaManager {
     if (!this.videoStream) {
       this.videoStream = await navigator.mediaDevices.getUserMedia({
         video: true,
-        audio: true,
+        audio: {
+          suppressLocalAudioPlayback: true,
+        },
       });
     }
     return this.videoStream;
   }
 
+  async getScreenStream() {
+    if (!this.screenStream) {
+      this.screenStream = await navigator.mediaDevices.getDisplayMedia({
+        video: true,
+        audio: {
+          suppressLocalAudioPlayback: true,
+        },
+      });
+    }
+    return this.screenStream;
+  }
+
   async getVideoElement() {
     const stream = await this.getVideoStream();
     const video = document.createElement("video");
-    //video.muted = true;
     video.srcObject = stream;
     return video;
+  }
+
+  async getScreenElement() {
+    const stream = await this.getScreenStream();
+    const screen = document.createElement("video");
+    screen.srcObject = stream;
+    return screen;
+  }
+
+  async sendScreenChunks(duration, objectId) {
+    console.log('objectId', objectId)
+    const screen = await this.getScreenElement();
+    const stream = screen.srcObject;
+    await screen.play();
+
+    let recorder = new MediaRecorder(stream, {
+      mimeType: 'video/webm; codecs="opus,vp9"',
+    });
+
+    recorder.ondataavailable = async (event) => {
+      console.log('SENDING CHUNK -> obj.id', objectId)
+      ServerConnector.getInstance().sendMessage("SCREEN_CHUNK", {
+        chunk: await this.blobToBase64(event.data),
+        objectId: objectId,
+      });
+    };
+    recorder.start();
+
+    setInterval(async () => {
+      await recorder.stop();
+      await recorder.start();
+    }, duration * 1000);
   }
 
   async sendVideoChunks(duration) {
@@ -35,7 +80,7 @@ export default class MultimediaManager {
     await video.play();
 
     let recorder = new MediaRecorder(stream, {
-      mimeType: 'video/webm; codecs="opus, vp9"',
+      mimeType: 'video/webm; codecs="opus,vp9"',
     });
     recorder.ondataavailable = async (event) => {
       const toClients = store.getters.connectedClients;

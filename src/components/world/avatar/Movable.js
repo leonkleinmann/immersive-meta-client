@@ -33,16 +33,14 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   addInfoContainer() {
-    if (!this.info) {
-      this.info = new AvatarInfoContainer(this.username, this.link);
-      this.info.position.set(
-        this.x -
-          store.getters.settingsData.avatarInformationWidth / 2 +
-          this.tileSize / 2,
-        this.y - this.tileSize
-      );
-      this.parent.addChild(this.info);
-    }
+    this.info = new AvatarInfoContainer(this.username, this.link);
+    this.info.position.set(
+      this.x -
+        store.getters.settingsData.avatarInformationWidth / 2 +
+        this.tileSize / 2,
+      this.y - this.tileSize
+    );
+    this.parent.addChild(this.info);
   }
 
   addVideoContainer(id) {

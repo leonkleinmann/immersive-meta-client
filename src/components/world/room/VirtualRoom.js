@@ -93,7 +93,6 @@ export default class VirtualRoom extends PIXI.Container {
         );
       }
       if (tile.__t === "animated_tile") {
-        console.log("ANIMATED_TILE", tile);
         this.addChild(
           new AnimatedTile(tile.x, tile.y, tile.animation.identifier)
         );

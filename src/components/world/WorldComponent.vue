@@ -19,7 +19,6 @@ import ChatComponent from "@/components/chat/ChatComponent";
 import Avatar from "@/components/world/avatar/Avatar";
 import ServerConnector from "@/connectors/server";
 import ModalComponent from "@/components/ui/ModalComponent";
-import VirtualRoom from "@/components/world/room/VirtualRoom";
 import gsap from "gsap";
 import MiniMap from "@/components/world/room/MiniMap";
 import SoundComponent from "@/components/sound/SoundComponent";
@@ -27,6 +26,8 @@ import MultimediaComponent from "@/components/ui/MultimediaComponent";
 import SettingsComponent from "@/components/ui/SettingsComponent";
 import ClientAvatar from "@/components/world/avatar/ClientAvatar";
 import MultimediaManager from "@/multimedia/MultimediaManager";
+import ContentRoom from "@/components/world/room/ContentRoom";
+import WorkshopRoom from "@/components/world/room/WorkshopRoom";
 
 export default {
   name: "WorldComponent",
@@ -175,7 +176,12 @@ export default {
     changeRoom() {
       this.$store.commit("setIsLoading", true);
 
-      this.room = new VirtualRoom(this.currentRoom);
+      if (this.currentRoom.__t === "content_room") {
+        this.room = new ContentRoom(this.currentRoom);
+      }
+      if (this.currentRoom.__t === "workshop_room") {
+        this.room = new WorkshopRoom(this.currentRoom);
+      }
 
       this.avatar.position.set(
         this.currentRoom.initial_position.x * this.settingsData.tileSize,

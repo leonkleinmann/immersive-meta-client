@@ -13,8 +13,6 @@ export default class GotoCommand {
     // eslint-disable-next-line no-async-promise-executor
     return new Promise(async (resolve) => {
       const path = npc.findPath(this.x, this.y);
-      console.log("GOTO", this.x, this.y);
-      console.log("CALC PATH", path);
       for (let i = 0; i < path.length; i++) {
         const pair = path[i];
         await npc.move(
@@ -34,13 +32,6 @@ export default class GotoCommand {
   }
 
   determineDirection(npcX, npcY, nextX, nextY) {
-    console.log(
-      "determineDirection(npcX, npcY, nextX, nextY)",
-      npcX,
-      npcY,
-      nextX,
-      nextY
-    );
     if (npcX < nextX) {
       return Directions.EAST;
     }

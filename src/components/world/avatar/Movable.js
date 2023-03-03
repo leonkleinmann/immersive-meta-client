@@ -142,7 +142,6 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   findPath(xEnd, yEnd) {
-    console.log("findPath(toX, toY)", this.x, this.y, xEnd, yEnd);
     let matrix = this.parent.createMatrix();
     let grid = new PF.Grid(matrix);
     let finder = new PF.AStarFinder();

@@ -96,7 +96,6 @@ export default class ServerConnector {
   }
 
   handleScreenChunk(parsed) {
-    console.log("RECEIVING CHUNK -> obj.id", parsed.objectId)
     store.commit("updateWorkshopObject", parsed);
   }
 

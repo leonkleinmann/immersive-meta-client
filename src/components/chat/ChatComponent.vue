@@ -40,7 +40,7 @@ export default {
     };
   },
   mounted() {
-    this.server = ServerConnector.getInstance("ws://192.168.0.203:8888");
+    this.server = ServerConnector.getInstance("ws://localhost:8888");
   },
   computed: {
     ...mapGetters(["setupData", "chatMessages"]),

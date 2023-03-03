@@ -50,7 +50,6 @@ export default class MultimediaManager {
   }
 
   async sendScreenChunks(duration, objectId) {
-    console.log('objectId', objectId)
     const screen = await this.getScreenElement();
     const stream = screen.srcObject;
     await screen.play();
@@ -60,7 +59,6 @@ export default class MultimediaManager {
     });
 
     recorder.ondataavailable = async (event) => {
-      console.log('SENDING CHUNK -> obj.id', objectId)
       ServerConnector.getInstance().sendMessage("SCREEN_CHUNK", {
         chunk: await this.blobToBase64(event.data),
         objectId: objectId,

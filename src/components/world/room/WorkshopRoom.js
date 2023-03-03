@@ -8,7 +8,6 @@ export default class WorkshopRoom extends VirtualRoom {
   }
 
   addWorkshopObjects() {
-    console.log("ROOM_DATA", this.roomData);
     this.roomData.workshopObjects.forEach((object) => {
       if (object.__t === "interactive_workshop_object") {
         let obj = new InteractiveWorkshopObject(

@@ -15,7 +15,13 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
 
   addCommonObject(texture_type) {
     const texture = store.getters.textures[texture_type];
-    this.backgroundSprite = new CommonObject(0, 0, 128, 128, texture);
+    this.backgroundSprite = new CommonObject(
+      0,
+      0,
+      texture.width,
+      texture.height,
+      texture
+    );
     this.addChild(this.backgroundSprite);
   }
 
@@ -25,7 +31,7 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
 
   async addScreenSprite() {
     this.stream = await MultimediaManager.getInstance().getVideoElement();
-    await this.stream.play()
+    await this.stream.play();
 
     const videoResource = new PIXI.VideoResource(this.stream);
     await videoResource.load();
@@ -35,10 +41,9 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
     this.videoSprite.position.set(10, 10);
     this.videoSprite.width = this.backgroundSprite.getBounds().width - 20;
     this.videoSprite.height = this.backgroundSprite.getBounds().height - 20;
-    this.videoSprite.zIndex = 100
-    console.log('VIDEO SPRITE', this.videoSprite)
+    this.videoSprite.zIndex = 100;
 
-    this.addChild(this.videoSprite)
+    this.addChild(this.videoSprite);
 
     store.watch(
       () => store.state.workshopObjectData[this.id],

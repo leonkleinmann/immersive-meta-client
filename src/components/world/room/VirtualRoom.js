@@ -6,6 +6,7 @@ import CommonObject from "@/components/world/object/CommonObject";
 import AnimatedObject from "@/components/world/object/AnimatedObject";
 import InteractiveObject from "@/components/world/object/InteractiveObject";
 import NPC from "@/components/world/npc/NPC";
+import AnimatedTile from "@/components/world/tile/AnimatedTile";
 
 export default class VirtualRoom extends PIXI.Container {
   tiles = [];
@@ -89,6 +90,12 @@ export default class VirtualRoom extends PIXI.Container {
             tile.texture.height,
             texture
           )
+        );
+      }
+      if (tile.__t === "animated_tile") {
+        console.log("ANIMATED_TILE", tile);
+        this.addChild(
+          new AnimatedTile(tile.x, tile.y, tile.animation.identifier)
         );
       }
     });
@@ -202,7 +209,7 @@ export default class VirtualRoom extends PIXI.Container {
   }
 
   createMatrix() {
-    let array = this.tiles
+    let array = this.tiles;
     const matrix = [];
     for (let y = 0; y < array.length; y++) {
       matrix[y] = [];

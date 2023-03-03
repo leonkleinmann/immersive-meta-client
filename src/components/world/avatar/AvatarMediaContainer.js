@@ -29,8 +29,7 @@ export default class AvatarMediaContainer extends PIXI.Container {
         () => store.state.connectedClients[this.id],
         async (chunk) => {
           try {
-            await this.stream.pause();
-
+            this.stream.pause()
             const byteCharacters = atob(chunk);
             const byteNumbers = new Array(byteCharacters.length);
             for (let i = 0; i < byteCharacters.length; i++) {
@@ -42,7 +41,7 @@ export default class AvatarMediaContainer extends PIXI.Container {
             this.stream.srcObject = null;
             this.stream.src = null;
             this.stream.src = blobURL;
-            await this.stream.play();
+            this.stream.play();
           } catch {
             console.log("CHUNK ERROR");
           }

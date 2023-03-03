@@ -51,7 +51,7 @@ export default class MultimediaManager {
     setInterval(async () => {
       await recorder.stop();
       await recorder.start();
-    }, duration * 300);
+    }, duration * 500);
   }
 
   async blobToBase64(blob) {

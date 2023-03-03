@@ -2,6 +2,7 @@ import * as PIXI from "pixi.js";
 import CommonObject from "@/components/world/object/CommonObject";
 import store from "@/store";
 import MultimediaManager from "@/multimedia/MultimediaManager";
+import ActionAnimation from "@/components/world/ui/ActionAnimation";
 
 export default class InteractiveWorkshopObject extends PIXI.Container {
   constructor(id, x, y, texture_type) {
@@ -23,6 +24,30 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
       texture
     );
     this.addChild(this.backgroundSprite);
+  }
+
+  buildAnimation() {
+    let actionAnimation = new ActionAnimation();
+    actionAnimation.x =
+      this.backgroundSprite.x +
+      this.backgroundSprite.getBounds().width / 2 -
+      actionAnimation.getBounds().width / 2;
+    actionAnimation.y = this.backgroundSprite.y - 20;
+    this.actionAnimation = actionAnimation;
+    this.addChild(actionAnimation);
+  }
+
+  triggerAnimation() {
+    if (!this.actionAnimation.playing) {
+      this.actionAnimation.play();
+    }
+  }
+
+  stopAnimation() {
+    if (this.actionAnimation) {
+      this.actionAnimation.stop();
+      this.actionAnimation.reset();
+    }
   }
 
   trigger() {
@@ -69,7 +94,4 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
       { deep: true }
     );
   }
-
-  stopAnimation() {}
-  triggerAnimation() {}
 }

@@ -19,6 +19,7 @@ export default class WorkshopRoom extends VirtualRoom {
         this.addChild(obj);
         this.interactiveEntities.push(obj);
         this.addToTilemap(obj);
+        obj.buildAnimation()
       }
     });
   }

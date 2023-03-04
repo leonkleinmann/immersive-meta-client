@@ -4,7 +4,20 @@ import ExitObject from "@/components/world/object/ExitObject";
 import NPC from "@/components/world/npc/NPC";
 import InteractiveWorkshopObject from "@/components/world/object/InteractiveWorkshopObject";
 
+/**
+ * Class which represents the rooms mini map
+ */
 export default class MiniMap extends PIXI.Container {
+  /**
+   * Constructor of MiniMap
+   * @param x x-position of mini map
+   * @param y y-position of mini map
+   * @param width width of mini map
+   * @param height height of mini map
+   * @param mirrorScene scene/room to mirror
+   * @param avatar the users avatar
+   * @param ticker ticket of pixi appliaction
+   */
   constructor(x, y, width, height, mirrorScene, avatar, ticker) {
     super();
 
@@ -19,12 +32,18 @@ export default class MiniMap extends PIXI.Container {
     ticker.add(this.updateAvatar, this);
   }
 
+  /**
+   * Create different rectangles of the rooms entitites
+   */
   draw() {
     this.drawBackground();
     this.drawAvatar();
     this.drawEntities();
   }
 
+  /**
+   * draw a white background by given width and height
+   */
   drawBackground() {
     //background
     const graphics = new PIXI.Graphics();
@@ -34,6 +53,9 @@ export default class MiniMap extends PIXI.Container {
     this.addChild(graphics);
   }
 
+  /**
+   * draw the users avatar
+   */
   drawAvatar() {
     let avatarGraphic = new PIXI.Graphics();
     avatarGraphic.beginFill(0xff0000);
@@ -43,6 +65,9 @@ export default class MiniMap extends PIXI.Container {
     this.addChild(avatarGraphic);
   }
 
+  /**
+   * draw room entities
+   */
   drawEntities() {
     this.drawBackground();
     this.mirrorScene.children.forEach((child) => {
@@ -91,6 +116,10 @@ export default class MiniMap extends PIXI.Container {
       }
     });
   }
+
+  /**
+   * update avatar position on minimap
+   */
   updateAvatar() {
     if (this.avatar !== undefined && this.avatarGraphic !== undefined) {
       let avatarX =
@@ -102,11 +131,21 @@ export default class MiniMap extends PIXI.Container {
       this.avatarGraphic.y = avatarY;
     }
   }
+
+  /**
+   * set new avatar (e.g. by changing room)
+   * @param avatar user avatar to display in minimap
+   */
   setAvatar(avatar) {
     this.removeChild(this.avatar);
     this.avatar = avatar;
     this.drawAvatar();
   }
+
+  /**
+   * set new mirror scene (e.g. by room changing)
+   * @param mirrorScene scene/room to mirror
+   */
   setMirrorScene(mirrorScene) {
     this.mirrorScene = mirrorScene;
     this.removeChildren();

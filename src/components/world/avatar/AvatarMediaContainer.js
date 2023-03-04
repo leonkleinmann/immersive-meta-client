@@ -2,7 +2,14 @@ import * as PIXI from "pixi.js";
 import MultimediaManager from "@/multimedia/MultimediaManager";
 import store from "@/store";
 
+/**
+ * Class which handles and displays the video of the webcam of an avatar of or a foreign client avatar
+ */
 export default class AvatarMediaContainer extends PIXI.Container {
+  /**
+   * Constructor of AvatarMediaContainer
+   * @param id id of the client
+   */
   constructor(id) {
     super();
     this.id = id;
@@ -10,6 +17,10 @@ export default class AvatarMediaContainer extends PIXI.Container {
     this.buildVideoSprite();
   }
 
+  /**
+   * Build the actual pixi video sprite which displays the webcam video of user avatar or client avatar
+   * @returns {Promise<void>} Promise is returned which caller can wait for if needed
+   */
   async buildVideoSprite() {
     this.stream = await MultimediaManager.getInstance().getVideoElement();
     await this.stream.play();

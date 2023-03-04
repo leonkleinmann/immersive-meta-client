@@ -6,6 +6,10 @@ import AvatarInfoContainer from "@/components/world/avatar/AvatarInfoContainer";
 import AvatarMediaContainer from "@/components/world/avatar/AvatarMediaContainer";
 import ExitObject from "@/components/world/object/ExitObject";
 
+/**
+ * Enumaration of possible walking directions for movable objects
+ * @type {Readonly<{NORTH: string, WEST: string, SOUTH: string, EAST: string}>}
+ */
 export const Directions = Object.freeze({
   NORTH: "north",
   EAST: "east",
@@ -13,7 +17,19 @@ export const Directions = Object.freeze({
   WEST: "west",
 });
 
+/**
+ * Class Movable which represents any movable entity like avatars, client avatars or npcs
+ */
 export default class Movable extends PIXI.AnimatedSprite {
+  /**
+   * Constructor of Movable
+   * @param x x-position of movable
+   * @param y y-position of movable
+   * @param gender gender of movable
+   * @param username username of movable
+   * @param link link provided by movable
+   * @param direction initial direction movable is looking to
+   */
   constructor(x, y, gender, username, link, direction = "south") {
     super([PIXI.Texture.WHITE]);
     this.x = x;
@@ -32,6 +48,9 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.width = this.tileSize;
   }
 
+  /**
+   * adds an info container to movable, needed for avatars and client avatars to represent corresponding information
+   */
   addInfoContainer() {
     this.info = new AvatarInfoContainer(this.username, this.link);
     this.info.position.set(
@@ -43,6 +62,10 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.parent.addChild(this.info);
   }
 
+  /**
+   * adds a video container to movable to display webcam video, needed for avatars and client avatars
+   * @param id
+   */
   addVideoContainer(id) {
     if (!this.video) {
       this.video = new AvatarMediaContainer(id);
@@ -56,6 +79,9 @@ export default class Movable extends PIXI.AnimatedSprite {
     }
   }
 
+  /**
+   *  remove the info container
+   */
   removeInfoContainer() {
     if (this.info) {
       this.parent.removeChild(this.info);
@@ -63,6 +89,9 @@ export default class Movable extends PIXI.AnimatedSprite {
     }
   }
 
+  /**
+   * remove video container
+   */
   removeVideoContainer() {
     if (this.video) {
       this.parent.removeChild(this.video);
@@ -70,6 +99,9 @@ export default class Movable extends PIXI.AnimatedSprite {
     }
   }
 
+  /**
+   * functiin which creates the idle sprite sheet for movables
+   */
   buildAvatarIdleSheet() {
     const textures = store.getters.textures;
     const gender = store.getters.setupData.gender;
@@ -81,6 +113,14 @@ export default class Movable extends PIXI.AnimatedSprite {
     }
   }
 
+  /**
+   * Function which moves the movable to a (x,y)-position by tweening
+   * @param x new x-position
+   * @param y new y-position
+   * @param direction direction the movable should look to
+   * @param callback callback function can be executed before beginning moving
+   * @returns {Promise<void>} returns promise caller can wait for
+   */
   async move(x, y, direction, callback) {
     if (!this.playing && !this.willCollide(x, y)) {
       const walkAnimation = this.animations[`${this.gender}_walk_${direction}`];
@@ -139,6 +179,12 @@ export default class Movable extends PIXI.AnimatedSprite {
     }
   }
 
+  /**
+   * function which finds a path to given (x,y)-position
+   * @param xEnd aim x-position
+   * @param yEnd aim y-position
+   * @returns {Array<Array<number>>} returns array containing arrays with (x,y) pairs
+   */
   findPath(xEnd, yEnd) {
     let matrix = this.parent.createMatrix();
     let grid = new PF.Grid(matrix);
@@ -152,6 +198,12 @@ export default class Movable extends PIXI.AnimatedSprite {
     );
   }
 
+  /**
+   * Function which checks if movable collides with object
+   * @param x desired x-position
+   * @param y y-position
+   * @returns {boolean} true, if collision; false, if not.
+   */
   willCollide(x, y) {
     let willColide = false;
     let tile = this.parent.getTile(x, y);
@@ -163,6 +215,12 @@ export default class Movable extends PIXI.AnimatedSprite {
     return willColide;
   }
 
+  /**
+   * Function which checks if user will stay inside room
+   * @param x desired x-position
+   * @param y desired y-position
+   * @returns {boolean} true, if movable stays inside; false otherweise
+   */
   willStayInside(x, y) {
     return (
       x >= 0 &&

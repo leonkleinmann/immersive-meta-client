@@ -1,7 +1,15 @@
 import * as PIXI from "pixi.js";
 import store from "@/store";
 
+/**
+ * Class which represents the character info, such as username and link above the users avatar
+ */
 export default class AvatarInfoContainer extends PIXI.Container {
+  /**
+   * Constructor of AvatarInfoContainer
+   * @param username username of the user
+   * @param link link the user provided
+   */
   constructor(username, link) {
     super();
     this.username = username;
@@ -10,6 +18,10 @@ export default class AvatarInfoContainer extends PIXI.Container {
     this.build();
   }
 
+  /**
+   * Function which builds the AvatarInfoContainer by filling the PIXI.Container with mondatory contents
+   * like white background, status, username and a clickable link button
+   */
   build() {
     const background = new PIXI.Sprite(PIXI.Texture.WHITE);
     background.width = store.getters.settingsData.avatarInformationWidth;

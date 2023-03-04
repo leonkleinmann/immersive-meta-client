@@ -8,11 +8,18 @@ import InteractiveObject from "@/components/world/object/InteractiveObject";
 import NPC from "@/components/world/npc/NPC";
 import AnimatedTile from "@/components/world/tile/AnimatedTile";
 
+/**
+ * Class which represents virtual rooms
+ */
 export default class VirtualRoom extends PIXI.Container {
   tiles = [];
   exitObjects = [];
   interactiveEntities = [];
 
+  /**
+   * Constructor of VirtualRoom
+   * @param roomData data of the room
+   */
   constructor(roomData) {
     super();
     store.commit("setIsLoading", true);
@@ -48,6 +55,9 @@ export default class VirtualRoom extends PIXI.Container {
     store.commit("setIsLoading", false);
   }
 
+  /**
+   * function which builds the tile map which is mandatory for collision checking etc.
+   */
   buildTileMap() {
     for (let y = 0; y < this.roomHeight / this.tileSize; y++) {
       this.tiles[y] = [];
@@ -57,6 +67,9 @@ export default class VirtualRoom extends PIXI.Container {
     }
   }
 
+  /**
+   * function which will create and draw the background of this room
+   */
   buildBackground() {
     const backgroundTexture =
       store.getters.textures[this.roomData.base_texture.type];
@@ -77,6 +90,9 @@ export default class VirtualRoom extends PIXI.Container {
     }
   }
 
+  /**
+   * function which adds the tiles to the rooom
+   */
   addTiles() {
     const tiles = this.roomData.tiles;
     tiles.forEach((tile) => {
@@ -100,6 +116,9 @@ export default class VirtualRoom extends PIXI.Container {
     });
   }
 
+  /**
+   * function which will add any map object to the room (common objects, animated objects, ..)
+   */
   addObjects() {
     const objectData = this.roomData.objects;
     objectData.forEach((object) => {
@@ -142,6 +161,9 @@ export default class VirtualRoom extends PIXI.Container {
     });
   }
 
+  /**
+   * function which will add exits to the room
+   */
   addExits() {
     this.roomData.exits.forEach((exit) => {
       let exitTexture = store.getters.textures[exit.texture.type];
@@ -159,6 +181,9 @@ export default class VirtualRoom extends PIXI.Container {
     });
   }
 
+  /**
+   * function which will add npcs to the room
+   */
   addNpcs() {
     this.roomData.npcs.forEach((npc) => {
       let npcToAdd = new NPC(
@@ -175,6 +200,10 @@ export default class VirtualRoom extends PIXI.Container {
     });
   }
 
+  /**
+   * function whoch will add entries to the tilemap and calculates which places it will take
+   * @param toAdd object to add
+   */
   addToTilemap(toAdd) {
     let toAddBounds = toAdd.getBounds();
     let n_width = toAddBounds.width;
@@ -194,6 +223,12 @@ export default class VirtualRoom extends PIXI.Container {
     }
   }
 
+  /**
+   * create a matrix of the tile map
+   * 0 = empty tile
+   * 1 = object on the tile
+   * @returns {*[]}
+   */
   createMatrix() {
     let array = this.tiles;
     const matrix = [];
@@ -206,14 +241,28 @@ export default class VirtualRoom extends PIXI.Container {
     return matrix;
   }
 
+  /**
+   * function which returns the object on a tile
+   * @param x x-position of tile
+   * @param y y-position of tile
+   * @returns {*} room object
+   */
   getTile(x, y) {
     return this.tiles[x / this.tileSize][y / this.tileSize];
   }
 
+  /**
+   * function which returns exits of a room
+   * @returns {*[]} array with exits which lead out of room
+   */
   getExitObjects() {
     return this.exitObjects;
   }
 
+  /**
+   * function which returns interactive entities of the room
+   * @returns {*[]}  array with interactive entities (interactive object, npc, ..)
+   */
   getInteractiveEntities() {
     return this.interactiveEntities;
   }

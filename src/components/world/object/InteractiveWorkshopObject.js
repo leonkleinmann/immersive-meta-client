@@ -4,7 +4,17 @@ import store from "@/store";
 import MultimediaManager from "@/multimedia/MultimediaManager";
 import ActionAnimation from "@/components/world/ui/ActionAnimation";
 
+/**
+ * Class which represents interactive work shop objects
+ */
 export default class InteractiveWorkshopObject extends PIXI.Container {
+  /**
+   * Constructor of InteractiveWorkshopObject
+   * @param id id of the object
+   * @param x x-position of the object
+   * @param y y-position of the object
+   * @param texture_type animation identifier
+   */
   constructor(id, x, y, texture_type) {
     super();
     this.id = id;
@@ -14,6 +24,10 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
     this.addScreenSprite();
   }
 
+  /**
+   * function which adds the common object to this which video will be displayed on
+   * @param texture_type texture of the commo object (usually a desk)
+   */
   addCommonObject(texture_type) {
     const texture = store.getters.textures[texture_type];
     this.backgroundSprite = new CommonObject(
@@ -26,6 +40,10 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
     this.addChild(this.backgroundSprite);
   }
 
+  /**
+   * function which build a trigger animation since this a triggerable object
+   * unfortunately javascript doesn't support multiple inheritance
+   */
   buildAnimation() {
     let actionAnimation = new ActionAnimation();
     actionAnimation.x =
@@ -37,12 +55,18 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
     this.addChild(actionAnimation);
   }
 
+  /**
+   * function which will start the trigger animation
+   */
   triggerAnimation() {
     if (!this.actionAnimation.playing) {
       this.actionAnimation.play();
     }
   }
 
+  /**
+   * function which stops the trigger animation
+   */
   stopAnimation() {
     if (this.actionAnimation) {
       this.actionAnimation.stop();
@@ -50,10 +74,17 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
     }
   }
 
+  /**
+   * function which triggers this object and executes corresponding action
+   */
   trigger() {
     MultimediaManager.getInstance().sendScreenChunks(1, this.id);
   }
 
+  /**
+   * function which will add a video sprite to this in order to display a users screen
+   * @returns {Promise<void>} promise caller can wait for
+   */
   async addScreenSprite() {
     this.stream = await MultimediaManager.getInstance().getVideoElement();
     await this.stream.play();

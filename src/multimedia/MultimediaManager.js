@@ -1,9 +1,17 @@
 import ServerConnector from "@/connectors/server";
 import store from "@/store";
 
+/**
+ * Class which represents the Multimedia Manager which will handle anything regarding video and screen streams
+ * and corresponding permission handling
+ */
 export default class MultimediaManager {
   static instance = null;
 
+  /**
+   * function which returns the instance of MultimediaManager (singleton)
+   * @returns {null}
+   */
   static getInstance() {
     if (this.instance === null) {
       this.instance = new MultimediaManager();
@@ -11,6 +19,10 @@ export default class MultimediaManager {
     return this.instance;
   }
 
+  /**
+   * Function which will create a stream of webcam and mic
+   * @returns {Promise<MediaStream>} promise caller can wait for
+   */
   async getVideoStream() {
     if (!this.videoStream) {
       this.videoStream = await navigator.mediaDevices.getUserMedia({
@@ -23,6 +35,10 @@ export default class MultimediaManager {
     return this.videoStream;
   }
 
+  /**
+   * function which will create a stream of the screen
+   * @returns {Promise<MediaStream>} promise caller can wait for
+   */
   async getScreenStream() {
     if (!this.screenStream) {
       this.screenStream = await navigator.mediaDevices.getDisplayMedia({
@@ -35,6 +51,10 @@ export default class MultimediaManager {
     return this.screenStream;
   }
 
+  /**
+   * function which will create a video element of webcam stream
+   * @returns {Promise<HTMLVideoElement>} promise caller can wait for containing a HTMLVideoElement <video>
+   */
   async getVideoElement() {
     const stream = await this.getVideoStream();
     const video = document.createElement("video");
@@ -42,6 +62,10 @@ export default class MultimediaManager {
     return video;
   }
 
+  /**
+   * function which will create a video element of a screen stream
+   * @returns {Promise<HTMLVideoElement>} promise caller can wait for containing a HTMLVideoElement <video>
+   */
   async getScreenElement() {
     const stream = await this.getScreenStream();
     const screen = document.createElement("video");
@@ -49,6 +73,12 @@ export default class MultimediaManager {
     return screen;
   }
 
+  /**
+   * Function which will send screen chunks
+   * @param duration pause between sending
+   * @param objectId  object id which corresponds to the chunks
+   * @returns {Promise<void>} promise user can wait for
+   */
   async sendScreenChunks(duration, objectId) {
     const screen = await this.getScreenElement();
     const stream = screen.srcObject;
@@ -72,6 +102,11 @@ export default class MultimediaManager {
     }, duration * 1000);
   }
 
+  /**
+   * function which will send video chunks of webcam
+   * @param duration duration of pause between sending
+   * @returns {Promise<void>}
+   */
   async sendVideoChunks(duration) {
     const video = await this.getVideoElement();
     const stream = video.srcObject;
@@ -97,6 +132,11 @@ export default class MultimediaManager {
     }, duration * 500);
   }
 
+  /**
+   * function which converts a blob object into a base 64 string (needed to be able to send a chunk to webserver)
+   * @param blob blob to convert
+   * @returns {Promise<unknown>} promise caller can wait for
+   */
   async blobToBase64(blob) {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();

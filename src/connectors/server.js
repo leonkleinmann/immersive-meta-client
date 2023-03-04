@@ -1,6 +1,13 @@
 import store from "@/store";
 
+/**
+ * Class which represents the server connector which manages websocket connection to server
+ */
 export default class ServerConnector {
+  /**
+   * Constructor of ServerConnector
+   * @param host websocket host of server
+   */
   constructor(host) {
     this.host = host;
     this.serverSocket = null;
@@ -9,6 +16,11 @@ export default class ServerConnector {
 
   static instance = null;
 
+  /**
+   * static function to retrieve ServerConnector instance (singleton)
+   * @param host host of the websocket server
+   * @returns {null} the instance of ServerConnector
+   */
   static getInstance(host) {
     if (!this.instance) {
       this.instance = new ServerConnector(host);
@@ -16,6 +28,9 @@ export default class ServerConnector {
     return this.instance;
   }
 
+  /**
+   * function which initializes the connection to server
+   */
   init() {
     this.serverSocket = new WebSocket(this.host);
     this.serverSocket.onopen = this.handleOpen.bind(this);
@@ -23,6 +38,9 @@ export default class ServerConnector {
     this.serverSocket.onmessage = this.handleMessage.bind(this);
   }
 
+  /**
+   * function which handles the openeing of the connection
+   */
   handleOpen() {
     console.log("Connection to Server was established!");
 
@@ -34,11 +52,18 @@ export default class ServerConnector {
     });
   }
 
+  /**
+   * function which handles connection closing
+   */
   handleClose() {
     console.log("Connection to Server was lost..");
     store.commit("setIsLoading", true);
   }
 
+  /**
+   * function which handles different incoming messages from server
+   * @param event
+   */
   handleMessage(event) {
     const parsedCommand = JSON.parse(event.data);
     //console.log("COMMAND RECEIVED", parsedCommand);
@@ -75,14 +100,26 @@ export default class ServerConnector {
     }
   }
 
+  /**
+   * function which handles the REGISTER_COMPLETE command
+   * @param parsed the parsed message which will contain the client id the server created for this client
+   */
   handleRegisterComplete(parsed) {
     store.commit("setClientId", parsed.clientId);
   }
 
+  /**
+   * function which handles the CHAT_MESSAGE command
+   * @param parsed the parsed message which will contain the chat message and the author of the chat message
+   */
   handleChatMessage(parsed) {
     store.commit("addChatMessage", parsed.message);
   }
 
+  /**
+   * function which handles the AVATAR_STATE_UPATED command
+   * @param parsed the parsed message which will contain the new position of an avatar (clientId,x,y,direction)
+   */
   handleAvatarStateUpdated(parsed) {
     let avatarToChange = store.getters.clientAvatars[parsed.clientId];
     avatarToChange.x = parsed.x;
@@ -91,14 +128,27 @@ export default class ServerConnector {
     store.commit("setClientAvatar", avatarToChange);
   }
 
+  /**
+   * function which handles the VIDEO_CHUNK command
+   * @param parsed the parsed message which will contain clientId and chunk data of a webcam video stream sending client
+   */
   handleVideoChunk(parsed) {
     store.commit("updateConnectedClient", parsed);
   }
 
+  /**
+   * function which handles the SCREEN_CHUNK command
+   * @param parsed the parsed message which will contain screen chunk data and the corresponding object id
+   */
   handleScreenChunk(parsed) {
     store.commit("updateWorkshopObject", parsed);
   }
 
+  /**
+   * function which sends a message to the server
+   * @param command_type command client wants to send
+   * @param parameters parameters client wants to send with the command
+   */
   sendMessage(command_type, parameters) {
     let command = {
       command: command_type,

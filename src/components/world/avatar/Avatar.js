@@ -1,13 +1,28 @@
 import ServerConnector from "@/connectors/server";
 import Movable, { Directions } from "@/components/world/avatar/Movable";
 
+/**
+ * Class Avatar represents the users avatar
+ */
 export default class Avatar extends Movable {
+
+  /**
+   * Constructor of Avatar
+   * @param x position x
+   * @param y position y
+   * @param gender gender of the user
+   * @param username username of the user
+   * @param link link provided by the user
+   */
   constructor(x, y, gender, username, link) {
     super(x, y, gender, username, link);
     this.registerKeyEvents();
     this.zIndex = 10;
   }
 
+  /**
+   * Function which registers buttons users can press and executes corresponding action
+   */
   registerKeyEvents() {
     document.addEventListener(
       "keydown",
@@ -37,6 +52,12 @@ export default class Avatar extends Movable {
     );
   }
 
+  /**
+   * Function which checks whether two objects intersect
+   * @param a object a
+   * @param b object b
+   * @returns {boolean} true if intersection; false if not
+   */
   hitTestRectangle(a, b) {
     const aBounds = a.getBounds();
     const bBounds = b.getBounds();
@@ -54,6 +75,10 @@ export default class Avatar extends Movable {
     return result;
   }
 
+  /**
+   * Function which moves a character to another tile
+   * @param direction direction of the movement
+   */
   moveToDirection(direction) {
     let toX = this.x;
     let toY = this.y;
@@ -80,6 +105,12 @@ export default class Avatar extends Movable {
     }
   }
 
+  /**
+   * Function which will notify server about position updates of the avatar
+   * @param x new x
+   * @param y new y
+   * @param direction direction of movement
+   */
   notifyServer(x, y, direction) {
     ServerConnector.getInstance().sendMessage("AVATAR_STATE_UPDATE", {
       x,

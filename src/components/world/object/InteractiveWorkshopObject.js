@@ -82,19 +82,24 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
   }
 
   /**
-   * function which will add a video sprite to this in order to display a users screen
-   * @returns {Promise<void>} promise caller can wait for
+   * Build the actual pixi video sprite which displays the webcam video of user avatar or client avatar
+   * @returns {Promise<void>} Promise is returned which caller can wait for if needed
    */
   async addScreenSprite() {
     this.stream = await MultimediaManager.getInstance().getVideoElement();
     await this.stream.play();
 
-    const videoResource = new PIXI.VideoResource(this.stream);
-    await videoResource.load();
-    const videoTexture = new PIXI.Texture.from(videoResource);
+    if (!this.videoResource) {
+      this.videoResource = new PIXI.VideoResource(this.stream);
+      await this.videoResource.load();
+    }
 
-    this.videoSprite = new PIXI.Sprite(videoTexture);
-    this.videoSprite.position.set(10, 10);
+    if (!this.videoTexture) {
+      this.videoTexture = new PIXI.Texture.from(this.videoResource);
+    }
+
+    this.videoSprite = new PIXI.Sprite(this.videoTexture);
+    this.videoSprite.position.set(0, 0);
     this.videoSprite.width = this.backgroundSprite.getBounds().width - 20;
     this.videoSprite.height = this.backgroundSprite.getBounds().height - 20;
     this.videoSprite.zIndex = 100;
@@ -102,19 +107,20 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
     this.addChild(this.videoSprite);
 
     this.stream.addEventListener("canplaythrough", () => {
-      this.stream.play()
+      this.stream.play();
     });
 
-    store.watch(
-      () => store.state.workshopObjectData[this.id],
-      async (chunk) => {
+    let hasNewChunk = false;
+
+    const updateChunk = () => {
+      if (hasNewChunk) {
+        const chunk = store.state.workshopObjectData[this.id];
         try {
           const byteCharacters = atob(chunk);
-          const byteNumbers = new Array(byteCharacters.length);
+          const byteArray = new Uint8Array(byteCharacters.length);
           for (let i = 0; i < byteCharacters.length; i++) {
-            byteNumbers[i] = byteCharacters.charCodeAt(i);
+            byteArray[i] = byteCharacters.charCodeAt(i);
           }
-          const byteArray = new Uint8Array(byteNumbers);
           const blob = new Blob([byteArray], { type: "video/webm" });
           const blobURL = URL.createObjectURL(blob);
           this.stream.srcObject = null;
@@ -123,8 +129,21 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
         } catch {
           console.log("CHUNK ERROR");
         }
-      },
-      { deep: true }
-    );
+        hasNewChunk = false;
+      }
+      requestAnimationFrame(updateChunk);
+    };
+
+    if (this.id !== store.getters.clientId) {
+      store.watch(
+        () => store.state.workshopObjectData[this.id],
+        () => {
+          hasNewChunk = true;
+        },
+        { deep: true }
+      );
+    }
+
+    requestAnimationFrame(updateChunk);
   }
 }

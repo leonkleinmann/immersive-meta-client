@@ -275,46 +275,53 @@ export default {
       Object.values(this.clientAvatars).forEach((clientAvatar) => {
         // eslint-disable-next-line no-prototype-builtins
         if (!this.connectedClients.hasOwnProperty(clientAvatar.id)) {
-          if (this.hitTestRectangle(clientAvatar, this.avatar)) {
+          if (
+            !(this.room instanceof WorkshopRoom) &&
+            this.hitTestRectangle(clientAvatar, this.avatar)
+          ) {
             this.$store.commit("addConnectedClient", clientAvatar.id);
 
             let direction = "UP";
 
             if (this.avatar.x < clientAvatar.x) {
               direction = "RIGHT";
+              this.avatar.addVideoContainer(this.clientId, "LEFT");
             }
             if (this.avatar.x > clientAvatar.x) {
               direction = "LEFT";
+              this.avatar.addVideoContainer(this.clientId, "RIGHT");
             }
             if (this.avatar.y < clientAvatar.y) {
               direction = "DOWN";
+              this.avatar.addVideoContainer(this.clientId, "UP");
             }
             if (this.avatar.y > clientAvatar.y) {
               direction = "UP";
+              this.avatar.addVideoContainer(this.clientId, "DOWN");
             }
 
             clientAvatar.addVideoContainer(clientAvatar.id, direction);
           }
         } else {
-          if (this.hitTestRectangle(clientAvatar, this.avatar) === false) {
+          if (
+            !(this.room instanceof WorkshopRoom) &&
+            this.hitTestRectangle(clientAvatar, this.avatar) === false
+          ) {
             this.$store.commit("removeConnectedClient", clientAvatar.id);
             clientAvatar.removeVideoContainer();
           }
         }
-      });
 
-      let realLen = 0;
-      this.connectedClients.forEach((key) => {
-        if (key !== undefined) {
-          realLen = realLen + 1;
+        let realLen = 0;
+        this.connectedClients.forEach((key) => {
+          if (key !== undefined) {
+            realLen = realLen + 1;
+          }
+        });
+        if (realLen === 0) {
+          this.avatar.removeVideoContainer();
         }
       });
-
-      if (realLen > 0) {
-        this.avatar.addVideoContainer(this.clientId, "UP");
-      } else {
-        this.avatar.removeVideoContainer();
-      }
     },
     hitTestRectangle(a, b) {
       const aBounds = a.getBounds();

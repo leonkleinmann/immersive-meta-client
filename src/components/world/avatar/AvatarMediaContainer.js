@@ -24,11 +24,17 @@ export default class AvatarMediaContainer extends PIXI.Container {
   async buildVideoSprite() {
     this.stream = await MultimediaManager.getInstance().getVideoElement();
     await this.stream.play();
-    const videoResource = new PIXI.VideoResource(this.stream);
-    await videoResource.load();
-    const videoTexture = new PIXI.Texture.from(videoResource);
 
-    this.videoSprite = new PIXI.Sprite(videoTexture);
+    if (!this.videoResource) {
+      this.videoResource = new PIXI.VideoResource(this.stream);
+      await this.videoResource.load();
+    }
+
+    if (!this.videoTexture) {
+      this.videoTexture = new PIXI.Texture.from(this.videoResource);
+    }
+
+    this.videoSprite = new PIXI.Sprite(this.videoTexture);
     this.videoSprite.position.set(0, 0);
     this.videoSprite.width = store.getters.settingsData.avatarMediaWidth;
     this.videoSprite.height = store.getters.settingsData.avatarMediaHeight;
@@ -39,28 +45,40 @@ export default class AvatarMediaContainer extends PIXI.Container {
       this.stream.play()
     });
 
+    let hasNewChunk = false;
+
+    const updateChunk = () => {
+      if (hasNewChunk) {
+        const chunk = store.state.connectedClients[this.id];
+        try {
+          const byteCharacters = atob(chunk);
+          const byteArray = new Uint8Array(byteCharacters.length);
+          for (let i = 0; i < byteCharacters.length; i++) {
+            byteArray[i] = byteCharacters.charCodeAt(i);
+          }
+          const blob = new Blob([byteArray], {type: "video/webm"});
+          const blobURL = URL.createObjectURL(blob);
+          this.stream.srcObject = null;
+          this.stream.src = null;
+          this.stream.src = blobURL;
+        } catch {
+          console.log("CHUNK ERROR");
+        }
+        hasNewChunk = false;
+      }
+      requestAnimationFrame(updateChunk);
+    };
+
     if (this.id !== store.getters.clientId) {
       store.watch(
-        () => store.state.connectedClients[this.id],
-        async (chunk) => {
-          try {
-            const byteCharacters = atob(chunk);
-            const byteNumbers = new Array(byteCharacters.length);
-            for (let i = 0; i < byteCharacters.length; i++) {
-              byteNumbers[i] = byteCharacters.charCodeAt(i);
-            }
-            const byteArray = new Uint8Array(byteNumbers);
-            const blob = new Blob([byteArray], { type: "video/webm" });
-            const blobURL = URL.createObjectURL(blob);
-            this.stream.srcObject = null;
-            this.stream.src = null;
-            this.stream.src = blobURL;
-          } catch {
-            console.log("CHUNK ERROR");
-          }
-        },
-        { deep: true }
+          () => store.state.connectedClients[this.id],
+          () => {
+            hasNewChunk = true;
+          },
+          {deep: true}
       );
     }
+
+    requestAnimationFrame(updateChunk);
   }
 }

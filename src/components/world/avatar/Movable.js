@@ -66,15 +66,42 @@ export default class Movable extends PIXI.AnimatedSprite {
    * adds a video container to movable to display webcam video, needed for avatars and client avatars
    * @param id
    */
-  addVideoContainer(id) {
+  addVideoContainer(id, direction) {
     if (!this.video) {
       this.video = new AvatarMediaContainer(id);
-      this.video.position.set(
-        this.x -
+
+      let videoX = 0;
+      let videoY = 0;
+
+      console.log("DIRECTION", direction);
+      if (direction === "LEFT") {
+        videoX = this.x - store.getters.settingsData.avatarMediaWidth;
+        videoY = this.y - this.getBounds().height / 2;
+      }
+
+      if (direction === "RIGHT") {
+        videoX = this.x + this.getBounds().width;
+        videoY = this.y - this.getBounds().height / 2;
+      }
+      if (direction === "UP") {
+        videoX =
+          this.x -
           store.getters.settingsData.avatarMediaWidth / 2 +
-          this.tileSize / 2,
-        this.info.y - 60
-      );
+          this.tileSize / 2;
+
+        videoY = this.info.y - 60;
+      }
+      if (direction === "DOWN") {
+        videoX = this.x - store.getters.settingsData.avatarMediaWidth / 2;
+        videoY = this.y + this.getBounds().height;
+      }
+
+      this.video.position.set(videoX, videoY);
+
+      // update container position while communicating
+      this.info.x = this.video.x;
+      this.info.y = this.video.y + 60;
+
       this.parent.addChild(this.video);
     }
   }
@@ -96,6 +123,11 @@ export default class Movable extends PIXI.AnimatedSprite {
     if (this.video) {
       this.parent.removeChild(this.video);
       this.video = undefined;
+      this.info.x =
+        this.x -
+        store.getters.settingsData.avatarInformationWidth / 2 +
+        this.tileSize / 2;
+      this.info.y = this.y - this.tileSize;
     }
   }
 
@@ -156,20 +188,6 @@ export default class Movable extends PIXI.AnimatedSprite {
               store.getters.settingsData.avatarInformationWidth / 2 +
               this.tileSize / 2,
             y: y - this.tileSize,
-            duration: 0.5,
-          },
-          0
-        );
-      }
-      if (this.video) {
-        timeline.to(
-          this.video,
-          {
-            x:
-              x -
-              store.getters.settingsData.avatarMediaWidth / 2 +
-              this.tileSize / 2,
-            y: y - this.tileSize - 60,
             duration: 0.5,
           },
           0

@@ -277,7 +277,23 @@ export default {
         if (!this.connectedClients.hasOwnProperty(clientAvatar.id)) {
           if (this.hitTestRectangle(clientAvatar, this.avatar)) {
             this.$store.commit("addConnectedClient", clientAvatar.id);
-            clientAvatar.addVideoContainer(clientAvatar.id);
+
+            let direction = "UP";
+
+            if (this.avatar.x < clientAvatar.x) {
+              direction = "RIGHT";
+            }
+            if (this.avatar.x > clientAvatar.x) {
+              direction = "LEFT";
+            }
+            if (this.avatar.y < clientAvatar.y) {
+              direction = "DOWN";
+            }
+            if (this.avatar.y > clientAvatar.y) {
+              direction = "UP";
+            }
+
+            clientAvatar.addVideoContainer(clientAvatar.id, direction);
           }
         } else {
           if (this.hitTestRectangle(clientAvatar, this.avatar) === false) {
@@ -295,7 +311,7 @@ export default {
       });
 
       if (realLen > 0) {
-        this.avatar.addVideoContainer(this.clientId);
+        this.avatar.addVideoContainer(this.clientId, "UP");
       } else {
         this.avatar.removeVideoContainer();
       }

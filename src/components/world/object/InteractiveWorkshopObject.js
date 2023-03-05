@@ -101,11 +101,14 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
 
     this.addChild(this.videoSprite);
 
+    this.stream.addEventListener("canplaythrough", () => {
+      this.stream.play()
+    });
+
     store.watch(
       () => store.state.workshopObjectData[this.id],
       async (chunk) => {
         try {
-          this.stream.pause();
           const byteCharacters = atob(chunk);
           const byteNumbers = new Array(byteCharacters.length);
           for (let i = 0; i < byteCharacters.length; i++) {
@@ -117,7 +120,6 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
           this.stream.srcObject = null;
           this.stream.src = null;
           this.stream.src = blobURL;
-          this.stream.play();
         } catch {
           console.log("CHUNK ERROR");
         }

@@ -329,6 +329,15 @@ export default {
       let result = false;
 
       if (
+        aBounds.x === bBounds.x &&
+        aBounds.y === bBounds.y &&
+        aBounds.width === bBounds.width &&
+        aBounds.height === bBounds.height
+      ) {
+        return false
+      }
+
+      if (
         aBounds.x + aBounds.width >= bBounds.x &&
         aBounds.x <= bBounds.x + bBounds.width &&
         aBounds.y + aBounds.height >= bBounds.y &&

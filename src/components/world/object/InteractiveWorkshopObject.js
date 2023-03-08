@@ -86,12 +86,10 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
    * @returns {Promise<void>} Promise is returned which caller can wait for if needed
    */
   async addScreenSprite() {
-    this.stream = await MultimediaManager.getInstance().getVideoElement();
-    await this.stream.play();
+    this.stream = document.createElement("video")
 
     if (!this.videoResource) {
       this.videoResource = new PIXI.VideoResource(this.stream);
-      await this.videoResource.load();
     }
 
     if (!this.videoTexture) {
@@ -126,6 +124,8 @@ export default class InteractiveWorkshopObject extends PIXI.Container {
           this.stream.srcObject = null;
           this.stream.src = null;
           this.stream.src = blobURL;
+          this.videoResource.load();
+          //this.stream.play()
         } catch {
           console.log("CHUNK ERROR");
         }

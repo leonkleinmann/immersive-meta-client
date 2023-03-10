@@ -4,12 +4,13 @@ import store from "@/store";
  * Class which represents the server connector which manages websocket connection to server
  */
 export default class ServerConnector {
+
   /**
    * Constructor of ServerConnector
-   * @param host websocket host of server
+   * @param uri URI socket should connect to
    */
-  constructor(host) {
-    this.host = host;
+  constructor(uri) {
+    this.uri = uri
     this.serverSocket = null;
     this.init();
   }
@@ -18,12 +19,12 @@ export default class ServerConnector {
 
   /**
    * static function to retrieve ServerConnector instance (singleton)
-   * @param host host of the websocket server
-   * @returns {null} the instance of ServerConnector
+   * @returns {ServerConnector} the instance of ServerConnector
    */
-  static getInstance(host) {
+  static getInstance() {
     if (!this.instance) {
-      this.instance = new ServerConnector(host);
+      let uri = `ws://${store.getters.server.host}:${store.getters.server.socket_port}`;
+      this.instance = new ServerConnector(uri);
     }
     return this.instance;
   }
@@ -32,7 +33,7 @@ export default class ServerConnector {
    * function which initializes the connection to server
    */
   init() {
-    this.serverSocket = new WebSocket(this.host);
+    this.serverSocket = new WebSocket(this.uri);
     this.serverSocket.onopen = this.handleOpen.bind(this);
     this.serverSocket.onclose = this.handleClose.bind(this);
     this.serverSocket.onmessage = this.handleMessage.bind(this);
@@ -56,7 +57,7 @@ export default class ServerConnector {
    * function which handles connection closing
    */
   handleClose() {
-    console.log("Connection to Server was lost..");
+    console.warn("Connection to Server was lost..");
     store.commit("setIsLoading", true);
   }
 
@@ -66,7 +67,7 @@ export default class ServerConnector {
    */
   handleMessage(event) {
     const parsedCommand = JSON.parse(event.data);
-    //console.log("COMMAND RECEIVED", parsedCommand);
+    console.log("COMMAND RECEIVED", parsedCommand);
     switch (parsedCommand.command) {
       case "REGISTER_COMPLETE":
         this.handleRegisterComplete(parsedCommand);

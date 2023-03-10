@@ -110,7 +110,7 @@ export default {
     async loadSettings() {
       try {
         await axios
-          .get(this.server.host + ":" + this.server.api_port + "/settings")
+          .get(`http://${this.server.host}:${this.server.api_port}/settings`)
           .then((settings) => {
             this.$store.commit("setSettingsData", settings.data);
           });
@@ -121,7 +121,7 @@ export default {
     async loadAssets() {
       try {
         await axios
-          .get(this.server.host + ":" + this.server.api_port + "/assets")
+          .get(`http://${this.server.host}:${this.server.api_port}/assets`)
           .then((assets) => {
             this.$store.commit("setAssetData", assets.data);
           });
@@ -132,7 +132,7 @@ export default {
     async loadWorld() {
       try {
         await axios
-          .get(this.server.host + ":" + this.server.api_port + "/map/world")
+          .get(`http://${this.server.host}:${this.server.api_port}/map/world`)
           .then((world) => {
             this.$store.commit("setWorldData", world.data);
           });
@@ -147,13 +147,7 @@ export default {
 
       try {
         await axios
-          .get(
-            this.server.host +
-              ":" +
-              this.server.api_port +
-              "/map/room/" +
-              roomId
-          )
+          .get(`http://${this.server.host}:${this.server.api_port}/map/room/${roomId}`)
           .then((room) => {
             this.$store.commit("setCurrentRoom", room.data);
           });
@@ -334,7 +328,7 @@ export default {
         aBounds.width === bBounds.width &&
         aBounds.height === bBounds.height
       ) {
-        return false
+        return false;
       }
 
       if (

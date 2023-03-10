@@ -1,14 +1,16 @@
 import store from "@/store";
+import Command from "@/components/world/commands/Command";
 
 /**
  * Class which represents ContentComand NPCs can execute
  */
-export default class ContentCommand {
+export default class ContentCommand extends Command{
   /**
    * Constructor of ContentCommand
    * @param content content to display by execute
    */
   constructor(content) {
+    super();
     this.content = content;
   }
 

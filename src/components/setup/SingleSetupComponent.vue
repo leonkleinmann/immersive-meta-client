@@ -19,7 +19,7 @@
       <div class="result">
         <div class="avatar">
           <div class="webcam">
-            <video autoplay="true" id="cam"></video>
+            <video :autoplay="true" id="cam"></video>
           </div>
           <div class="information">
             <div class="circle"></div>
@@ -72,6 +72,7 @@
 <script>
 import AdvanceButton from "@/components/ui/AdvanceButton";
 import { mapGetters } from "vuex";
+import ServerConnector from "@/connectors/server";
 
 export default {
   name: "SingleSetupComponent",
@@ -144,6 +145,7 @@ export default {
           username: this.username,
           link: this.link,
         });
+        ServerConnector.getInstance()
         this.$store.commit("setIsPlaying", true);
       }
     },

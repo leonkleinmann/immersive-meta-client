@@ -1,14 +1,6 @@
 <template>
   <div class="chat">
-    <div
-      class="messages"
-      style="
-        height: 200px;
-        min-height: 200px;
-        max-height: 200px;
-        overflow-y: scroll;
-      "
-    >
+    <div class="messages">
       <div
         v-for="(msg, idx) in chatMessages"
         :key="idx"
@@ -18,7 +10,7 @@
         <MessageComponent :author="msg.author" :message="msg.message" />
       </div>
     </div>
-    <div class="sender">
+    <div @keydown.enter="sendMessage()" class="sender">
       <input v-model="message" type="text" style="width: 200px" />
       <button @click="sendMessage()" style="width: 50px">Send</button>
     </div>
@@ -39,11 +31,13 @@ export default {
       message: "",
     };
   },
-  mounted() {
-    this.server = ServerConnector.getInstance("ws://localhost:8888");
-  },
   computed: {
     ...mapGetters(["setupData", "chatMessages"]),
+  },
+  watch: {
+    chatMessages() {
+      this.scrollDown();
+    },
   },
   methods: {
     sendMessage() {
@@ -52,7 +46,16 @@ export default {
         message: this.message,
       };
 
-      this.server.sendMessage("CHAT_MSG", message);
+      ServerConnector.getInstance().sendMessage("CHAT_MSG", message);
+      this.message = "";
+    },
+    scrollDown() {
+      const messageContainer = document.querySelectorAll(".messages")[0];
+      if (messageContainer) {
+        this.$nextTick(() => {
+          messageContainer.scrollTo(0, messageContainer.scrollHeight);
+        });
+      }
     },
   },
 };
@@ -77,6 +80,16 @@ export default {
     background: white;
     z-index: 2;
     overflow-x: hidden;
+    height: 200px;
+    min-height: 200px;
+    max-height: 200px;
+    overflow-y: scroll;
+
+    .message {
+      width: calc(250px - 5px);
+      height: 50px;
+      margin-left: 5px;
+    }
   }
 
   .sender {

@@ -1,10 +1,11 @@
 import { Directions } from "@/components/world/avatar/Movable";
 import store from "@/store";
+import Command from "@/components/world/commands/Command";
 
 /**
  * Class which represents GotoCommand NPC can execute
  */
-export default class GotoCommand {
+export default class GotoCommand extends Command {
   /**
    * Constructor of GotoCommand
    * @param x x-position npc should move to
@@ -12,6 +13,7 @@ export default class GotoCommand {
    * @param withUser bool if npc should take user with him
    */
   constructor(x, y, withUser) {
+    super();
     this.x = x;
     this.y = y;
     this.withUser = withUser;

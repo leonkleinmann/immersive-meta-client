@@ -11,9 +11,9 @@ export default new Vuex.Store({
     modalOpen: false,
     modalContent: "",
     server: {
-      host: "http://localhost",
+      host: "localhost",
       api_port: 9003,
-      state_machine_port: 8888,
+      socket_port: 8888,
       clientId: undefined,
     },
     setupData: {

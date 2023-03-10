@@ -1,5 +1,6 @@
 import Vue from "vue";
 import Vuex from "vuex";
+import axios from "axios";
 Vue.use(Vuex);
 
 export default new Vuex.Store({
@@ -196,5 +197,52 @@ export default new Vuex.Store({
       Vue.delete(state.workshopObjectData, objectId);
     },
   },
-  actions: {},
+  actions: {
+    loadSettings({ commit, state }) {
+      try {
+        return axios
+          .get(`http://${state.server.host}:${state.server.api_port}/settings`)
+          .then((settings) => {
+            commit("setSettingsData", settings.data);
+          });
+      } catch {
+        console.log("ERROR LOADING SETTINGS");
+      }
+    },
+    loadAssets({ commit, state }) {
+      try {
+        return axios
+          .get(`http://${state.server.host}:${state.server.api_port}/assets`)
+          .then((assets) => {
+            commit("setAssetData", assets.data);
+          });
+      } catch {
+        console.log("ERROR LOADING ASSETS");
+      }
+    },
+    loadWorld({ commit, state }) {
+      try {
+        return axios
+          .get(`http://${state.server.host}:${state.server.api_port}/map/world`)
+          .then((world) => {
+            commit("setWorldData", world.data);
+          });
+      } catch {
+        console.log("ERROR LOADING WORLD");
+      }
+    },
+    loadRoom({ commit, state }, roomId) {
+      try {
+        return axios
+          .get(
+            `http://${state.server.host}:${state.server.api_port}/map/room/${roomId}`
+          )
+          .then((room) => {
+            commit("setCurrentRoom", room.data);
+          });
+      } catch {
+        console.log("ERROR LOADING ROOM");
+      }
+    },
+  },
 });

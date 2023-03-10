@@ -13,7 +13,6 @@
 
 <script>
 import AssetManager from "@/components/world/assets/index";
-import axios from "axios";
 import { mapGetters } from "vuex";
 import ChatComponent from "@/components/chat/ChatComponent";
 import Avatar from "@/components/world/avatar/Avatar";
@@ -65,16 +64,18 @@ export default {
     document.querySelectorAll(".world")[0].appendChild(this.$pixiApp.view);
     this.$pixiApp.loader = new AssetManager();
     MultimediaManager.getInstance().sendVideoChunks(1);
-    this.loadSettings();
-    this.loadAssets().then(() => {
-      this.$pixiApp.loader.loadAssets();
+
+    this.$store.dispatch("loadSettings").then(() => {
+      this.$store.dispatch("loadAssets").then(() => {
+        this.$pixiApp.loader.loadAssets();
+      });
     });
 
     this.$pixiApp.loader.onComplete.add((loader, resources) => {
       loader.generateTextures(resources);
       loader.generateAnimations();
       this.addEntities();
-      this.loadWorld().then(() => {
+      this.$store.dispatch("loadWorld").then(() => {
         this.loadRoom(this.worldData.initial_room);
       });
     });
@@ -107,55 +108,11 @@ export default {
         "south"
       );
     },
-    async loadSettings() {
-      try {
-        await axios
-          .get(`http://${this.server.host}:${this.server.api_port}/settings`)
-          .then((settings) => {
-            this.$store.commit("setSettingsData", settings.data);
-          });
-      } catch {
-        console.log("ERROR LOADING SETTINGS");
-      }
-    },
-    async loadAssets() {
-      try {
-        await axios
-          .get(`http://${this.server.host}:${this.server.api_port}/assets`)
-          .then((assets) => {
-            this.$store.commit("setAssetData", assets.data);
-          });
-      } catch {
-        console.log("ERROR LOADING ASSETS");
-      }
-    },
-    async loadWorld() {
-      try {
-        await axios
-          .get(`http://${this.server.host}:${this.server.api_port}/map/world`)
-          .then((world) => {
-            this.$store.commit("setWorldData", world.data);
-          });
-      } catch {
-        console.log("ERROR LOADING WORLD");
-      }
-    },
     async loadRoom(roomId) {
       if (this.room !== undefined) {
         this.removeRoom();
       }
-
-      try {
-        await axios
-          .get(
-            `http://${this.server.host}:${this.server.api_port}/map/room/${roomId}`
-          )
-          .then((room) => {
-            this.$store.commit("setCurrentRoom", room.data);
-          });
-      } catch {
-        console.log("ERROR LOADING ROOM");
-      }
+      this.$store.dispatch("loadRoom", roomId);
     },
     removeRoom() {
       ServerConnector.getInstance().sendMessage("ROOM_LEAVE");

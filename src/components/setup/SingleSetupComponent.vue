@@ -100,8 +100,8 @@ export default {
     }
   },
   destroyed() {
-    //this.micStream.getTracks().forEach((track) => track.stop())
-    //this.camStream.getTracks().forEach((track) => track.stop());
+    this.micStream.getTracks().forEach((track) => track.stop())
+    this.camStream.getTracks().forEach((track) => track.stop());
   },
   methods: {
     initAudio() {

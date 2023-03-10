@@ -5,7 +5,6 @@ import Movable, { Directions } from "@/components/world/avatar/Movable";
  * Class Avatar represents the users avatar
  */
 export default class Avatar extends Movable {
-
   /**
    * Constructor of Avatar
    * @param x position x
@@ -62,6 +61,15 @@ export default class Avatar extends Movable {
     const aBounds = a.getBounds();
     const bBounds = b.getBounds();
     let result = false;
+
+    if (
+      aBounds.x === bBounds.x &&
+      aBounds.y === bBounds.y &&
+      aBounds.width === bBounds.width &&
+      aBounds.height === bBounds.height
+    ) {
+      return false;
+    }
 
     if (
       aBounds.x + aBounds.width >= bBounds.x &&

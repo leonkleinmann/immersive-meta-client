@@ -147,7 +147,9 @@ export default {
 
       try {
         await axios
-          .get(`http://${this.server.host}:${this.server.api_port}/map/room/${roomId}`)
+          .get(
+            `http://${this.server.host}:${this.server.api_port}/map/room/${roomId}`
+          )
           .then((room) => {
             this.$store.commit("setCurrentRoom", room.data);
           });
@@ -257,7 +259,7 @@ export default {
       const interactiveEntities = this.room.getInteractiveEntities();
       if (avaX % 1 === 0 && avaY % 1 === 0) {
         interactiveEntities.forEach((interactive) => {
-          if (this.hitTestRectangle(this.avatar, interactive)) {
+          if (this.avatar.hitTestRectangle(this.avatar, interactive)) {
             interactive.triggerAnimation();
           } else {
             interactive.stopAnimation();
@@ -271,7 +273,7 @@ export default {
         if (!this.connectedClients.hasOwnProperty(clientAvatar.id)) {
           if (
             !(this.room instanceof WorkshopRoom) &&
-            this.hitTestRectangle(clientAvatar, this.avatar)
+            this.avatar.hitTestRectangle(clientAvatar, this.avatar)
           ) {
             this.$store.commit("addConnectedClient", clientAvatar.id);
 
@@ -299,7 +301,7 @@ export default {
         } else {
           if (
             !(this.room instanceof WorkshopRoom) &&
-            this.hitTestRectangle(clientAvatar, this.avatar) === false
+            this.avatar.hitTestRectangle(clientAvatar, this.avatar) === false
           ) {
             this.$store.commit("removeConnectedClient", clientAvatar.id);
             clientAvatar.removeVideoContainer();
@@ -316,31 +318,6 @@ export default {
           this.avatar.removeVideoContainer();
         }
       });
-    },
-    hitTestRectangle(a, b) {
-      const aBounds = a.getBounds();
-      const bBounds = b.getBounds();
-      let result = false;
-
-      if (
-        aBounds.x === bBounds.x &&
-        aBounds.y === bBounds.y &&
-        aBounds.width === bBounds.width &&
-        aBounds.height === bBounds.height
-      ) {
-        return false;
-      }
-
-      if (
-        aBounds.x + aBounds.width >= bBounds.x &&
-        aBounds.x <= bBounds.x + bBounds.width &&
-        aBounds.y + aBounds.height >= bBounds.y &&
-        aBounds.y <= bBounds.y + bBounds.height
-      ) {
-        result = true;
-      }
-
-      return result;
     },
     scroll() {
       if (this.mustScrollX) {

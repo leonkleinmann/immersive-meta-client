@@ -25,15 +25,18 @@ export default class AvatarMediaContainer extends PIXI.Container {
     this.stream = await MultimediaManager.getInstance().getVideoElement();
     await this.stream.play();
 
+    // create new PIXI.VideoResource with stream as source
     if (!this.videoResource) {
       this.videoResource = new PIXI.VideoResource(this.stream);
       await this.videoResource.load();
     }
 
+    // create new texture
     if (!this.videoTexture) {
       this.videoTexture = new PIXI.Texture.from(this.videoResource);
     }
 
+    // create video sprite out of texture which is based upon a video resource
     this.videoSprite = new PIXI.Sprite(this.videoTexture);
     this.videoSprite.position.set(0, 0);
     this.videoSprite.width = store.getters.settingsData.avatarMediaWidth;
@@ -41,6 +44,10 @@ export default class AvatarMediaContainer extends PIXI.Container {
 
     this.addChild(this.videoSprite);
 
+    /*
+     * add a listener to canplaythrough event which fires once chunk has been loaded completely
+     * we could use canplay to play once parts of the chunk have been loaded
+     * */
     this.stream.addEventListener("canplaythrough", () => {
       this.stream.play();
     });
@@ -52,7 +59,7 @@ export default class AvatarMediaContainer extends PIXI.Container {
         const chunk = store.state.connectedClients[this.id];
         try {
           if (chunk !== undefined) {
-            const byteCharacters = atob(chunk);
+            const byteCharacters = atob(chunk); // decode base64 string
             const byteArray = new Uint8Array(byteCharacters.length);
             for (let i = 0; i < byteCharacters.length; i++) {
               byteArray[i] = byteCharacters.charCodeAt(i);
@@ -72,15 +79,16 @@ export default class AvatarMediaContainer extends PIXI.Container {
     };
 
     if (this.id !== store.getters.clientId) {
+      // watch for store changes. once store changes, it will notify
       store.watch(
         () => store.state.connectedClients[this.id],
         () => {
+          // new chunk was provided
           hasNewChunk = true;
         },
         { deep: true }
       );
     }
-
     requestAnimationFrame(updateChunk);
   }
 }

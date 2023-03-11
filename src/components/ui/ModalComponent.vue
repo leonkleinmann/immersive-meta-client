@@ -4,7 +4,7 @@
     <div class="wrapper">
       <div class="title">{{ title }}</div>
       <div class="content"><slot>Lorem Ipsum</slot></div>
-      <div class="close" @click="closeModal()">x</div>
+      <div class="close" @click="closeModal()"></div>
     </div>
   </div>
 </template>
@@ -55,7 +55,7 @@ export default {
     height: 100vh;
     background: gray;
     opacity: 0.5;
-    z-index: 999;
+    z-index: 1000;
   }
 
   .wrapper {
@@ -78,7 +78,9 @@ export default {
 
     .content {
       font-size: 20px;
-      margin: 50px 20%;
+      position: relative;
+      overflow-y: scroll;
+      margin: 20px;
     }
 
     .close {
@@ -87,6 +89,13 @@ export default {
       right: 40px;
       width: 40px;
       height: 40px;
+      cursor: pointer;
+
+      &:after {
+        display: inline-block;
+        font-size: 30px;
+        content: "✕"; /* This will render the 'X' */
+      }
     }
   }
 }

@@ -83,6 +83,8 @@ export default class NPC extends Movable {
     this.chain.reduce(async (prev, current) => {
       await prev;
       await current.execute(this);
-    }, Promise.resolve());
+    }, Promise.resolve()).then(() => {
+      this.buildAnimation()
+    });
   }
 }

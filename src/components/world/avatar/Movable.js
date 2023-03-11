@@ -219,6 +219,7 @@ export default class Movable extends PIXI.AnimatedSprite {
    */
   findPath(xEnd, yEnd) {
     let matrix = this.parent.createMatrix();
+    matrix[xEnd][yEnd] = 0
     let grid = new PF.Grid(matrix);
     let finder = new PF.AStarFinder();
     return finder.findPath(
@@ -240,7 +241,7 @@ export default class Movable extends PIXI.AnimatedSprite {
     let willColide = false;
     let tile = this.parent.getTile(x, y);
 
-    if (tile !== null && tile !== undefined && !(tile instanceof ExitObject)) {
+    if (tile !== null && tile !== undefined && !(tile instanceof ExitObject) && tile !== this) {
       willColide = true;
     }
 

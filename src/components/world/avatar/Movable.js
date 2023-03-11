@@ -38,12 +38,12 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.username = username;
     this.link = link;
     this.tileSize = store.getters.settingsData.tileSize;
-    this.avatarIdleSheet = {};
+    this.movableIdleSheet = {};
     this.animations = store.getters.animations;
     this.zIndex = 9;
     this.loop = true;
-    this.buildAvatarIdleSheet();
-    this.textures = this.avatarIdleSheet[direction];
+    this.buildMovableIdleSheet();
+    this.textures = this.movableIdleSheet[direction];
     this.height = this.tileSize;
     this.width = this.tileSize;
   }
@@ -67,26 +67,31 @@ export default class Movable extends PIXI.AnimatedSprite {
    * @param id id of the client avatar
    * @param direction direction the video container should be displayed
    */
-  addVideoContainer(id, direction) {
+  addVideoContainer(id) {
     if (!this.video) {
       this.video = new AvatarMediaContainer(id);
+      this.parent.addChild(this.video);
+    }
+  }
 
+  updateVideoContainer(direction) {
+    if (this.video) {
       let videoX = 0;
       let videoY = 0;
 
       if (direction === "UP") {
         videoX =
-            this.x -
-            store.getters.settingsData.avatarMediaWidth / 2 +
-            this.tileSize / 2;
+          this.x -
+          store.getters.settingsData.avatarMediaWidth / 2 +
+          this.tileSize / 2;
 
         videoY = this.info.y - 60;
       }
       if (direction === "DOWN") {
         videoX =
-            this.x -
-            store.getters.settingsData.avatarMediaWidth / 2 +
-            this.tileSize / 2;
+          this.x -
+          store.getters.settingsData.avatarMediaWidth / 2 +
+          this.tileSize / 2;
         videoY = this.y + this.getBounds().height;
       }
       if (direction === "LEFT") {
@@ -104,8 +109,6 @@ export default class Movable extends PIXI.AnimatedSprite {
       // update container position while communicating
       this.info.x = this.video.x;
       this.info.y = this.video.y + 60;
-
-      this.parent.addChild(this.video);
     }
   }
 
@@ -135,14 +138,14 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   /**
-   * functiin which creates the idle sprite sheet for movables
+   * function which creates the idle sprite sheet for movables
    */
-  buildAvatarIdleSheet() {
+  buildMovableIdleSheet() {
     const textures = store.getters.textures;
     const gender = store.getters.setupData.gender;
 
     for (const direction of Object.values(Directions)) {
-      this.avatarIdleSheet[direction] = [
+      this.movableIdleSheet[direction] = [
         textures[`${gender}_idle_${direction}`],
       ];
     }
@@ -177,7 +180,7 @@ export default class Movable extends PIXI.AnimatedSprite {
           duration: 0.5,
           onComplete: () => {
             this.stop();
-            this.textures = this.avatarIdleSheet[direction];
+            this.textures = this.movableIdleSheet[direction];
           },
         },
         0

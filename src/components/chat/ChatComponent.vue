@@ -1,5 +1,6 @@
 <template>
   <div class="chat">
+    <div class="header">Chat</div>
     <div class="messages">
       <div
         v-for="(msg, idx) in chatMessages"
@@ -10,9 +11,11 @@
         <MessageComponent :author="msg.author" :message="msg.message" />
       </div>
     </div>
-    <div @keydown.enter="sendMessage()" class="sender">
-      <input v-model="message" type="text" style="width: 200px" />
-      <button @click="sendMessage()" style="width: 50px">Send</button>
+    <div class="sender">
+      <div @keydown.enter="sendMessage()" class="message">
+        <input v-model="message" type="text" />
+        <div @click="sendMessage()" class="button">Send</div>
+      </div>
     </div>
   </div>
 </template>
@@ -69,33 +72,73 @@ export default {
   display: flex;
   flex-direction: column;
   width: 250px;
+  font-family: "Helvetica Neue",serif !important;
+
+  .header {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 250px;
+    height: 40px;
+    background: #161616;
+    color: white;
+    z-index: 2;
+    border-radius: 5px;
+  }
 
   .messages {
     display: flex;
     flex-direction: column;
     width: 250px;
     max-width: 250px;
-    border: 1px solid black;
-    border-radius: 5px;
-    background: white;
     z-index: 2;
     overflow-x: hidden;
     height: 200px;
     min-height: 200px;
     max-height: 200px;
     overflow-y: scroll;
+    background: lightgray;
 
-    .message {
-      width: calc(250px - 5px);
-      height: 50px;
-      margin-left: 5px;
-    }
+    gap: 10px;
   }
 
   .sender {
     display: flex;
     flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    background: white;
     z-index: 2;
+    height: 40px;
+
+    .message {
+      display: flex;
+      flex-direction: row;
+      gap: 20px;
+      align-items: center;
+      justify-content: center;
+      z-index: 2;
+      height: 40px;
+
+      & input {
+        width: 150px;
+        height: 20px;
+        border: 1px solid #161616;
+      }
+
+      .button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 40px;
+        height: 20px;
+        padding: 5px;
+        margin-left: auto;
+        background: #161616;
+        color: white;
+      }
+    }
   }
 }
 </style>

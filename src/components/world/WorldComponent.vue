@@ -173,7 +173,10 @@ export default {
         .filter((key) => !newKeys.includes(key))
         .forEach((key) => {
           const avatar = this.clientAvatars[key];
+          avatar.removeVideoContainer()
           avatar.removeInfoContainer();
+          console.log('remove id', avatar.id)
+          this.$store.commit('removeConnectedClient', avatar.id)
           this.room.removeChild(avatar);
           delete this.clientAvatars[key];
         });
@@ -225,6 +228,18 @@ export default {
       }
     },
     avatarCollision() {
+      // remove video container if no avatar connected
+      let realLen = 0;
+      this.connectedClients.forEach((key) => {
+        if (key !== undefined) {
+          realLen = realLen + 1;
+        }
+      });
+      console.log(realLen)
+      if (realLen === 0) {
+        this.avatar.removeVideoContainer();
+      }
+
       Object.values(this.clientAvatars).forEach((clientAvatar) => {
         // eslint-disable-next-line no-prototype-builtins
         if (this.avatar.hitTestRectangle(clientAvatar, this.avatar)) {
@@ -260,16 +275,6 @@ export default {
               clientAvatar.removeVideoContainer();
             }
           }
-        }
-
-        let realLen = 0;
-        this.connectedClients.forEach((key) => {
-          if (key !== undefined) {
-            realLen = realLen + 1;
-          }
-        });
-        if (realLen === 0) {
-          this.avatar.removeVideoContainer();
         }
       });
     },

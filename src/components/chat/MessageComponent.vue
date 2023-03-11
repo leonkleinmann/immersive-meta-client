@@ -24,14 +24,20 @@ export default {
 <style lang="scss" scoped>
 .message {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
-  gap: 10px;
-  width: 100%;
-  height: 100%;
+  width: 220px;
+  background: white;
+  border-radius: 10px;
+  margin-top: 10px;
+  margin-left: 5px;
+  padding: 5px;
+  font-size: 14px;
+  overflow: hidden;
 
   .author {
     font-weight: bold;
+    height: 5px;
   }
 }
 </style>

@@ -146,7 +146,7 @@ export default class Movable extends PIXI.AnimatedSprite {
   }
 
   /**
-   * functiin which creates the idle sprite sheet for movables
+   * function which creates the idle sprite sheet for movables
    */
   buildAvatarIdleSheet() {
     const textures = store.getters.textures;

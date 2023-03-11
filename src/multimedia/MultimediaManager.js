@@ -99,7 +99,7 @@ export default class MultimediaManager {
     setInterval(async () => {
       await recorder.stop();
       await recorder.start();
-    }, duration * 1000);
+    }, duration * 500);
   }
 
   /**
@@ -129,7 +129,7 @@ export default class MultimediaManager {
     setInterval(async () => {
       await recorder.stop();
       await recorder.start();
-    }, duration * 1000);
+    }, duration * 500);
   }
 
   /**

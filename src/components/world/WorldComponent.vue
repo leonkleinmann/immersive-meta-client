@@ -227,41 +227,38 @@ export default {
     avatarCollision() {
       Object.values(this.clientAvatars).forEach((clientAvatar) => {
         // eslint-disable-next-line no-prototype-builtins
-        if (!this.connectedClients.hasOwnProperty(clientAvatar.id)) {
-          if (
-            !(this.room instanceof WorkshopRoom) &&
-            this.avatar.hitTestRectangle(clientAvatar, this.avatar)
-          ) {
+        if (this.avatar.hitTestRectangle(clientAvatar, this.avatar)) {
+          if (this.connectedClients[clientAvatar.id] === undefined) {
             this.$store.commit("addConnectedClient", clientAvatar.id);
-
-            let direction = "UP";
-
-            if (this.avatar.x < clientAvatar.x) {
-              direction = "RIGHT";
-              this.avatar.addVideoContainer(this.clientId, "LEFT");
-            }
-            if (this.avatar.x > clientAvatar.x) {
-              direction = "LEFT";
-              this.avatar.addVideoContainer(this.clientId, "RIGHT");
-            }
-            if (this.avatar.y < clientAvatar.y) {
-              direction = "DOWN";
-              this.avatar.addVideoContainer(this.clientId, "UP");
-            }
-            if (this.avatar.y > clientAvatar.y) {
-              direction = "UP";
-              this.avatar.addVideoContainer(this.clientId, "DOWN");
-            }
-
-            clientAvatar.addVideoContainer(clientAvatar.id, direction);
           }
+
+          clientAvatar.addVideoContainer(clientAvatar.id);
+          this.avatar.addVideoContainer(this.clientId);
+
+          let direction = "UP";
+
+          if (this.avatar.x < clientAvatar.x) {
+            direction = "RIGHT";
+            this.avatar.updateVideoContainer("LEFT");
+          } else if (this.avatar.x > clientAvatar.x) {
+            direction = "LEFT";
+            this.avatar.updateVideoContainer("RIGHT");
+          } else if (this.avatar.y < clientAvatar.y) {
+            direction = "DOWN";
+            this.avatar.updateVideoContainer("UP");
+          } else if (this.avatar.y > clientAvatar.y) {
+            direction = "UP";
+            this.avatar.updateVideoContainer("DOWN");
+          }
+          clientAvatar.updateVideoContainer(direction);
         } else {
           if (
-            !(this.room instanceof WorkshopRoom) &&
             this.avatar.hitTestRectangle(clientAvatar, this.avatar) === false
           ) {
-            this.$store.commit("removeConnectedClient", clientAvatar.id);
-            clientAvatar.removeVideoContainer();
+            if (this.connectedClients[clientAvatar.id]) {
+              this.$store.commit("removeConnectedClient", clientAvatar.id);
+              clientAvatar.removeVideoContainer();
+            }
           }
         }
 

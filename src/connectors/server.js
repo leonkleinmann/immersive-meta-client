@@ -67,7 +67,7 @@ export default class ServerConnector {
    */
   handleMessage(event) {
     const parsedCommand = JSON.parse(event.data);
-    console.log("COMMAND RECEIVED", parsedCommand);
+    //console.log("COMMAND RECEIVED", parsedCommand);
     switch (parsedCommand.command) {
       case "REGISTER_COMPLETE":
         this.handleRegisterComplete(parsedCommand);

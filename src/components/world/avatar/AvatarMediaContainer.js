@@ -42,7 +42,7 @@ export default class AvatarMediaContainer extends PIXI.Container {
     this.addChild(this.videoSprite);
 
     this.stream.addEventListener("canplaythrough", () => {
-      this.stream.play()
+      this.stream.play();
     });
 
     let hasNewChunk = false;
@@ -51,16 +51,18 @@ export default class AvatarMediaContainer extends PIXI.Container {
       if (hasNewChunk) {
         const chunk = store.state.connectedClients[this.id];
         try {
-          const byteCharacters = atob(chunk);
-          const byteArray = new Uint8Array(byteCharacters.length);
-          for (let i = 0; i < byteCharacters.length; i++) {
-            byteArray[i] = byteCharacters.charCodeAt(i);
+          if (chunk !== undefined) {
+            const byteCharacters = atob(chunk);
+            const byteArray = new Uint8Array(byteCharacters.length);
+            for (let i = 0; i < byteCharacters.length; i++) {
+              byteArray[i] = byteCharacters.charCodeAt(i);
+            }
+            const blob = new Blob([byteArray], { type: "video/webm" });
+            const blobURL = URL.createObjectURL(blob);
+            this.stream.srcObject = null;
+            this.stream.src = null;
+            this.stream.src = blobURL;
           }
-          const blob = new Blob([byteArray], {type: "video/webm"});
-          const blobURL = URL.createObjectURL(blob);
-          this.stream.srcObject = null;
-          this.stream.src = null;
-          this.stream.src = blobURL;
         } catch {
           console.log("CHUNK ERROR");
         }
@@ -71,11 +73,11 @@ export default class AvatarMediaContainer extends PIXI.Container {
 
     if (this.id !== store.getters.clientId) {
       store.watch(
-          () => store.state.connectedClients[this.id],
-          () => {
-            hasNewChunk = true;
-          },
-          {deep: true}
+        () => store.state.connectedClients[this.id],
+        () => {
+          hasNewChunk = true;
+        },
+        { deep: true }
       );
     }
 

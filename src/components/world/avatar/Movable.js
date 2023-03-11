@@ -65,28 +65,39 @@ export default class Movable extends PIXI.AnimatedSprite {
   /**
    * adds a video container to movable to display webcam video, needed for avatars and client avatars
    * @param id id of the client avatar
-   * @param direction direction the video container should be displayed
    */
-  addVideoContainer(id, direction) {
+  addVideoContainer(id) {
     if (!this.video) {
       this.video = new AvatarMediaContainer(id);
+      this.parent.addChild(this.video);
+    }
+  }
 
+  /**
+   * function which updates position of video avatar
+   * @param direction new direction media container should be displayed at
+   */
+  updateVideoContainer(direction) {
+    if (this.video && this.currentvideoPos !== direction) {
       let videoX = 0;
       let videoY = 0;
 
       if (direction === "UP") {
         videoX =
-            this.x -
-            store.getters.settingsData.avatarMediaWidth / 2 +
-            this.tileSize / 2;
+          this.x -
+          store.getters.settingsData.avatarMediaWidth / 2 +
+          this.tileSize / 2;
 
-        videoY = this.info.y - 60;
+        videoY =
+          this.y -
+          store.getters.settingsData.avatarInformationHeight -
+          store.getters.settingsData.avatarMediaHeight;
       }
       if (direction === "DOWN") {
         videoX =
-            this.x -
-            store.getters.settingsData.avatarMediaWidth / 2 +
-            this.tileSize / 2;
+          this.x -
+          store.getters.settingsData.avatarMediaWidth / 2 +
+          this.tileSize / 2;
         videoY = this.y + this.getBounds().height;
       }
       if (direction === "LEFT") {
@@ -105,7 +116,7 @@ export default class Movable extends PIXI.AnimatedSprite {
       this.info.x = this.video.x;
       this.info.y = this.video.y + 60;
 
-      this.parent.addChild(this.video);
+      this.currentVideoPos = direction;
     }
   }
 

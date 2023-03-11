@@ -45,6 +45,7 @@ export default class MultimediaManager {
         video: true,
         audio: {
           suppressLocalAudioPlayback: true,
+          echoCancellation: true
         },
       });
     }
@@ -58,6 +59,7 @@ export default class MultimediaManager {
   async getVideoElement() {
     const stream = await this.getVideoStream();
     const video = document.createElement("video");
+    video.muted = true
     video.srcObject = stream;
     return video;
   }

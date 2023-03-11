@@ -100,7 +100,7 @@ export default {
     }
   },
   destroyed() {
-    this.micStream.getTracks().forEach((track) => track.stop())
+    this.micStream.getTracks().forEach((track) => track.stop());
     this.camStream.getTracks().forEach((track) => track.stop());
   },
   methods: {
@@ -145,7 +145,7 @@ export default {
           username: this.username,
           link: this.link,
         });
-        ServerConnector.getInstance()
+        ServerConnector.getInstance();
         this.$store.commit("setIsPlaying", true);
       }
     },

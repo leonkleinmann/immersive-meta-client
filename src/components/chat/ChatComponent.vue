@@ -44,13 +44,15 @@ export default {
   },
   methods: {
     sendMessage() {
-      let message = {
-        author: this.setupData.username,
-        message: this.message,
-      };
+      if (this.message) {
+        let message = {
+          author: this.setupData.username,
+          message: this.message,
+        };
 
-      ServerConnector.getInstance().sendMessage("CHAT_MSG", message);
-      this.message = "";
+        ServerConnector.getInstance().sendMessage("CHAT_MSG", message);
+        this.message = "";
+      }
     },
     scrollDown() {
       const messageContainer = document.querySelectorAll(".messages")[0];
@@ -72,7 +74,7 @@ export default {
   display: flex;
   flex-direction: column;
   width: 250px;
-  font-family: "Helvetica Neue",serif !important;
+  font-family: "Helvetica Neue", serif !important;
 
   .header {
     display: flex;
@@ -137,6 +139,7 @@ export default {
         margin-left: auto;
         background: #161616;
         color: white;
+        cursor: pointer;
       }
     }
   }

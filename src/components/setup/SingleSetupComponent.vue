@@ -4,6 +4,16 @@
       <h1>IMMERSIVE META SPACE</h1>
     </div>
     <div class="description">
+      <h2>Bereit für die immersive Erfahrung?</h2>
+      <p>
+        In diesem Meta Space kannst eine Marke mittels einer immersiven Erfahrung kennenlernen!
+        Du wirst in diesem Zuge auf NPCs, bjekte sowie andere spannende Entitäten treffen, mit
+        welchen du mittels deines Avatars interagieren kannst. Nutze hierzu:
+      </p>
+      <ul>
+        <li>Pfeiltasten um deinen Avatar zu bewegen</li>
+        <li>die Aktionstaste X um mit Objekten zu interagieren</li>
+      </ul>
       <h2>Bevor's los geht!</h2>
       <p>
         Du stehst kurz davor, den Meta Space der Scholz&Volkmer GmbH zu betreten

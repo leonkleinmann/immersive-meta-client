@@ -120,7 +120,7 @@ export default class Avatar extends Movable {
    * @param direction direction of movement
    */
   notifyServer(x, y, direction) {
-    ServerConnector.getInstance().sendMessage("AVATAR_STATE_UPDATE", {
+    ServerConnector.getInstance().sendMessage("AVATAR_POS_UPDATE", {
       x,
       y,
       direction,

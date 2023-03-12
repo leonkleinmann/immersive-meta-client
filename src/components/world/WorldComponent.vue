@@ -175,7 +175,6 @@ export default {
           const avatar = this.clientAvatars[key];
           avatar.removeVideoContainer()
           avatar.removeInfoContainer();
-          console.log('remove id', avatar.id)
           this.$store.commit('removeConnectedClient', avatar.id)
           this.room.removeChild(avatar);
           delete this.clientAvatars[key];
@@ -235,7 +234,6 @@ export default {
           realLen = realLen + 1;
         }
       });
-      console.log(realLen)
       if (realLen === 0) {
         this.avatar.removeVideoContainer();
       }

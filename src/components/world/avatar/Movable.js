@@ -44,8 +44,8 @@ export default class Movable extends PIXI.AnimatedSprite {
     this.loop = true;
     this.buildAvatarIdleSheet();
     this.textures = this.avatarIdleSheet[direction];
-    this.height = this.tileSize;
-    this.width = this.tileSize;
+    //this.height = this.tileSize;
+    //this.width = this.tileSize;
   }
 
   /**
@@ -150,7 +150,7 @@ export default class Movable extends PIXI.AnimatedSprite {
    */
   buildAvatarIdleSheet() {
     const textures = store.getters.textures;
-    const gender = store.getters.setupData.gender;
+    const gender = this.gender
 
     for (const direction of Object.values(Directions)) {
       this.avatarIdleSheet[direction] = [

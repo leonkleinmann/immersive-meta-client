@@ -120,7 +120,7 @@ export default class MultimediaManager {
     recorder.ondataavailable = async (event) => {
       const toClients = store.getters.connectedClients;
       if (Object.keys(toClients).length) {
-        ServerConnector.getInstance().sendMessage("VIDEO_CHUNK", {
+        ServerConnector.getInstance().sendMessage("VIDEO_CHUNK_SEND", {
           chunk: await this.blobToBase64(event.data),
           toClients: Object.keys(toClients).map((key) => parseInt(key)),
         });

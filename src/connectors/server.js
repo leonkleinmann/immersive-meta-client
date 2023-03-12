@@ -86,10 +86,10 @@ export default class ServerConnector {
       case "ROOM_LEFT":
         store.commit("removeClientAvatar", parsedCommand.data.clientId);
         break;
-      case "AVATAR_STATE_UPDATED":
+      case "AVATAR_POS_UPDATED":
         this.handleAvatarStateUpdated(parsedCommand);
         break;
-      case "VIDEO_CHUNK":
+      case "VIDEO_CHUNK_RECEIVED":
         this.handleVideoChunk(parsedCommand);
         break;
       case "SCREEN_CHUNK":

@@ -1,20 +1,32 @@
 <template>
   <div class="setup">
-    <div class="description">
-      <h1>Before we go..</h1>
-      <p>
-        Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy
-        eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam
-        voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet
-        clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit
-        amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam
-        nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat,
-        sed diam voluptua. At vero eos et accusam et justo duo dolores et ea
-        rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem
-        ipsum dolor sit amet.
-      </p>
+    <div class="header">
+      <h1>IMMERSIVE META SPACE</h1>
     </div>
-
+    <div class="description">
+      <h2>Bevor's los geht!</h2>
+      <p>
+        Du stehst kurz davor, den Meta Space der Scholz&Volkmer GmbH zu betreten
+        und dieses Unternehmen in einer immersiven Erfahrung kennen zu lernen.
+        Bitte beachte, dass die Erfahrung auch von Dir abhängt. Der Grad an
+        mentaler Immersion der in diesem Meta Space erreicht wird hängt nämlich
+        von deiner Bereitschat ab, neue Dinge auszuprobieren!
+      </p>
+      <p>
+        Bevor du die virtuelle Welt des Meta Space betreten kannst, musst du
+        noch ein paar kleine Schritte durchführen.
+      </p>
+      <p>Bitte stelle sicher, dass:</p>
+      <ul>
+        <li>Du Zugriff auf deine Kamera hast.</li>
+        <li>Du dich selbst hörst.</li>
+        <li>Du Dir einen Username gegeben hast.</li>
+        <li>
+          Du einen Link angegeben hast, welcher zu einem deiner
+          Social-Media-Kanäle führt.
+        </li>
+      </ul>
+    </div>
     <div class="content">
       <div class="result">
         <div class="avatar">
@@ -56,7 +68,7 @@
               </button>
             </div>
             <div class="social">
-              Social Media (URL):<br />
+              <img alt="link" src="/assets/setup/link.svg" />
               <input v-model="link" type="text" />
             </div>
           </div>
@@ -81,7 +93,7 @@ export default {
     return {
       gender: "male",
       username: "Username",
-      link: "https://google.com",
+      link: "https://yourlink.io",
       audioPermissionGranted: false,
       videoPermissionGranted: false,
       micStream: undefined,
@@ -157,14 +169,24 @@ export default {
 .setup {
   position: relative;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  align-items: center;
   width: 100%;
   height: 100%;
   font-family: "VT323", serif;
 
+  .header {
+    position: absolute;
+    left: 50px;
+    top: 50px;
+    padding: 5px;
+    border: 4px solid black;
+  }
+
   .description {
-    padding-left: 20%;
-    padding-right: 20%;
+    width: 50%;
+    padding: 50px;
+    font-size: 20px;
   }
 
   .content {
@@ -172,10 +194,7 @@ export default {
     flex-direction: row;
     justify-content: center;
     align-items: center;
-    gap: 50px;
-    margin-top: 20px;
-    padding-left: 20%;
-    padding-right: 20%;
+    width: 50%;
 
     .result {
       display: flex;
@@ -221,6 +240,8 @@ export default {
           .username {
             input {
               width: 80px;
+              height: 20px;
+              font-size: 16px;
             }
           }
 
@@ -267,7 +288,21 @@ export default {
           }
 
           .social {
+            display: flex;
+            align-items: center;
+            gap: 10px;
             text-align: center;
+
+            & input {
+              width: 200px;
+              height: 20px;
+              font-size: 16px;
+            }
+
+            img {
+              width: 40px;
+              height: 40px;
+            }
           }
         }
       }

@@ -26,16 +26,16 @@ export default class Avatar extends Movable {
     document.addEventListener(
       "keydown",
       (event) => {
-        if (event.code === "ArrowUp" || event.code === "KeyW") {
+        if (event.code === "ArrowUp") {
           this.moveToDirection(Directions.NORTH);
         }
-        if (event.code === "ArrowRight" || event.code === "KeyD") {
+        if (event.code === "ArrowRight") {
           this.moveToDirection(Directions.EAST);
         }
-        if (event.code === "ArrowDown" || event.code === "KeyS") {
+        if (event.code === "ArrowDown") {
           this.moveToDirection(Directions.SOUTH);
         }
-        if (event.code === "ArrowLeft" || event.code === "KeyA") {
+        if (event.code === "ArrowLeft") {
           this.moveToDirection(Directions.WEST);
         }
         if (event.code === "KeyX") {
